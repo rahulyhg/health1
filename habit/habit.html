@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+
+
+
+<!--<link rel="stylesheet" href="../css/foundation.css" />-->
+<link rel="stylesheet" href="../css/app.css" />
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+<style>
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+}
+#habit_input_modal{
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+
+	width:50%;
+	padding: 20px;
+	background: white;
+	display:none;
+
+}
+#habit_list{
+list-style: none;	
+}
+#habit_list > li{
+			border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+
+	padding: 20px;
+	margin-top: 10px;
+	margin-bottom:10px;
+	background: #27ae60;
+	margin-left: 10%;
+	margin-right:10%;
+	
+	
+}
+
+#upper-left{
+	float:left;
+	width:80%;	
+}
+
+#upper-right{
+	float:right;
+	width: 20%;
+}
+
+</style>
+
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="../js/jquery.leanModal.min.js"></script>
+
+<script src="../js/foundation.js"></script> <!--switch to min version when launch-->
+
+<script src="http://fb.me/react-0.10.0.min.js"></script>
+
+<script>
+//namespace
+var habitUserData={};
+
+
+$(document).ready(function(){
+	$("#in").click(function(){
+		
+		
+		
+		$.get("/health1/server/habit/user", {userid:"123"} ,function(data){
+				
+				data = JSON.parse(data);
+				habitUserData.data = data;
+				
+				for(var i = 0; i < data.length; i++){
+					console.log(data[i]);
+					$("#habit_list").append("<li id = habit" + i + "> "+ data[i].description + " </li>");
+					
+					(function(n){
+						$("#habit"+n).click(function(){
+							$(this).css({
+								 	"font-style": "italic",
+      								"font-weight": "bolder"
+							});
+						});	
+					})(i);
+				}	
+		}); //           health1/server/habit/user. =>  localhost/health1/habit/habit/health1/server
+			//           /health1/server/habit/user. => localhost/health1/habit/server
+	});
+	
+	
+	$("#add_more").leanModal({ top : 200, overlay : 0.4, closeButton: ".modal_close" });
+	
+	
+		
+	$("#add_more").one('click', function(){
+		window.setTimeout(function(){
+			$("#instruction_header").fadeTo(1000, 1);
+			
+			window.setTimeout(function(){
+				$("#habit_input_body").append("<p>Let's fill out a habit description first</p>");
+			}, 1000);
+			
+		
+			
+			
+			
+		}, 500);
+		
+	});
+	
+	
+	
+});
+
+
+
+
+</script>
+
+</head>
+
+
+
+
+
+
+<body>
+
+<div id= "test" href ="#test2"> tesst</div>
+
+<div id="test2" style = "display:none;"> test2 </div>
+
+
+
+<div id = "upper-div">
+	<div id = "upper-left">
+    
+        <div id="in">
+            hello
+        </div>
+        
+        <div id="habit-section">
+            <ul id = "habit_list">habit list follows:
+                <li id="add_more" href="#habit_input_modal">add more</li>
+                
+            </ul>
+        </div>
+        
+        
+        <div id="habit_input_modal">
+            <div id="instruction_header" style="opacity:0">
+                <p>Hi there...</p>
+            </div>
+            
+            <div id="habit_input_body">
+            </div>
+            
+        </div>
+	
+    </div>
+    
+    
+    
+    <div id = "upper-right">
+    reward places
+    </div>
+    
+    
+</div>
+
+</body>
+</html>

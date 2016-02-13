@@ -1,0 +1,230 @@
+@charset "utf-8";
+/* CSS Document */
+
+<style>
+
+body{
+	
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
+#lean_overlay {
+	position: fixed;
+	z-index:100;
+	top: 0px;
+	left: 0px;
+	height:100%;
+	width:100%;
+	background: #000;
+	display: none;
+}
+#signupBox {
+	width: 295px;
+	display: none;
+	background: #FFF;
+	border-radius: 0px;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	box-shadow: 0px 0px 14px rgba(0,0,0,0.7);
+	-webkit-box-shadow: 0 0 14px rgba(0,0,0,0.7);
+	-moz-box-shadow: 0 0px 14px rgba(0,0,0,0.7);
+	padding-bottom:30px;	
+	margin: -50px;
+	
+}
+
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+	
+}
+.modal_close {
+	position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px 15px;
+    background: #E4E4E2;
+    cursor: pointer;
+    color: #aaa;
+}
+
+#toptitle{
+	position: absolute;
+    left: 8%;
+    top: 4%;
+	
+
+}
+
+#toptitle h6{
+	font-weight: bold;
+	
+}
+
+#signupHeader{
+	background: #F4F4F2;
+	padding: 22px 15px;
+    border-bottom: 1px solid #DDD;
+	 
+	
+}
+
+
+.facebook{
+	
+	margin-top: 10%;
+	margin-left: 10%;
+	margin-right:15%;
+	padding-top:7px;
+	padding-bottom:7px;
+	background: #3B5998;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	cursor: hand; 
+	cursor: pointer;
+}
+
+.google{
+  
+	margin-top: 5%;
+	margin-bottom:10%;
+	margin-left: 10%;
+	margin-right:15%;
+	padding-top:7px;
+	padding-bottom:7px;
+	background: #DD4B39;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.facebook .connect_with_font{
+	margin-left:4%;	
+}
+
+.connect_with_font{
+	color:#fff;
+	margin-right:10%;	
+}
+.icon{
+	margin-left: 10%;
+	margin-top:10%;
+	color: #FFF	
+}
+
+hr {
+  border:none;
+  border-top:1px dotted #f00;
+  color:#fff;
+  background-color:#fff;
+  height:1px;
+  width:70%;
+}
+
+.buttons:hover{
+	  background: #E4E4E2;
+}
+
+.buttons_area{
+	margin-left:10%;
+	margin-right:10%;
+	
+}
+
+#login_button, #back_button{
+	float:left;
+	background:#F4F4F2;
+	
+}
+
+#signup_button, #signin_button, #register_button{ 
+	float:right;
+	background:#F4F4F2;
+}
+
+
+
+
+#login_button a, #signup_button a,  #signin_button a, #back_button a, #register_button a{
+	text-align: center;
+	display:block;
+	width:110px;
+	height:35px;
+	color:#666;
+	padding-top:5px;
+	
+}
+
+
+
+
+#login_form, #register_form{
+	margin: 20px;	
+}
+
+#login_form	input[type="text"]{
+	margin-top:10%;	
+}
+
+#login_form	input[type="text"], #login_form input[type = "password"]{
+	margin-left:5%;
+	background:#eaedf2;
+	border: 1px solid #eaedf2;
+	border-radius:3px;
+	outline:none;
+	font-family: inherit;	
+	width: 90%;
+}
+
+#login_form	input[type="checkbox"]{
+	margin-left:10%;
+}
+
+.error_display_area{
+		font-size:10px;
+	
+	
+}
+
+/*this is for validation error msg styling*/
+label.error{
+	 color:#F00;
+	 font-size:10px;
+ }
+ 
+ #row column text-center p{
+	font-size:100px; 
+	 
+ }
+ 
+.loading{
+	position: fixed; 
+		border:1px solid #999;
+		background:#FFF;
+		padding-left:8px;
+		padding-right:8px;
+		padding-top:5px;
+		padding-bottom:5px;
+		margin-left: 48%;
+		margin-top: 20%;
+		
+		border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+		display:none;
+	z-index:100000000000000000;
+}
+.loading i{
+	color:#CCC;
+	font-size: 40px;
+
+}
+ 
+ 
+</style>
