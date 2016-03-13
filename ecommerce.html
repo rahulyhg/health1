@@ -23,6 +23,22 @@
 
 
 <script>
+
+
+//    <script type="text/jsx">
+//var nameComponent = React.createClass({
+//render: function() {
+//    return <li>
+//        { this.state.name ?
+//            this.state.name :
+//            <a id = "signup" href="#signupBox">Register/login</a> }
+//    </li>;
+//}
+//React.render(<nameComponent />, $("ul .menu"));
+//
+
+
+
 //links to include:
 //http://thequietplaceproject.com/thequietplace
 //http://www.calm.com/
@@ -36,21 +52,21 @@
 		jQuery.get("server/user/session", {"userid": sessionStorage.userid, "accessToken": sessionStorage.accessToken}, function(data){
 			   data = JSON.parse(data);
 			   if( 'username' in data){ //succeed
-				  $("#signup").parent().html("<ul class = 'dropdown menu' data-dropdown-menu>" + 
+				  $("#signup").parent().html("<ul class = 'dropdown menu' data-dropdown-menu>" +
 												  "<li>" +
-													  "<a id = 'profile_name' >Welcome," + data.username + 
+													  "<a id = 'profile_name' >Welcome," + data.username +
 														  "<ul class = 'menu'>" +
 															  "<li>profile</li>" +
 															  "<li class = 'logout'>logout</li>" +
-													  
+
 													  "</a>"+
 												  "</li>"+
-												  
+
 											  "</ul>").foundation();
 			   }else{
 				   //failed, either token is valid or too old
-				  //alert(data.error); 
-			   }		
+				  //alert(data.error);
+			   }
 		});
 	}
 
@@ -61,7 +77,7 @@
 		$(document).ajaxStart(function(){
 			$(".loading").show();
 			AnimateRotate(5000);
-		   
+
 		});
 		$(document).ajaxComplete(function(){
 			$(".loading").hide();
@@ -69,48 +85,48 @@
 
 
 	//------------------------------Sign up pop up box switches-------------------------------------
-	
+
 		$("#signup").leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
-		
-		
+
+
 		$("#click_login").click(function(){
 			$("#registerBox").hide();
 			$("#signupContent").hide();
 			$("#loginBox").show();
 			$("#toptitle h6").text("LOGIN");
-			
+
 		});
-		
+
 		$("#click_back").click(function(){
 			$("#registerBox").hide();
 			$("#loginBox").hide();
 			$("#toptitle h6").text("LOGIN");
 			$("#signupContent").show();
 		});
-		
+
 		$("#click_signup").click(function(){
-			
+
 			$("#loginBox").hide();
 			$("#toptitle h6").text("Register");
 			$("#signupContent").hide();
 			$("#registerBox").show();
-  
-			  
+
+
 		});
-		
+
 		$("#click_back_t").click(function(){
 			$("#registerBox").hide();
 			$("#loginBox").hide();
 			$("#toptitle h6").text("LOGIN");
 			$("#signupContent").show();
-		});		
-		
-		
-		
+		});
+
+
+
 
 	//------------------End of sign up pop up box switches ----------------
-	
-	
+
+
 //----------validation code
 		jQuery.validator.setDefaults({
 			  debug: true,
@@ -131,7 +147,7 @@
 					},
 					email:{
 						required:true,
-						email:true	
+						email:true
 					}
 				},
 				messages: {
@@ -153,43 +169,40 @@
 				//errorLabelContainer: ".error_display_area",
 				//wrapper: "li"
 				 errorPlacement: function(error, element) {
-						error.insertBefore(element)  
+						error.insertBefore(element)
 				},
 				submithandler: function(form){
 				}
 			});
 //-----------end of validation code
-			
-		$(document).on('click', '.logout', function(){	
+
+		$(document).on('click', '.logout', function(){
 			jQuery.ajax({
 				url: "server/user/session",
 				type: "DELETE",
 				datatype: "json",
 				data:({userid:  sessionStorage.userid}),
 				success: function(data){
-					console.log("deleted");	
+					console.log("deleted");
 					location.reload();
 				},
-				
+
 				error: function(data){
 					alert("couldnt delete");
 				}
-				
-				
-				
 			});
-			
 		});
-							
+
+
 		$("#register_button").click(function(){
 			if ($("#register_form").valid()){
 				var name = $('input#new_name').val();
 				var pw = $('input#new_pw').val();
 				var email = $('input#new_email').val();
-			  
+
 				jQuery.post("server/account", {"name": name, "password": pw, "email": email }, function(data){
 					data = JSON.parse(data); //succeed or failed
-			  
+
 					if( 'error' in data){
 					//failed
 						alert("not here");
@@ -199,14 +212,14 @@
 						sessionStorage.userid = data["userid"];
 						location.reload();
 					}
-				});		
-			}	
+				});
+			}
 		});
-		
 
-			
+
+
 		$("#signin_button").click(function(){
-			
+
 			var name = $('input#name').val();
 			var password = $('input#pw').val();
 			$.ajax({
@@ -227,7 +240,7 @@
 					//your error code
 					alert("invalid username/password");
 				}
-    		}); 
+    		});
 		});
 		//
 //jQuery.ajax({
@@ -242,7 +255,7 @@
 	function AnimateRotate(angle) {
     // caching the object for performance reasons
 		var $elem = $(".loading i");
-	
+
 		// we use a pseudo object for the animation
 		// (starts from `0` to `angle`), you can name it as you want
 		$({deg: 0}).animate({deg: angle}, {
@@ -258,12 +271,12 @@
 			}
 		});
 	}
-	
-	
-	
-		
-		
-		
+
+
+
+
+
+
 });
 
 
@@ -293,34 +306,34 @@
      js.src = "//connect.facebook.net/en_US/sdk.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
-   
 
 
-	function doLogin(){   
+
+	function doLogin(){
 		FB.login(function(response) {
-		
+
 			if (response.authResponse) {
 				console.log('Welcome!  Fetching your information.... ');
 				FB.api('/me', function(response) {
 				console.log('Good to see you, ' + response.name + '.');
 				//page should reload, then check facebook getstatus
-				
-				
+
+
 			 });
 			} else {
 				console.log('User cancelled login or did not fully authorize.');
 			}
 		});
- 
+
 	}
-	
+
 	function getStatus(){
 		FB.getLoginStatus(function(response) {
 			if (response.status === 'connected') {
 			  // the user is logged in and has authenticated your
 			  // app, and response.authResponse supplies
 			  // the user's ID, a valid access token, a signed
-			  // request, and the time the access token 
+			  // request, and the time the access token
 			  // and signed request each expire
 			  var uid = response.authResponse.userID;
 			  var accessToken = response.authResponse.accessToken;
@@ -329,11 +342,11 @@
 					sessionStorage.accessToken = data["token"];
 					sessionStorage.userid = data["userid"];
 					location.reload();
-				 
+
 			  });
-			  
+
 			} else if (response.status === 'not_authorized') {
-			  // the user is logged in to Facebook, 
+			  // the user is logged in to Facebook,
 			  // but has not authenticated your app
 			  alert("3");
 			} else {
@@ -369,9 +382,9 @@
   </div>
   <div class="top-bar-right">
     <ul class="menu">
-    
+
       <li><a id = "signup" href="#signupBox">Register/login</a></li>
-      
+
       <li><a href="#">Four</a></li>
       <li><a href="#">Five</a></li>
       <li><a href="#">Six</a></li>
@@ -391,8 +404,8 @@
 
 <!------------------------------------------------------------->
 <div id = "signupBox" style="display:none">
-	
-    
+
+
     <div id = "signupHeader">
     	<span id= "toptitle">
         	<h6>LOGIN</h6>
@@ -402,12 +415,12 @@
             </i>
         </span>
     </div>
-       
 
-       
+
+
   <!--------- first signup page ------>
     <div id = "signupContent">
-    	
+
     	<div class = "facebook" onClick="doLogin(); getStatus();">
         	<span class = "icon">
         		<i class = "fa fa-facebook"></i>
@@ -416,34 +429,34 @@
             	connect with facebook
             </span>
         </div>
-        
-        
+
+
     	<div class = "google">
-        	
+
             <span class = "icon">
         		<i class = "fa fa-google-plus"></i>
         	</span>
-        
+
         	<span class = "connect_with_font">
             	connect with google
             </span>
         </div>
-        
+
         <hr>
         <p style="text-align:center; font-size: 14px; color: #666;">Or Sign up / Log in with your Email</p>
-    	
-        <div class = "buttons_area">	
+
+        <div class = "buttons_area">
             <div id = "login_button">
             	<a class="buttons"id = "click_login" href:"#">Login</a>
             </div>
-            
+
             <div id = "signup_button">
             	<a  class="buttons" id = "click_signup" href:"#">Sign up</a>
-            </div>           
+            </div>
         </div>
     </div>
   <!--------------end of title signup page-------------->
-    
+
 
 
   <!-------- log in page ------------->
@@ -456,22 +469,22 @@
          </form>
     <hr>
     <br>
-        <div class = "buttons_area">	
+        <div class = "buttons_area">
             <div id = "back_button">
                 <a class="buttons"id = "click_back" href:"#">Back</a>
             </div>
-            
+
             <div id = "signin_button">
                 <a  class="buttons" href:"#">Sign in</a>
-            </div>           
+            </div>
         </div>
-    
+
     </div>
 
 
 
   <!---------- end of log in page ----->
-    
+
 
 
 
@@ -483,36 +496,36 @@
             <input type="password" placeholder="password" id='new_pw' name='new_pw' >
             <input type="password" placeholder="retype password" id='new_confirm_pw' name= 'new_confirm_pw'>
             <input type="text" placeholder="email" id='new_email' name='email'>
-            
-    <hr>        
-            
+
+    <hr>
+
              <!--------------------------------recaptcha code-------------------------------------------------->
                 <div class="g-recaptcha" data-sitekey="6Le0XBUTAAAAACwba-sZwBLK52mPTTz7ZUq0drkP" style="margin-left:10px; transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;">
-    
+
                 </div>
                 <!------------------------------------------------------------------------------------------------>
             <!--- site key 6Le0XBUTAAAAACwba-sZwBLK52mPTTz7ZUq0drkP--->
             <!--- server key 6Le0XBUTAAAAAH5fIfMJvAdzy3DLNU9hypEEpIcy --->
-       
+
         </form>
 
-        
-        <div class = "buttons_area">	
+
+        <div class = "buttons_area">
             <div id = "back_button">
                 <a class="buttons"id = "click_back_t" href:"#">Back</a>
             </div>
-            
+
             <div id = "register_button">
                 <a  class="buttons" id= "submit_signup" href:"#" >Register</a>
-            </div>           
+            </div>
         </div>
     </div>
 
 
 
   <!--- end of regisiter box ----->
-    
-    
+
+
 </div>
 
 
@@ -525,23 +538,24 @@
 
 
 <br>
-<div class="row column text-center">
-  <p >Top Posts</p>
+<div class="row column text-center" style= "    font-family: NeuzeitSLT-Book;">
+  <br>
+  <p >Top 4 Relaxing Places on the net</p>
   <hr>
 </div>
 <div class="row small-up-2 large-up-4" >
-	
-    <div class="column"> <a href="#"> <img class="thumbnail" src="http://a0.att.hudong.com/67/08/19300001302824131035089333764.jpg"> 
+
+    <div class="column"> <a href="#"> <img class="thumbnail" src="http://a0.att.hudong.com/67/08/19300001302824131035089333764.jpg">
     	<h5 class = "text-center" style = "font-weight: bold;">test</h5> </a>
     </div>
-	
-    <div class="column"> <a href="#"> <img class="thumbnail"  style="height:183px" src="https://coupme.files.wordpress.com/2010/10/women-exercise.jpg">  
+
+    <div class="column"> <a href="#"> <img class="thumbnail"  style="height:183px" src="https://coupme.files.wordpress.com/2010/10/women-exercise.jpg">
     	<h5 class = "text-center" style = "font-weight: bold;" >test</h5> </a>
-    </div>   
+    </div>
   <div class="column"> <a href="#"> <img class="thumbnail" src="http://www.bullhorn.com/uk/wp-content/uploads/sites/2/2015/11/BUSINESS-2.jpg">
      <h5 class = "text-center" style = "font-weight: bold;" >test</h5> </a>
      </div>
-  
+
   <div class="column"> <a href="#"> <img class="thumbnail" style="height:183px" src="http://www.eastern.edu/sites/default/files/sites/default/files/admissions/undergrad/international-students-122912.png">
     <h5 class = "text-center" style = "font-weight: bold;" >test</h5> </a>
     </div>
@@ -572,9 +586,10 @@
     </ul>
   </div>
 </div>
+</div>
 
 <script>
-      $(document).foundation();
+      $(".orbit").foundation();
     </script>
 </body>
 </html>

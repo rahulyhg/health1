@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Untitled Document</title>
+
+
+
+  <link rel="stylesheet" href="../css/foundation.css" />
+  <link rel="stylesheet" href="../css/app.css" />
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+  <style>
+  body{
+    background:#ecf0f1;
+  }
+  #lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
+  }
+  #habit_input_modal, #current_habit_modal{
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+
+    width:30%;
+    padding: 20px;
+    background: white;
+    display:none;
+
+  }
+  #habit_list{
+    list-style: none;
+  }
+
+  #habit-section{
+    padding-bottom:5%;
+
+  }
+  #habit_wrapper{
+    /*border:dotted 5px #ecf0f1;*/
+    /*border-left:dotted 4px #ecf0f1;*/
+    padding-right:2%;
+
+    background:#282C34;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-left:20%;
+    margin-right:20%;
+    border-radius: 6px 16px 16px 100px;
+    -moz-border-radius: 6px 16px 16px 116px;
+    -webkit-border-radius: 6px 16px 16px 100px;
+  }
+  #habit_list > li{
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    padding: 20px;
+    margin-top: 15px;
+    margin-bottom:15px;
+    background: #E74C3C;
+  }
+
+  #habit_list > li:hover{
+    background:#F25C5C;
+
+  }
+
+
+  #page_nav{
+  }
+
+  #upper-left{
+    float:left;
+    width:80%;
+  }
+
+  #upper-right{
+    float:right;
+    width: 20%;
+  }
+
+
+
+
+  </style>
+
+
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="../js/jquery.leanModal.min.js"></script>
+
+  <script src="../js/foundation.js"></script> <!--switch to min version when launch-->
+
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+
+
+
+
+</head>
+
+
+<body>
+
+  <div class="callout large secondary" style = "background:#e74c3c">
+    <div class="row">
+      <div class="large-4 columns" >
+        <h5>Our Goal</h5>
+        <p>To motivate positive attutide and habit through discripline</p>
+      </h4>
+    </div>
+    <div class="large-3 large-offset-2 columns">
+      <ul class="menu vertical">
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Two</a></li>
+        <li><a href="#">Three</a></li>
+        <li><a href="#">Four</a></li>
+      </ul>
+    </div>
+    <div class="large-3 columns">
+      <ul class="menu vertical">
+        <li><a href="#">One</a></li>
+        <li><a href="#">Two</a></li>
+        <li><a href="#">Three</a></li>
+        <li><a href="#">Four</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+  <div class = "wrapper clear" style="overflow: hidden;">
+
+    <div id = "upper-left">
+
+
+      <div id = "habit_listing">
+      </div>
+
+
+      <div id="habit_input_modal">
+        <div id="instruction_header" style="opacity:0">
+          <div class="success progress" role="progressbar" tabindex="0" aria-valuenow="25" aria-valuemin="0" aria-valuetext="25 percent" aria-valuemax="100">
+            <div class="progress-meter" style="width: 25%;"></div>
+          </div>
+          <p>Hi there...</p>
+        </div>
+        <div id="habit_input_body">
+          <form id = "habit_input_form">
+            <input type = "test">
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <div id = "upper-right">
+      reward places
+
+    </div>
+
+  </div>
+  <div class="callout large secondary" style = "background:#e74c3c">
+    <div class="row">
+      <div class="large-4 columns" >
+        <h5>Our Goal</h5>
+        <p>To motivate positive attutide and habit through discripline</p>
+      </h4>
+    </div>
+    <div class="large-3 large-offset-2 columns">
+      <ul class="menu vertical">
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Two</a></li>
+        <li><a href="#">Three</a></li>
+        <li><a href="#">Four</a></li>
+      </ul>
+    </div>
+    <div class="large-3 columns">
+      <ul class="menu vertical">
+        <li><a href="#">One</a></li>
+        <li><a href="#">Two</a></li>
+        <li><a href="#">Three</a></li>
+        <li><a href="#">Four</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <script type="text/jsx">
+  var app = app || {};
+  /** @jsx React.DOM */
+  (function(){
+    "use strict";
+
+    app.DISPLAYING_AMOUNT = 4;
+
+    //this Component is only for storing the habits data from server
+    //the root component for the habit listing section
+    var HabitModel = React.createClass({
+      getInitialState: function(){
+        return {
+          data: []
+        };
+      },
+      componentDidMount: function(){
+        this.serverRequest = $.get(this.props.source, {userid:123}, function(result){
+          result = JSON.parse(result);
+          this.setState({
+            data: result
+          });
+
+        }.bind(this));
+      },
+      render: function() {
+        return (
+          <div>
+          <NavHabit dataList={this.state.data} />
+          </div>
+        );
+      }
+    });
+
+    //This is the immediate child of root
+    var NavHabit = React.createClass(
+      {
+        getInitialState: function(){
+          return{
+            pageNum: 1,
+            currentHabit: []
+          }
+        },
+        handleUserClick: function(pageFlip){
+          if ( (this.state.pageNum != 1 || pageFlip != -1) &&
+          (this.state.pageNum != Math.ceil(this.props.dataList.length/app.DISPLAYING_AMOUNT) || pageFlip != 1)){
+            this.setState({
+              pageNum: this.state.pageNum + pageFlip
+            });
+          }
+        },
+        handleCurrentHabit: function(data){
+          this.setState({
+            currentHabit: data
+          });
+        },
+        render: function(){
+          return (
+            <div>
+            <HabitList
+            pageNumber={this.state.pageNum}
+            list={this.props.dataList}
+            onHabitClick={this.handleCurrentHabit}
+            />
+            <PageNav
+            onUserClick={this.handleUserClick}
+            currentPageNum={this.state.pageNum}
+            maxPage={Math.ceil(this.props.dataList.length/app.DISPLAYING_AMOUNT)}
+            />
+            <CurrentHabit
+            habit={this.state.currentHabit}
+            />
+            </div>
+          )
+        }
+      });
+
+      var HabitList = React.createClass({
+
+        //this callback is to tell parent (NavHabit) which habit is clicked, so CurrentHabit component will render the selected habit info
+        handleCurrentHabit: function(dataRow){
+          this.props.onHabitClick(dataRow);
+        },
+
+        render: function(){
+          var newList = [];
+          //get the current page number from parent(NavHabit) so we can determine which habits to display
+          var start = (this.props.pageNumber-1) * app.DISPLAYING_AMOUNT;
+          var end = start + app.DISPLAYING_AMOUNT - 1;
+
+          //pushing the habit item that need to display to newList
+          for (var i=start; i <= end; i++){
+                newList.push(this.props.list[i]);
+          }
+
+          return (
+            <div id="habit-section">habit list follows:
+              <div id = "habit_wrapper">
+                <ul id = "habit_list">
+                  {
+                    newList.map(function(dataRow, i) { //mapping each habit that need to display to a li element, and whenever each item is clicked it will trigger a modal
+                      return  <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, dataRow)} href="#current_habit_modal">{dataRow}</li>
+                    }, this) //each list habit item can trigger the modal to appear when clicked, this is made possible with a Jquery plugin that get initialize later on
+                  }
+                  <hr></hr>
+                  <li id="add_more" style = {{marginTop: '30px', marginLeft: '8px', borderRadius: '6px 16px 16px 116px', MozBorderRadius: '6px 16px 16px 116px', WebkitBorderRadius: '6px 16px 16px 116px'}} href="#habit_input_modal">add more</li>
+                </ul>
+              </div>
+            </div>
+          );
+        }
+      })
+      //Direct child of NavHabit, use to handle the Page number
+      var PageNav = React.createClass({
+        handleClicks: function(page){
+          this.props.onUserClick(page);
+        },
+        render: function(){
+          var prevClassName = "";
+          var nextClassName = "";
+          if(this.props.currentPageNum == 1){
+                prevClassName = "pagination-previous disabled";
+                nextClassName = "pagination-next";
+          }else if(this.props.currentPageNum == this.props.maxPage){
+                prevClassName = "pagination-previous";
+                nextClassName = "pagination-next disabled";
+          }else{
+                prevClassName = "pagination-previous";
+                nextClassName = "pagination-next";
+          }
+          return(
+            <div id = "page_nav">
+              <ul className="pagination text-center" role="navigation" aria-label="Pagination">
+                <li className={prevClassName} onClick={this.handleClicks.bind(this, -1)}>
+                {(this.props.currentPageNum == 1
+                    ? "Previous"
+                    : <a>Previous</a>
+                  )}
+                </li>
+                <li className={nextClassName} onClick={this.handleClicks.bind(this, 1)}>
+                  {(this.props.currentPageNum == this.props.maxPage
+                      ? "Next"
+                      : <a>Next</a>
+                    )}
+                </li>
+              </ul>
+            </div>
+          );
+        }
+      });
+
+
+      var CurrentHabit = React.createClass({
+        render: function(){
+          return(
+            <div id = "current_habit_modal">
+            The habit you clicked on is:
+            <br></br>
+            {this.props.habit}
+            </div>
+          )
+        }
+      });
+
+      React.render(
+        <HabitModel source = "/health1/server/habit/user"/>,
+        document.getElementById('habit_listing')
+      );
+
+
+    })();
+
+    $("#add_more").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
+    $(".habits_display").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
+
+    </script>
+  </body>
+  </html>
