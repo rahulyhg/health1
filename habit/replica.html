@@ -84,7 +84,15 @@
     width: 20%;
   }
 
+  .checkbox-grid li {
+    display: block;
+    float: left;
+    width: 50%;
+  }
+  .wrapper-Clear{
+    overflow: hidden;
 
+  }
 
 
   </style>
@@ -137,7 +145,7 @@
 
 
 
-  <div class = "wrapper clear" style="overflow: hidden;">
+  <div class = "wrapper-Clear">
 
     <div id = "upper-left">
 
@@ -145,20 +153,9 @@
       <div id = "habit_listing">
       </div>
 
-
-      <div id="habit_input_modal">
-        <div id="instruction_header" style="opacity:0">
-          <div class="success progress" role="progressbar" tabindex="0" aria-valuenow="25" aria-valuemin="0" aria-valuetext="25 percent" aria-valuemax="100">
-            <div class="progress-meter" style="width: 25%;"></div>
-          </div>
-          <p>Hi there...</p>
-        </div>
-        <div id="habit_input_body">
-          <form id = "habit_input_form">
-            <input type = "test">
-          </form>
-        </div>
+      <div id ="new_habit_popup">
       </div>
+
 
     </div>
 
@@ -211,15 +208,17 @@
         };
       },
       componentDidMount: function(){
+        console.log("let's mount");
         this.serverRequest = $.get(this.props.source, {userid:123}, function(result){
           result = JSON.parse(result);
           this.setState({
             data: result
           });
-
+          console.log("finish mount");
         }.bind(this));
       },
       render: function() {
+        console.log("let's render");
         return (
           <div>
           <NavHabit dataList={this.state.data} />
@@ -305,7 +304,8 @@
             </div>
           );
         }
-      })
+      });
+
       //Direct child of NavHabit, use to handle the Page number
       var PageNav = React.createClass({
         handleClicks: function(page){
@@ -363,11 +363,262 @@
         document.getElementById('habit_listing')
       );
 
+/////////////////////////////////////////////////////////////////////////////
+      var formModel = {
+          newHabitInfo: {
+              description: "",
+              frequency: "",
+              days: []
+
+          },
+
+          addDescription: function(description){
+            this.newHabitInfo.description = description;
+          },
+          addFrequency: function(selection){
+            this.newHabitInfo.frequency = selection;
+          },
+
+          getFrequency: function(){
+            return this.newHabitInfo.frequency;
+          },
+          getDescription: function(){
+            return this.newHabitInfo.description;
+          },
+
+          clearModel: function(){
+            this.newHabitInfo.description = "";
+            this.newHabitInfo.frequency = "";
+            this.newHabitInfo.days = [];
+          },
+
+          addDays: function(day){
+            this.newHabitInfo.days.push(day);
+          },
+
+          //ajax call to server api and add the new habit to database
+          //if successful update the model root (display original habit list and this new one)
+          //also clear formHabit so new habit can be added
+          update: function(){
+
+          }
+      }
+
+
+
+
+      var AddingNewHabit = React.createClass({
+
+        getInitialState: function(){
+          return{
+            progress: 0
+          }
+        },
+
+        handleUserClick: function(direction){ //direction is either -1:left or 1:right
+          var progressIncrement = 0;
+          if(direction==-1 && this.state.progress!=0){
+            progressIncrement = -25;
+          }else if(direction==1 && this.state.progress!=100){
+            progressIncrement = 25;
+          }
+          this.setState({progress: this.state.progress + progressIncrement});
+
+        },
+
+        render: function(){
+          return(
+
+            <div id="habit_input_modal">
+              <div id="instruction_header">
+                <div className="success progress" role="progressbar" tabIndex={0} aria-valuenow={25} aria-valuemin={0} aria-valuetext="25 percent" aria-valuemax={100}>
+
+                  <ProgressBar progress={this.state.progress} />
+
+                </div>
+                <div className="wrapper-Clear">
+                <div style={{float: 'left'}}>
+                <p>Hi there...</p>
+                </div>
+                <div id = "new_habit_navigate" style={{float: 'right'}}>
+                  <NaviForm onUserNavi = {this.handleUserClick}
+                            progress = {this.state.progress}
+                  />
+                </div>
+                </div>
+              </div>
+
+              <NewHabitForm progress={this.state.progress}/>
+
+            </div>
+          )
+        }
+
+      });
+
+      var NaviForm = React.createClass({
+          userClick: function(direction){
+            this.props.onUserNavi(direction);
+          },
+
+          render: function(){
+            return(
+              <div>
+                <button style = {{marginRight: '10%'}} onClick={this.userClick.bind(this, -1)}>
+                  {this.props.progress!=0 ?
+                    "Previous"
+                    : <div style={{color: '#95a5a6'}}>Previous</div>
+                  }
+
+
+                </button>
+                <button onClick={this.userClick.bind(this, 1)}>
+                  {this.props.progress!=100 ?
+                    "Next"
+                    : <div style={{color: '#95a5a6'}}>Next</div>
+                  }
+
+                </button>
+              </div>
+            )
+          }
+      });
+
+      var ProgressBar = React.createClass({
+        render: function(){
+          var progress = this.props.progress;
+          return(
+            <div className="progress-meter" style={{width: progress+'%'}} />
+          )
+        }
+      });
+
+      var NewHabitForm = React.createClass({
+          getInitialState: function(){
+            return{
+              questions:["What is your new habit description?",
+              "how often do you plan to do this?",
+              "which days of a week?",
+              "When is/was your start day",
+              "When is/was your start day"]
+            }
+          },
+
+          render: function(){
+            var questionNum= this.props.progress / 25;
+            return(
+              <div id="habit_input_body">
+                <QuestionDisplay question={this.state.questions[questionNum]}
+                                 questionNum={questionNum}
+                />
+
+                {/*decide which form to show client to fill in*/}
+                {this.props.progress==0 ?
+                  <HabitDescription />
+                  : this.props.progress==25 ?
+                      <FrequencyForm />
+                    : this.props.progress==50 ?
+                        <DaysForm />
+                        : this.props.progress==75 ?
+                            <DaysForm />
+                            : this.props.progress==100 ?
+                              <DaysForm />
+                              : console.log("error")
+                              }
+              </div>
+            )}
+      });
+
+      var HabitDescription = React.createClass({
+        userInput: function(event){
+          formModel.addDescription(event.target.value);
+        },
+        render: function(){
+          return(
+            <fieldset className="fieldset">
+            <legend>Description</legend>
+            <input type="test" defaultValue={formModel.getDescription()} onChange={this.userInput}/>
+            </fieldset>
+          )
+
+        }
+      });
+      var FrequencyForm = React.createClass({
+        userInput: function(selection){
+          formModel.addFrequency(selection);
+        },
+
+        render: function(){
+          console.log("rendered");
+          return(
+            <fieldset className="fieldset">
+            <legend>How Often?</legend>
+            <input type="radio" name="HowOften" id="Daily" onChange={this.userInput.bind(this, "Daily")} defaultChecked = {formModel.getFrequency() == "Daily"}/><label htmlFor="Daily">Daily</label>
+            <input type="radio" name="HowOften" id="Weekly" onChange={this.userInput.bind(this, "Weekly")} defaultChecked = {formModel.getFrequency() == "Weekly"}/><label htmlFor="Weekly">Weekly</label>
+            <input type="radio" name="HowOften" id="BiWeekly" onChange={this.userInput.bind(this, "BiWeekly")} defaultChecked = {formModel.getFrequency() == "Bi-Weekly"}/><label htmlFor="BiWeekly">Bi-Weekly</label>
+            </fieldset>
+          )
+        }
+
+      });
+      var DaysForm = React.createClass({
+        userInput: function(day){
+          console.log("clicked on" + day);
+
+        },
+
+        render: function(){
+          return(
+            <fieldset className="fieldset">
+            <legend>Which days?</legend>
+            <ul className ="checkbox-grid">
+            <li><input id="Monday" type="checkbox" onClick={this.userInput.bind(this, 1)}/><label >Monday</label></li>
+            <li><input id="Tuesday" type="checkbox" onClick={this.userInput.bind(this, 2)}/><label >Tuesday</label></li>
+            <li><input id="Wednesday" type="checkbox" onClick={this.userInput.bind(this, 3)}/><label >Wednesday</label> </li>
+            <li><input id="Thursday" type="checkbox" onClick={this.userInput.bind(this, 4)}/><label >Thursday</label></li>
+            <li><input id="Friday" type="checkbox" onClick={this.userInput.bind(this, 5)}/><label >Friday</label></li>
+            <li><input id="Saturaday" type="checkbox" onClick={this.userInput.bind(this, 6)}/><label >Saturaday</label></li>
+            <li><input id="Sunday" type="checkbox" onClick={this.userInput.bind(this, 7)}/><label >Sunday</label></li>
+            </ul>
+            </fieldset>
+          )
+        }
+      });
+
+      var QuestionDisplay = React.createClass({
+
+          render: function(){
+            var display = "";
+            if (this.props.questionNum == 2){
+              display = formModel.getFrequency();
+             (display !="" ) ? display = display + "! cool, but " + this.props.question : "";
+              }else{
+                display = this.props.question
+              }
+
+            return <p>{display}</p>
+          }
+
+      });
+
+
+      React.render(
+        <AddingNewHabit />,
+        document.getElementById('new_habit_popup')
+      );
+
+      // var PostToServer = React.createClass({
+      //
+      // });
 
     })();
 
+
+
     $("#add_more").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
     $(".habits_display").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
+
+
 
     </script>
   </body>
