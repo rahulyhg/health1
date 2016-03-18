@@ -28,7 +28,7 @@ $app->delete('/user/session', 'deleteToken'); //bascially logging out, delete th
 
 
 $app->get('/habit/user', 'getHabits');
-
+$app->post('/habit/user', 'createHabit');
 //$app->group('/post', function() use($app) {
 //
 //		$app->post('/:userid', "createPost");
@@ -49,7 +49,43 @@ $app->run();
 //require 'facebookini.php';
 //facebook stuff
 
+function createHabit(){
+	$app = \Slim\Slim::getInstance();
+	$userid = $app->request->params('userid');
+	//$token = $app->request->params('token');
+	$description = $app->request->params('description');
+	$frequency = $app->request->params('frequency');
+	$startDay = $app->request->params('startDay');
+	$days = $app->request->params('days'); // a string consist of 1-7. each digits represent a day in the week, no order
 
+	//valid the user, make sure token not expire and legit
+	// $result = accessToken::validate($userid, $accessToken);
+	// if (!$result){//the token is not valid
+	// 	echo json_encode(array("error" => "invalid"));
+	// 	exit;
+	// }
+$habitid=1234;
+	$db = getDB();
+	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); //since we are using prepare here
+try {
+	$result = $db->prepare("INSERT INTO Habit(habitid, userid, description, startDate, frequency, day)
+	VALUES (:habitid, :userid, :description, :startDate, :frequency, :day)");
+	$result->execute(array(
+		"habitid" => NULL,
+		"userid" => $userid,
+		"description" => $description,
+		"startDate" => $startDay,
+		"frequency" => $frequency,
+		"day" => $days
+	));
+}
+catch(Exception $e) {
+    echo 'Exception -> ';
+    var_dump($e->getMessage());
+}
+
+
+}
 function getHabits(){
 
 	$app = \Slim\Slim::getInstance();
@@ -77,7 +113,7 @@ function deleteToken(){
 		//$db->query($query);
 		$result = $db->prepare("DELETE access FROM access WHERE userid = ?");
 		$result->execute(array($userid));
-		
+
 
 	}catch(PDOEXCEPTION $e){
 		echo '{"error":{"text":'. $e->getMessage() .'}}';
@@ -89,9 +125,9 @@ function valifyToken(){
 	$userid = $app->request->params('userid');
 	$accessToken = $app->request->params('accessToken');
 
+	//valid the user, make sure token not expire and legit
 	$result = accessToken::validate($userid, $accessToken);
-	if (!$result){
-		//the token is not valid
+	if (!$result){//the token is not valid
 		echo json_encode(array("error" => "invalid"));
 		exit;
 	}

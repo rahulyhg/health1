@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="css/foundation.css" />
 <link rel="stylesheet" href="css/app.css" />
 
+<script data-main="js/app" src="js/require.js"></script>
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script type="text/javascript" src="js/jquery.leanModal.min.js"></script>
@@ -16,26 +17,18 @@
 <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 <script src="js/foundation.js"></script> <!--switch to min version when launch-->
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
 
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
 
-<link type="text/css" rel="stylesheet" href="css/emuffin-style.css" />
+<link type="text/css" rel="stylesheet" href="css/frontPage-style.css" />
 
 
 <script>
 
 
-//    <script type="text/jsx">
-//var nameComponent = React.createClass({
-//render: function() {
-//    return <li>
-//        { this.state.name ?
-//            this.state.name :
-//            <a id = "signup" href="#signupBox">Register/login</a> }
-//    </li>;
-//}
-//React.render(<nameComponent />, $("ul .menu"));
-//
+
 
 
 
@@ -55,11 +48,11 @@
 				  $("#signup").parent().html("<ul class = 'dropdown menu' data-dropdown-menu>" +
 												  "<li>" +
 													  "<a id = 'profile_name' >Welcome," + data.username +
-														  "<ul class = 'menu'>" +
+														  "</a><ul class = 'menu'>" +
 															  "<li>profile</li>" +
 															  "<li class = 'logout'>logout</li>" +
 
-													  "</a>"+
+													  "</ul>"+
 												  "</li>"+
 
 											  "</ul>").foundation();
@@ -381,14 +374,14 @@
     </ul>
   </div>
   <div class="top-bar-right">
-    <ul class="menu">
-
-      <li><a id = "signup" href="#signupBox">Register/login</a></li>
-
-      <li><a href="#">Four</a></li>
-      <li><a href="#">Five</a></li>
-      <li><a href="#">Six</a></li>
-    </ul>
+		<div id="loggedInOrNot">
+	    <ul class="menu">
+	      <li><a id = "signup" href="#signupBox">Register/login</a></li>
+	      <li><a href="#">Four</a></li>
+	      <li><a href="#">Five</a></li>
+	      <li><a href="#">Six</a></li>
+	    </ul>
+		</div>
   </div>
 </div>
 <div class="orbit" role="region" aria-label="Favorite Space Pictures" data-orbit>
@@ -590,6 +583,9 @@
 
 <script>
       $(".orbit").foundation();
-    </script>
+</script>
+
+
+
 </body>
 </html>
