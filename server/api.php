@@ -64,7 +64,6 @@ function createHabit(){
 	// 	echo json_encode(array("error" => "invalid"));
 	// 	exit;
 	// }
-$habitid=1234;
 	$db = getDB();
 	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); //since we are using prepare here
 try {
