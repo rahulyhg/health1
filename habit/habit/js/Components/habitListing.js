@@ -1,14 +1,7 @@
 import React from "react";
+import constant from "../../config/config.js"; //contants all constants
 
 "use strict";
-
-var app = app || {};
-
-  app.DISPLAYING_AMOUNT = 3;
-  app.DAILY = 1;
-  app.WEEKLY = 2;
-  app.BIWEEKLY = 3;
-
   //this Component is only for storing the habits data from server
   //the root component for the habit listing section
   var HabitModel = React.createClass({
@@ -46,9 +39,13 @@ var app = app || {};
           currentHabit: []
         }
       },
-      handleUserClick: function(pageFlip){
+      handleUserClick: function(pageFlip){ //pageFlip: a positive num means the user clicked next, a negative means previous page
+        var maxPage = Math.ceil(this.props.dataList.length/constant.DISPLAYING_AMOUNT);
+
         if ( (this.state.pageNum != 1 || pageFlip != -1) &&
-        (this.state.pageNum != Math.ceil(this.props.dataList.length/app.DISPLAYING_AMOUNT) || pageFlip != 1)){
+             (this.state.pageNum != maxPage || pageFlip != 1) &&
+             (this.state.pageNum != 1 || pageFlip != 1 || maxPage != 0)
+           ){
           this.setState({
             pageNum: this.state.pageNum + pageFlip
           });
@@ -70,7 +67,7 @@ var app = app || {};
           <PageNav
           onUserClick={this.handleUserClick}
           currentPageNum={this.state.pageNum}
-          maxPage={Math.ceil(this.props.dataList.length/app.DISPLAYING_AMOUNT)}
+          maxPage={Math.ceil(this.props.dataList.length/constant.DISPLAYING_AMOUNT)}
           />
           <CurrentHabit
           habit={this.state.currentHabit}
@@ -94,8 +91,8 @@ var app = app || {};
       render: function(){
         var newList = [];
         //get the current page number from parent(NavHabit) so we can determine which habits to display
-        var start = (this.props.pageNumber-1) * app.DISPLAYING_AMOUNT;
-        var end = start + app.DISPLAYING_AMOUNT - 1;
+        var start = (this.props.pageNumber-1) * constant.DISPLAYING_AMOUNT;
+        var end = start + constant.DISPLAYING_AMOUNT - 1;
 
         //pushing the habit item that need to display to newList
         for (var i=start; i <= end; i++){
@@ -133,9 +130,11 @@ var app = app || {};
       render: function(){
         var prevClassName = "";
         var nextClassName = "";
+        var temp = "";
+        (this.props.maxPage==0) ? temp = "disabled" : "";
         if(this.props.currentPageNum == 1){
               prevClassName = "pagination-previous disabled";
-              nextClassName = "pagination-next";
+              nextClassName = "pagination-next" + temp;
         }else if(this.props.currentPageNum == this.props.maxPage){
               prevClassName = "pagination-previous";
               nextClassName = "pagination-next disabled";
@@ -153,7 +152,7 @@ var app = app || {};
                 )}
               </li>
               <li className={nextClassName} onClick={this.handleClicks.bind(this, 1)}>
-                {(this.props.currentPageNum == this.props.maxPage
+                {(this.props.currentPageNum == this.props.maxPage || this.props.maxPage == 0
                     ? "Next"
                     : <a>Next</a>
                   )}

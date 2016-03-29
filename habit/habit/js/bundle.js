@@ -65,13 +65,13 @@
 
 	var _habitListing2 = _interopRequireDefault(_habitListing);
 
-	var _addingHabit = __webpack_require__(162);
+	var _addingHabit = __webpack_require__(163);
 
 	var _addingHabit2 = _interopRequireDefault(_addingHabit);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	__webpack_require__(164);
+	__webpack_require__(165);
 
 	// var userId;
 	//
@@ -29556,21 +29556,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _config = __webpack_require__(162);
+
+	var _config2 = _interopRequireDefault(_config);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//contants all constants
+
 	"use strict";
-
-	var app = app || {};
-
-	app.DISPLAYING_AMOUNT = 3;
-	app.DAILY = 1;
-	app.WEEKLY = 2;
-	app.BIWEEKLY = 3;
-
 	//this Component is only for storing the habits data from server
 	//the root component for the habit listing section
-	exports.default = _react2.default.createClass({
-	  displayName: "habitListing",
+	var HabitModel = _react2.default.createClass({
+	  displayName: "HabitModel",
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -29598,7 +29596,6 @@
 	});
 
 	//This is the immediate child of root
-
 	var NavHabit = _react2.default.createClass({
 	  displayName: "NavHabit",
 
@@ -29609,7 +29606,10 @@
 	    };
 	  },
 	  handleUserClick: function handleUserClick(pageFlip) {
-	    if ((this.state.pageNum != 1 || pageFlip != -1) && (this.state.pageNum != Math.ceil(this.props.dataList.length / app.DISPLAYING_AMOUNT) || pageFlip != 1)) {
+	    //pageFlip: a positive num means the user clicked next, a negative means previous page
+	    var maxPage = Math.ceil(this.props.dataList.length / _config2.default.DISPLAYING_AMOUNT);
+
+	    if ((this.state.pageNum != 1 || pageFlip != -1) && (this.state.pageNum != maxPage || pageFlip != 1) && (this.state.pageNum != 1 || pageFlip != 1 || maxPage != 0)) {
 	      this.setState({
 	        pageNum: this.state.pageNum + pageFlip
 	      });
@@ -29632,7 +29632,7 @@
 	      _react2.default.createElement(PageNav, {
 	        onUserClick: this.handleUserClick,
 	        currentPageNum: this.state.pageNum,
-	        maxPage: Math.ceil(this.props.dataList.length / app.DISPLAYING_AMOUNT)
+	        maxPage: Math.ceil(this.props.dataList.length / _config2.default.DISPLAYING_AMOUNT)
 	      }),
 	      _react2.default.createElement(CurrentHabit, {
 	        habit: this.state.currentHabit
@@ -29657,8 +29657,8 @@
 	  render: function render() {
 	    var newList = [];
 	    //get the current page number from parent(NavHabit) so we can determine which habits to display
-	    var start = (this.props.pageNumber - 1) * app.DISPLAYING_AMOUNT;
-	    var end = start + app.DISPLAYING_AMOUNT - 1;
+	    var start = (this.props.pageNumber - 1) * _config2.default.DISPLAYING_AMOUNT;
+	    var end = start + _config2.default.DISPLAYING_AMOUNT - 1;
 
 	    //pushing the habit item that need to display to newList
 	    for (var i = start; i <= end; i++) {
@@ -29716,9 +29716,11 @@
 	  render: function render() {
 	    var prevClassName = "";
 	    var nextClassName = "";
+	    var temp = "";
+	    this.props.maxPage == 0 ? temp = "disabled" : "";
 	    if (this.props.currentPageNum == 1) {
 	      prevClassName = "pagination-previous disabled";
-	      nextClassName = "pagination-next";
+	      nextClassName = "pagination-next" + temp;
 	    } else if (this.props.currentPageNum == this.props.maxPage) {
 	      prevClassName = "pagination-previous";
 	      nextClassName = "pagination-next disabled";
@@ -29744,7 +29746,7 @@
 	        _react2.default.createElement(
 	          "li",
 	          { className: nextClassName, onClick: this.handleClicks.bind(this, 1) },
-	          this.props.currentPageNum == this.props.maxPage ? "Next" : _react2.default.createElement(
+	          this.props.currentPageNum == this.props.maxPage || this.props.maxPage == 0 ? "Next" : _react2.default.createElement(
 	            "a",
 	            null,
 	            "Next"
@@ -29786,11 +29788,29 @@
 	  }
 	});
 
-	//export default HabitModel;
+	exports.default = HabitModel;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 162 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var constant = {};
+
+	constant.DISPLAYING_AMOUNT = 3;
+	constant.DAILY = 1;
+	constant.WEEKLY = 2;
+	constant.BIWEEKLY = 3;
+
+	exports.default = constant;
+
+/***/ },
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -29803,27 +29823,27 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _HabitCreationModel = __webpack_require__(163);
+	var _HabitCreationModel = __webpack_require__(164);
 
 	var _HabitCreationModel2 = _interopRequireDefault(_HabitCreationModel);
 
+	var _config = __webpack_require__(162);
+
+	var _config2 = _interopRequireDefault(_config);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//contants all constants
 
 	/*
 	*formModel: store state of forms information, and provide a api to manipulate the data
 	*  Used for the whole AddingNewHabit's components hierarchy
 	*/
-	var app = app || {};
+	"use strict";
 
-	app.DISPLAYING_AMOUNT = 3;
-	app.DAILY = 1;
-	app.WEEKLY = 2;
-	app.BIWEEKLY = 3;
+	var AddingNewHabit = _react2.default.createClass({
+	  displayName: "AddingNewHabit",
 
-	exports.default = _react2.default.createClass({
-	  displayName: "addingHabit",
-
-	  //var AddingNewHabit = React.createClass({
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -29880,7 +29900,6 @@
 	  }
 
 	});
-
 
 	var NaviForm = _react2.default.createClass({
 	  displayName: "NaviForm",
@@ -30003,19 +30022,19 @@
 	        null,
 	        "How Often?"
 	      ),
-	      _react2.default.createElement("input", { type: "radio", name: "HowOften", id: "Daily", onChange: this.userInput.bind(this, app.DAILY), defaultChecked: _HabitCreationModel2.default.getFrequency() == app.DAILY }),
+	      _react2.default.createElement("input", { type: "radio", name: "HowOften", id: "Daily", onChange: this.userInput.bind(this, _config2.default.DAILY), defaultChecked: _HabitCreationModel2.default.getFrequency() == _config2.default.DAILY }),
 	      _react2.default.createElement(
 	        "label",
 	        { htmlFor: "Daily" },
 	        "Daily"
 	      ),
-	      _react2.default.createElement("input", { type: "radio", name: "HowOften", id: "Weekly", onChange: this.userInput.bind(this, app.WEEKLY), defaultChecked: _HabitCreationModel2.default.getFrequency() == app.WEEKLY }),
+	      _react2.default.createElement("input", { type: "radio", name: "HowOften", id: "Weekly", onChange: this.userInput.bind(this, _config2.default.WEEKLY), defaultChecked: _HabitCreationModel2.default.getFrequency() == _config2.default.WEEKLY }),
 	      _react2.default.createElement(
 	        "label",
 	        { htmlFor: "Weekly" },
 	        "Weekly"
 	      ),
-	      _react2.default.createElement("input", { type: "radio", name: "HowOften", id: "BiWeekly", onChange: this.userInput.bind(this, app.BIWEEKLY), defaultChecked: _HabitCreationModel2.default.getFrequency() == app.BIWEEKLY }),
+	      _react2.default.createElement("input", { type: "radio", name: "HowOften", id: "BiWeekly", onChange: this.userInput.bind(this, _config2.default.BIWEEKLY), defaultChecked: _HabitCreationModel2.default.getFrequency() == _config2.default.BIWEEKLY }),
 	      _react2.default.createElement(
 	        "label",
 	        { htmlFor: "BiWeekly" },
@@ -30133,11 +30152,11 @@
 	      display = _HabitCreationModel2.default.getFrequency();
 	      if (display == "") {
 	        display = "You should go back and choose the frequency first!";
-	      } else if (display == app.DAILY) {
+	      } else if (display == _config2.default.DAILY) {
 	        display = "Daily?! We got a hardworker here! and " + this.props.question;
-	      } else if (display == app.WEEKLY) {
+	      } else if (display == _config2.default.WEEKLY) {
 	        display = "Weekly! RockOn! and " + this.props.question;
-	      } else if (display == app.BIWEEKLY) {
+	      } else if (display == _config2.default.BIWEEKLY) {
 	        display = "BiWeekly! nice! and " + this.props.question;
 	      }
 	    } else {
@@ -30152,8 +30171,10 @@
 	  }
 	});
 
+	exports.default = AddingNewHabit;
+
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
@@ -30262,7 +30283,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(jQuery) {// leanModal v1.1 by Ray Stone - http://finelysliced.com.au

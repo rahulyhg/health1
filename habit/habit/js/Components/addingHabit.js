@@ -1,15 +1,12 @@
 import React from "react";
-import formModel from "./../Model/HabitCreationModel.js"
+import formModel from "./../Model/HabitCreationModel.js";
+import constant from "../../config/config.js"; //contants all constants
+
 /*
 *formModel: store state of forms information, and provide a api to manipulate the data
 *  Used for the whole AddingNewHabit's components hierarchy
 */
-var app = app || {};
-
-  app.DISPLAYING_AMOUNT = 3;
-  app.DAILY = 1;
-  app.WEEKLY = 2;
-  app.BIWEEKLY = 3;
+"use strict";
 
 
     var AddingNewHabit = React.createClass({
@@ -166,9 +163,9 @@ var app = app || {};
         return(
           <fieldset className="fieldset">
           <legend>How Often?</legend>
-          <input type="radio" name="HowOften" id="Daily" onChange={this.userInput.bind(this, app.DAILY)} defaultChecked = {formModel.getFrequency() == app.DAILY}/><label htmlFor="Daily">Daily</label>
-          <input type="radio" name="HowOften" id="Weekly" onChange={this.userInput.bind(this, app.WEEKLY)} defaultChecked = {formModel.getFrequency() == app.WEEKLY}/><label htmlFor="Weekly">Weekly</label>
-          <input type="radio" name="HowOften" id="BiWeekly" onChange={this.userInput.bind(this, app.BIWEEKLY)} defaultChecked = {formModel.getFrequency() == app.BIWEEKLY}/><label htmlFor="BiWeekly">Bi-Weekly</label>
+          <input type="radio" name="HowOften" id="Daily" onChange={this.userInput.bind(this, constant.DAILY)} defaultChecked = {formModel.getFrequency() == constant.DAILY}/><label htmlFor="Daily">Daily</label>
+          <input type="radio" name="HowOften" id="Weekly" onChange={this.userInput.bind(this, constant.WEEKLY)} defaultChecked = {formModel.getFrequency() == constant.WEEKLY}/><label htmlFor="Weekly">Weekly</label>
+          <input type="radio" name="HowOften" id="BiWeekly" onChange={this.userInput.bind(this, constant.BIWEEKLY)} defaultChecked = {formModel.getFrequency() == constant.BIWEEKLY}/><label htmlFor="BiWeekly">Bi-Weekly</label>
           </fieldset>
         )
       }
@@ -208,11 +205,11 @@ var app = app || {};
             display = formModel.getFrequency();
             if(display == ""){
               display = "You should go back and choose the frequency first!"
-            }else if (display == app.DAILY){
+            }else if (display == constant.DAILY){
               display = "Daily?! We got a hardworker here! and " + this.props.question;
-            }else if (display == app.WEEKLY){
+            }else if (display == constant.WEEKLY){
               display = "Weekly! RockOn! and " + this.props.question;
-            }else if(display == app.BIWEEKLY){
+            }else if(display == constant.BIWEEKLY){
               display = "BiWeekly! nice! and " + this.props.question;
             }
           }else{ //for all other questions, we add nothing to the display
