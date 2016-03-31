@@ -1,34 +1,29 @@
 import React from "react";
+import { connect } from 'react-redux';
 import constant from "../../config/config.js"; //contants all constants
+import habitsReducer from '../reducer/habits';
 
 "use strict";
+
+
+
   //this Component is only for storing the habits data from server
   //the root component for the habit listing section
   var HabitModel = React.createClass({
-    getInitialState: function(){
-      return {
-        data: []
-      };
-    },
-    componentDidMount: function(){
-      console.log("let's mount");
-      this.serverRequest = $.get(this.props.source, {userid:this.props.userid, token: this.props.token}, function(result){
-        result = JSON.parse(result);
-        this.setState({
-          data: result
-        });
-        console.log("finish mount");
-      }.bind(this));
-    },
-    render: function() {
-      console.log("let's render");
-      return (
+    render: function(){
+      return(
         <div>
-        <NavHabit dataList={this.state.data} />
+        <NavHabit dataList={this.props.data} />
         </div>
       );
     }
   });
+
+  var mapStateToProps = function(state){
+    return {data: state}
+  }
+
+  var NewHabitModelCreatedByRedux = connect(mapStateToProps)(HabitModel)
 
   //This is the immediate child of root
   var NavHabit = React.createClass(
@@ -186,4 +181,4 @@ import constant from "../../config/config.js"; //contants all constants
     });
 
 
-export default HabitModel;
+export default NewHabitModelCreatedByRedux;

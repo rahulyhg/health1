@@ -27,6 +27,9 @@ import constant from "../../config/config.js"; //contants all constants
         this.setState({progress: this.state.progress + progressIncrement});
       },
 
+      resetProgress: function(){
+        this.setState({progress: 0});
+      },
       render: function(){
         return(
 
@@ -36,17 +39,18 @@ import constant from "../../config/config.js"; //contants all constants
                 <ProgressBar progress={this.state.progress} />
               </div>
               <div className="wrapper-Clear">
-              <div style={{float: 'left'}}>
-              <p>Hi there...</p>
-              </div>
-              <div id = "new_habit_navigate" style={{float: 'right'}}>
-                <NaviForm onUserNavi = {this.handleUserClick}
-                          progress = {this.state.progress}
-                />
-              </div>
+                <div style={{float: 'left'}}>
+                  <p>Hi there...</p>
+                </div>
+                <div id = "new_habit_navigate" style={{float: 'right'}}>
+                  <NaviForm onUserNavi = {this.handleUserClick}
+                            progress = {this.state.progress}
+                  />
+                </div>
               </div>
             </div>
-            <NewHabitForm progress={this.state.progress}/>
+            <NewHabitForm progress={this.state.progress}
+                          resetProgress={this.resetProgress} />
           </div>
         )}
 
@@ -92,7 +96,7 @@ import constant from "../../config/config.js"; //contants all constants
             "how often do you plan to do this?",
             "which days of the week?",
             "When is/was your start day",
-            "You are done! hit submit and start your development"]
+            "Are you are done? hit submit and start your development"]
           }
         },
 
@@ -120,7 +124,7 @@ import constant from "../../config/config.js"; //contants all constants
                                         setValue = {formModel.addStartDay} //callback f
                           />
                           : this.props.progress==100 ?
-                            <SubmitNewHabit />
+                            <SubmitNewHabit resetProgress={this.props.resetProgress} />
                             : console.log("error")
                             }
             </div>
@@ -128,10 +132,15 @@ import constant from "../../config/config.js"; //contants all constants
     });
 
     var SubmitNewHabit = React.createClass({
+      updateHabitList: function(){
+        var self = this;
+        formModel.updateHabitListing(function(success){
+          (success) ? self.props.resetProgress() : "" ;
+        });
+      },
       render: function(){
-        console.log("came");
         return(
-          <button onClick={formModel.updateHabitListing.bind(formModel)}> click me </button>
+          <button onClick={this.updateHabitList}> click me </button>
 
         )}
 

@@ -1,9 +1,13 @@
+import store from "../store/store";
+
 /*
 *formModel: store state of forms information, and provide a api to manipulate the data
 *when user is ready and all info is filled in, updateHabitListing will be used to update
 *RestApi
 *  Used for the whole AddingNewHabit's components hierarchy
 */
+
+
 var formModel = {
   newHabitInfo: {
     description: "",
@@ -61,7 +65,8 @@ var formModel = {
   //ajax call to server api and add the new habit to database
   //if successful update the model root (display original habit list and this new one)
   //also clear formHabit so new habit can be added
-  updateHabitListing: function(){
+  //Takes in a callback, if ajax success feed the callback with true, so addinghabit.js will know to reset form progress
+  updateHabitListing: function(callback){
     var temp;
     if(sessionStorage.userid){
       temp = sessionStorage.userid;
@@ -70,7 +75,6 @@ var formModel = {
     }
     if(this.validate()){
       console.log(this.newHabitInfo.days.join(""));
-      //app.habitListing.forceUpdate();
       var newHabitData = {
         userid: temp,
         description: this.newHabitInfo.description,
@@ -78,9 +82,25 @@ var formModel = {
         startDay: this.newHabitInfo.startDay,
         days: this.newHabitInfo.days.join("")
       }
-      $.post("/health1/server/habit/user", newHabitData, function(data){
-        console.log(data);
+      $.ajax({
+          url: "/health1/server/habit/user",
+          type: 'POST',
+          data: newHabitData,
+          success: function(data){
+              var serverRequest = $.get("/health1/server/habit/user", {userid:123}, function(result){
+                result = JSON.parse(result);
+                store.dispatch({type:'UPDATE', data: result});
+              });
+              callback(true);
+          },
+          error: function(data) {
+              alert('there was an error when submitting to server!'); //or whatever
+              callback(false);
+          }
       });
+
+      this.clearModel();
+
     }else{//user not logged in
       alert("you must log in first");
     }

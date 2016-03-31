@@ -1,10 +1,13 @@
-require('../plugins/leanModal/jquery.leanModal.min.js');
+import '../plugins/leanModal/jquery.leanModal.min.js';
 
 import React from "react";
 import ReactDom from "react-dom";
 import HabitModel from "./Components/habitListing.js";
 import AddingNewHabit from "./Components/addingHabit.js"
+import Filter from './Components/filter.js'
 
+import { Provider } from 'react-redux';
+import store from './store/store'
 // var userId;
 //
 // if (sessionStorage.userid){
@@ -15,13 +18,27 @@ import AddingNewHabit from "./Components/addingHabit.js"
 // }
 // console.log(userId);
 
-  var userId = 123;
   ReactDom.render(
-    <HabitModel source = "/health1/server/habit/user"
-    userid = {userId}
-    />,
+    <Provider store = {store}>
+      <HabitModel />
+    </Provider>,
     document.getElementById('habit_listing')
   );
+
+  (function initializeListing(){
+    var serverRequest = $.get("/health1/server/habit/user", {userid:123}, function(result){
+      result = JSON.parse(result);
+      store.dispatch({type:'UPDATE', data: result});
+    })
+  })();
+
+  ReactDom.render(
+    <Provider store = {store}>
+      <Filter />
+    </Provider>,
+    document.getElementById('filterDiv')
+  );
+
   ReactDom.render(
     <AddingNewHabit />,
     document.getElementById('new_habit_popup')

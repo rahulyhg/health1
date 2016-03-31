@@ -2,6 +2,7 @@ var webpack = require('webpack');
 
 module.exports ={
   entry: ["./js/app.js"],
+  // entry: ["./test.js"],
   output: {
     path: "./js",
     filename:"bundle.js"
