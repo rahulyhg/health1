@@ -102,6 +102,7 @@
 	(function initializeListing() {
 	  var serverRequest = $.get("/health1/server/habit/user", { userid: 123 }, function (result) {
 	    result = JSON.parse(result);
+	    console.log(result);
 	    _store2.default.dispatch({ type: 'UPDATE', data: result });
 	  });
 	})();
@@ -31309,14 +31310,20 @@
 	  value: true
 	});
 	exports.default = reducer;
+
+	var initialState = {
+	  model: [],
+	  filteredModel: []
+	};
+
 	function reducer(state, action) {
 	  if (typeof state === 'undefined') {
-	    return {}; //initial state
+	    return []; //initial state
 	  }
 	  switch (action.type) {
 	    case 'UPDATE':
 	      return action.data;
-
+	    //return Object.assign({}, state, {model: action.data};
 	    case 'DELETE':
 	      var jarray = JSON.parse(JSON.stringify(state));
 	      jarray.forEach(function (item) {

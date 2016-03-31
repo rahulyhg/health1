@@ -28,6 +28,7 @@ import store from './store/store'
   (function initializeListing(){
     var serverRequest = $.get("/health1/server/habit/user", {userid:123}, function(result){
       result = JSON.parse(result);
+      console.log(result);
       store.dispatch({type:'UPDATE', data: result});
     })
   })();

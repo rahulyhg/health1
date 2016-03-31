@@ -1,5 +1,5 @@
 
-initialState={
+var initialState={
   model:[],
   filteredModel:[]
 }
@@ -11,7 +11,7 @@ export default function reducer(state, action){
   switch (action.type){
     case 'UPDATE':
     return action.data;
-
+//return Object.assign({}, state, {model: action.data};
     case 'DELETE':
     var jarray = JSON.parse(JSON.stringify(state));
     jarray.forEach(function(item){

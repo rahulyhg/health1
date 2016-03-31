@@ -4,25 +4,24 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Habit | Welcome</title>
-<link rel="stylesheet" href="css/foundation.css" />
-<link rel="stylesheet" href="css/app.css" />
+<link rel="stylesheet" href="./css/foundation.css" />
 
 
 
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" src="js/jquery.leanModal.min.js"></script>
+<script type="text/javascript" src="lib/leanModal/jquery.leanModal.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 
 <script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
 <script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
-<script src="js/foundation.js"></script> <!--switch to min version when launch-->
+<script src="./lib/foundation/foundation.js"></script> <!--switch to min version when launch-->
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
 
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
 
-<link type="text/css" rel="stylesheet" href="css/frontPage-style.css" />
+<link type="text/css" rel="stylesheet" href="./css/frontPage-style.css" />
 
 
 
@@ -40,27 +39,27 @@
 //ASSUME browser support localstorage
 //(typeof(Storage) !== "undefined")
 //before user do anything check if he is 'logged in' by checking if there is a token
-	// if (sessionStorage.accessToken){
-	// 	jQuery.get("server/user/session", {"userid": sessionStorage.userid, "accessToken": sessionStorage.accessToken}, function(data){
-	// 		   data = JSON.parse(data);
-	// 		   if( 'username' in data){ //succeed
-	// 			  $("#signup").parent().html("<ul class = 'dropdown menu' data-dropdown-menu>" +
-	// 											  "<li>" +
-	// 												  "<a id = 'profile_name' >Welcome," + data.username +
-	// 													  "</a><ul class = 'menu'>" +
-	// 														  "<li>profile</li>" +
-	// 														  "<li class = 'logout'>logout</li>" +
-	//
-	// 												  "</ul>"+
-	// 											  "</li>"+
-	//
-	// 										  "</ul>").foundation();
-	// 		   }else{
-	// 			   //failed, either token is valid or too old
-	// 			  //alert(data.error);
-	// 		   }
-	// 	});
-	// }
+	if (sessionStorage.accessToken){
+		jQuery.get("server/user/session", {"userid": sessionStorage.userid, "accessToken": sessionStorage.accessToken}, function(data){
+			   data = JSON.parse(data);
+			   if( 'username' in data){ //succeed
+				  $("#signup").parent().html("<ul class = 'dropdown menu' data-dropdown-menu>" +
+												  "<li>" +
+													  "<a id = 'profile_name' >Welcome," + data.username +
+														  "</a><ul class = 'menu'>" +
+															  "<li>profile</li>" +
+															  "<li class = 'logout'>logout</li>" +
+
+													  "</ul>"+
+												  "</li>"+
+
+											  "</ul>").foundation();
+			   }else{
+				   //failed, either token is valid or too old
+				  //alert(data.error);
+			   }
+		});
+	}
 
 
 </script>

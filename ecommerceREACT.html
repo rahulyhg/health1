@@ -507,6 +507,7 @@ $(document).ready(function(){
 			debug: true,
 			success: "valid"
 		});
+
 	$("#register_form").validate({
 			rules: {
 				new_name:{
@@ -591,8 +592,6 @@ $(document).ready(function(){
 		}
 	});
 
-
-
 	$("#signin_button").click(function(){
 
 		var name = $('input#name').val();
@@ -608,9 +607,6 @@ $(document).ready(function(){
 					sessionStorage.userid = data["userid"];
 					location.reload();
 				},
-//		beforeSend: function (xhr) {
-//       	 xhr.setRequestHeader('Authorization', 'Basic ' + btoa('myuser:mypswd'));
-//    	},
 			error: function (data) {
 				//your error code
 				alert("invalid username/password");
