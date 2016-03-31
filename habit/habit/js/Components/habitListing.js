@@ -20,7 +20,7 @@ import habitsReducer from '../reducer/habits';
   });
 
   var mapStateToProps = function(state){
-    return {data: state}
+    return {data: state.filteredModel}
   }
 
   var NewHabitModelCreatedByRedux = connect(mapStateToProps)(HabitModel)
