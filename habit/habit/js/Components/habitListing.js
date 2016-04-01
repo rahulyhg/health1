@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import constant from "../../config/config.js"; //contants all constants
 import habitsReducer from '../reducer/habits';
+import store from '../store/store';
 
 "use strict";
 
@@ -10,6 +11,13 @@ import habitsReducer from '../reducer/habits';
   //this Component is only for storing the habits data from server
   //the root component for the habit listing section
   var HabitModel = React.createClass({
+    componentDidMount: function(){
+      var serverRequest = $.get("/health1/server/habit/user", {userid:123}, function(result){
+        result = JSON.parse(result);
+        console.log(result);
+        store.dispatch({type:'UPDATE', data: result});
+      });
+    },
     render: function(){
       return(
         <div>
@@ -103,7 +111,7 @@ import habitsReducer from '../reducer/habits';
                     console.log("add habits display");
                     return  <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, dataRow)} href="#current_habit_modal">{dataRow.description}</li>
                   }else{
-                    return <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, "")}href="#current_habit_modal">Click add more to add a new habit here</li>
+                    return <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, "")}href="#current_habit_modal" style={{color: 'white'}}>Click add more to add a new habit here</li>
                   }
                 }, this)
                 //each list habit item can trigger the modal to appear when clicked, this is made possible with a Jquery plugin that get initialize later on
@@ -163,12 +171,12 @@ import habitsReducer from '../reducer/habits';
         //If user clicked on a habit on the listing, display the info, else display empty
         var popup =   (this.props.habit != "") ?
         <div>
-          "The habit you clicked on is: "
+          The habit you clicked on is:
           <br />
-          "description:"
+          description:
           {this.props.habit.description} <br />
-          "start day:" {this.props.habit.startDate} <br />
-          "goal day:" {this.props.habit.goalDate} <br />
+          start day: {this.props.habit.startDate} <br />
+          goal day: {this.props.habit.goalDate} <br />
         </div>
         :
         "Nothing to see here" ;

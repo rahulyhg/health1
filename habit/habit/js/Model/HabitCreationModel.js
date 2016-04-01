@@ -61,6 +61,7 @@ var formModel = {
     this.newHabitInfo.description = "";
     this.newHabitInfo.frequency = "";
     this.newHabitInfo.days = [];
+    this.newHabitInfo.startDay = "";
   },
   //ajax call to server api and add the new habit to database
   //if successful update the model root (display original habit list and this new one)

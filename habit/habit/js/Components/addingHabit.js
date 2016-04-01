@@ -146,7 +146,8 @@ import constant from "../../config/config.js"; //contants all constants
 
     });
 
-
+    //this components used for getting description of habit and start-date
+    //depends on what props this child's parent, NewHabitForm, feed this child
     var NewHabitInputBox = React.createClass({
       userInput: function(event){
         var setValue = this.props.setValue.bind(formModel);
@@ -157,7 +158,7 @@ import constant from "../../config/config.js"; //contants all constants
         return(
           <fieldset className="fieldset">
           <legend>{this.props.type}</legend>
-          <input type="test" defaultValue={getValue()} onChange={this.userInput}/>
+          <input type="text" defaultValue={getValue()} onChange={this.userInput}/>
           </fieldset>
         )
       }

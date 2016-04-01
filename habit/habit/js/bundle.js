@@ -67,7 +67,7 @@
 
 	var _habitListing2 = _interopRequireDefault(_habitListing);
 
-	var _addingHabit = __webpack_require__(186);
+	var _addingHabit = __webpack_require__(187);
 
 	var _addingHabit2 = _interopRequireDefault(_addingHabit);
 
@@ -77,7 +77,7 @@
 
 	var _reactRedux = __webpack_require__(163);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(186);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -99,13 +99,14 @@
 	  _react2.default.createElement(_habitListing2.default, null)
 	), document.getElementById('habit_listing'));
 
-	(function initializeListing() {
-	  var serverRequest = $.get("/health1/server/habit/user", { userid: 123 }, function (result) {
-	    result = JSON.parse(result);
-	    console.log(result);
-	    _store2.default.dispatch({ type: 'UPDATE', data: result });
-	  });
-	})();
+	//populate the list from data from RestApi. Could use componentWillMount in HabitModel too but this is needed for redux
+	// (function initializeListing(){
+	//   var serverRequest = $.get("/health1/server/habit/user", {userid:123}, function(result){
+	//     result = JSON.parse(result);
+	//     console.log(result);
+	//     store.dispatch({type:'UPDATE', data: result});
+	//   })
+	// })();
 
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -29589,7 +29590,7 @@
 /* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	/* WEBPACK VAR INJECTION */(function($) {"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -29609,16 +29610,29 @@
 
 	var _habits2 = _interopRequireDefault(_habits);
 
+	var _store = __webpack_require__(186);
+
+	var _store2 = _interopRequireDefault(_store);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//contants all constants
+
 
 	"use strict";
 
 	//this Component is only for storing the habits data from server
 	//the root component for the habit listing section
-	//contants all constants
 	var HabitModel = _react2.default.createClass({
 	  displayName: "HabitModel",
 
+	  componentDidMount: function componentDidMount() {
+	    var serverRequest = $.get("/health1/server/habit/user", { userid: 123 }, function (result) {
+	      result = JSON.parse(result);
+	      console.log(result);
+	      _store2.default.dispatch({ type: 'UPDATE', data: result });
+	    });
+	  },
 	  render: function render() {
 	    return _react2.default.createElement(
 	      "div",
@@ -29726,7 +29740,7 @@
 	            } else {
 	              return _react2.default.createElement(
 	                "li",
-	                { className: "habits_display", key: i, onClick: this.handleCurrentHabit.bind(this, ""), href: "#current_habit_modal" },
+	                { className: "habits_display", key: i, onClick: this.handleCurrentHabit.bind(this, ""), href: "#current_habit_modal", style: { color: 'white' } },
 	                "Click add more to add a new habit here"
 	              );
 	            }
@@ -29804,17 +29818,17 @@
 	    var popup = this.props.habit != "" ? _react2.default.createElement(
 	      "div",
 	      null,
-	      "\"The habit you clicked on is: \"",
+	      "The habit you clicked on is:",
 	      _react2.default.createElement("br", null),
-	      "\"description:\"",
+	      "description:",
 	      this.props.habit.description,
 	      " ",
 	      _react2.default.createElement("br", null),
-	      "\"start day:\" ",
+	      "start day: ",
 	      this.props.habit.startDate,
 	      " ",
 	      _react2.default.createElement("br", null),
-	      "\"goal day:\" ",
+	      "goal day: ",
 	      this.props.habit.goalDate,
 	      " ",
 	      _react2.default.createElement("br", null)
@@ -29828,6 +29842,7 @@
 	});
 
 	exports.default = NewHabitModelCreatedByRedux;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 163 */
@@ -31352,6 +31367,28 @@
 /* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redux = __webpack_require__(169);
+
+	var _habits = __webpack_require__(185);
+
+	var _habits2 = _interopRequireDefault(_habits);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var store = (0, _redux.createStore)(_habits2.default);
+
+	exports.default = store;
+
+/***/ },
+/* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
@@ -31362,7 +31399,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _HabitCreationModel = __webpack_require__(187);
+	var _HabitCreationModel = __webpack_require__(188);
 
 	var _HabitCreationModel2 = _interopRequireDefault(_HabitCreationModel);
 
@@ -31532,6 +31569,8 @@
 
 	});
 
+	//this components used for getting description of habit and start-date
+	//depends on what props this child's parent, NewHabitForm, feed this child
 	var NewHabitInputBox = _react2.default.createClass({
 	  displayName: "NewHabitInputBox",
 
@@ -31549,7 +31588,7 @@
 	        null,
 	        this.props.type
 	      ),
-	      _react2.default.createElement("input", { type: "test", defaultValue: getValue(), onChange: this.userInput })
+	      _react2.default.createElement("input", { type: "text", defaultValue: getValue(), onChange: this.userInput })
 	    );
 	  }
 	});
@@ -31722,7 +31761,7 @@
 	exports.default = AddingNewHabit;
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {"use strict";
@@ -31731,7 +31770,7 @@
 	  value: true
 	});
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(186);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -31798,6 +31837,7 @@
 	    this.newHabitInfo.description = "";
 	    this.newHabitInfo.frequency = "";
 	    this.newHabitInfo.days = [];
+	    this.newHabitInfo.startDay = "";
 	  },
 	  //ajax call to server api and add the new habit to database
 	  //if successful update the model root (display original habit list and this new one)
@@ -31854,28 +31894,6 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 188 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _redux = __webpack_require__(169);
-
-	var _habits = __webpack_require__(185);
-
-	var _habits2 = _interopRequireDefault(_habits);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var store = (0, _redux.createStore)(_habits2.default);
-
-	exports.default = store;
-
-/***/ },
 /* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -31889,7 +31907,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(186);
 
 	var _store2 = _interopRequireDefault(_store);
 
