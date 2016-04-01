@@ -126,10 +126,10 @@ import habitsReducer from '../reducer/habits';
         var prevClassName = "";
         var nextClassName = "";
         var temp = "";
-        (this.props.maxPage==0) ? temp = "disabled" : "";
+        (this.props.maxPage==0 || this.props.maxPage==1) ? temp = "disabled" : "";
         if(this.props.currentPageNum == 1){
               prevClassName = "pagination-previous disabled";
-              nextClassName = "pagination-next" + temp;
+              nextClassName = "pagination-next " + temp;
         }else if(this.props.currentPageNum == this.props.maxPage){
               prevClassName = "pagination-previous";
               nextClassName = "pagination-next disabled";
