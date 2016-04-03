@@ -9,6 +9,10 @@ import Filter from './Components/filter.js'
 import { Provider } from 'react-redux';
 import store from './store/store';
 
+
+import { Router, Route, hashHistory  } from 'react-router';
+
+
 // var userId;
 //
 // if (sessionStorage.userid){
@@ -18,14 +22,46 @@ import store from './store/store';
 //   userId = 123;
 // }
 // console.log(userId);
+var TestComponent = React.createClass({
+  render: function(){
+    return(
+        <div> about us </div>
+    )
+
+  }
+})
+
+ReactDom.render(
+  <Provider store = {store}>
+    <Router history = {hashHistory}>
+      <Route path="/" component={HabitModel}/>
+      <Route path="/about" component={TestComponent}/>
+
+    </Router>
+  </Provider>,
+  document.getElementById('habit_listing')
+)
+
+
+
+
+
+
+
+//  routes = (
+//     <Route path="/" component={Wrapper}>
+//         <IndexRoute component={Home} />
+//         <Route path="/hero/:name" component={Hero} />
+//     </Route>
+// );
 
   //Listing out all the habit
-  ReactDom.render(
-    <Provider store = {store}>
-      <HabitModel />
-    </Provider>,
-    document.getElementById('habit_listing')
-  );
+  // ReactDom.render(
+  //   <Provider store = {store}>
+  //     <HabitModel />
+  //   </Provider>,
+  //   document.getElementById('habit_listing')
+  // );
 
   //filter bar for filting the list of habit
   ReactDom.render(

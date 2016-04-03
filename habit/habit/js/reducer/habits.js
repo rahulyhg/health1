@@ -11,24 +11,34 @@ export default function reducer(state, action){
   switch (action.type){
     case 'UPDATE': //whenever we make a call to RestApi. filterList should also be reseted
     //return action.data;
-    return Object.assign({}, state, {model: action.data, filteredModel: action.data});
-    //
-    // case 'DELETE':
-    // var jarray = JSON.parse(JSON.stringify(state));
-    // jarray.forEach(function(item){
-    //   delete item[action.data];
-    // })
-    // return jarray;
+      return Object.assign({}, state, {model: action.data, filteredModel: action.data});
 
     case 'FILTER':
-    var jarray = state.model.filter(function(item){
-      if(item.description.indexOf(action.text) > -1){ //check if the habit description contain the substring
-        return true;
-      }else{
-        return false;
-      }
-    });
-    return Object.assign({}, state, {filteredModel: jarray});
+      var jarray = state.model.filter(function(item){
+        if(item.description.indexOf(action.text) > -1){ //check if the habit description contain the substring
+          return true;
+        }else{
+          return false;
+        }
+      });
+      return Object.assign({}, state, {filteredModel: jarray});
+
+    case 'UPDATE_HABIT_COMPLETED':
+      var jarray = JSON.parse(JSON.stringify(state));
+      jarray.model.forEach(function(item){
+        if (item.habitid == action.data.id){
+          item.startDate = action.data.startDate;
+          return;
+        }
+      })
+      jarray.filteredModel.forEach(function(item){
+        if (item.habitid == action.data.id){
+          item.startDate = action.data.startDate;
+          return;
+        }
+      })
+
+      return jarray;
 
   }
   return state;
