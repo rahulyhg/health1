@@ -29853,35 +29853,38 @@
 	  displayName: "CurrentHabit",
 
 	  componentDidUpdate: function componentDidUpdate(prevProps) {
-	    var main = this;
+	    if (this.props.habit != "") {
+	      //making sure this is not the initial render with no habit data
+	      var main = this;
 
-	    $('#calendar').pickmeup({
-	      mode: 'multiple',
-	      format: 'Y-m-d',
-	      before_show: function before_show() {
-	        var self = $(this);
-	        console.log('the date ' + main.props.habit.startDate);
-	        self.pickmeup('set_date', main.props.habit.startDate);
-	      },
-	      hide: function hide() {
-	        var self = $(this);
-	        var habitID = main.props.habit.habitid;
-	        console.log("the ID is " + JSON.stringify(habitID));
-	        _store2.default.dispatch({ type: 'UPDATE_HABIT_COMPLETED',
-	          data: {
-	            id: habitID,
-	            startDate: self.pickmeup('get_date', true)
-	          }
-	        });
-	      }
-	    });
+	      $('#calendar').pickmeup({
+	        mode: 'multiple',
+	        format: 'Y-m-d',
+	        before_show: function before_show() {
+	          var self = $(this);
+	          console.log('the date ' + main.props.habit.startDate);
+	          self.pickmeup('set_date', main.props.habit.startDate);
+	        },
+	        hide: function hide() {
+	          var self = $(this);
+	          var habitID = main.props.habit.habitid;
+	          console.log("the ID is " + JSON.stringify(habitID));
+	          _store2.default.dispatch({ type: 'UPDATE_HABIT_COMPLETED',
+	            data: {
+	              id: habitID,
+	              startDate: self.pickmeup('get_date', true)
+	            }
+	          });
+	        }
+	      });
+	    }
 	    return true;
 	  },
 	  render: function render() {
 	    console.log("render");
 	    //If user clicked on a habit on the listing, display the info, else display empty
 	    var startDate = this.props.habit.startDate;
-	    startDate != null && startDate.constructor === Array ? startDate = startDate.toString() : "";
+
 	    var popup = this.props.habit != "" ? _react2.default.createElement(
 	      "div",
 	      null,
@@ -29892,24 +29895,31 @@
 	      " ",
 	      _react2.default.createElement("br", null),
 	      "start day: ",
-	      startDate,
-	      " ",
+	      startDate != null && startDate.constructor === Array ? startDate.map(function (item, i) {
+	        return _react2.default.createElement(
+	          "li",
+	          { key: i },
+	          " ",
+	          item,
+	          " "
+	        );
+	      }) : startDate,
 	      _react2.default.createElement("br", null),
 	      "goal day: ",
 	      this.props.habit.goalDate,
 	      " ",
-	      _react2.default.createElement("br", null)
+	      _react2.default.createElement("br", null),
+	      _react2.default.createElement(
+	        "div",
+	        { id: "calendar" },
+	        " Check me to select/update the dates which youve completed the habit "
+	      )
 	    ) : "Nothing to see here";
 	    console.log("end render");
 	    return _react2.default.createElement(
 	      "div",
 	      { id: "current_habit_modal" },
-	      popup,
-	      _react2.default.createElement(
-	        "div",
-	        { id: "calendar" },
-	        "Check me to select/update the dates which youve completed the habit"
-	      )
+	      popup
 	    );
 	  }
 	});

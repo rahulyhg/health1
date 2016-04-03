@@ -90,7 +90,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
       handleCurrentHabit: function(data){
         this.props.onHabitClick(data);
       },
-      
+
       render: function(){
         var newList = [];
         //get the current page number from parent(NavHabit) so we can determine which habits to display
@@ -168,6 +168,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
 
     var CurrentHabit = React.createClass({
       componentDidUpdate : function(prevProps){
+if (this.props.habit != "") { //making sure this is not the initial render with no habit data
         var main = this;
 
         $('#calendar').pickmeup({
@@ -190,6 +191,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
                             });
           }
         });
+  }
         return true;
 
       },
@@ -197,16 +199,25 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         console.log("render");
         //If user clicked on a habit on the listing, display the info, else display empty
         var startDate = this.props.habit.startDate;
-        (startDate != null && startDate.constructor  === Array)? startDate = startDate.toString() : "";
+
         var popup =   (this.props.habit != "") ?
         <div>
           The habit you clicked on is:
           <br />
           description:
           {this.props.habit.description} <br />
-          start day: {startDate} <br />
+          start day: { startDate != null && startDate.constructor  === Array
+                        ? startDate.map(function(item, i){
+                            return <li key={i}> {item} </li>
+                        })
+
+
+                        : startDate
+                      }
+                      <br />
           goal day: {this.props.habit.goalDate} <br />
 
+          <div id ='calendar'> Check me to select/update the dates which youve completed the habit </div>
         </div>
         :
         "Nothing to see here" ;
@@ -214,7 +225,6 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         return(
           <div id = "current_habit_modal">
             {popup}
-            <div id ='calendar'>Check me to select/update the dates which youve completed the habit</div>
           </div>
         )
       }
