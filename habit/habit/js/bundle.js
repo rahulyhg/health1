@@ -85,15 +85,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// var userId;
-	//
-	// if (sessionStorage.userid){
-	//   userId = sessionStorage.userid;
-	//
-	// }else{
-	//   userId = 123;
-	// }
-	// console.log(userId);
 	var TestComponent = _react2.default.createClass({
 	  displayName: "TestComponent",
 
@@ -29653,7 +29644,13 @@
 	  displayName: "HabitModel",
 
 	  componentDidMount: function componentDidMount() {
-	    var serverRequest = $.get("/health1/server/habit/user", { userid: 123 }, function (result) {
+
+	    var userId = 123; //for testing purposes
+	    if (sessionStorage.userid) {
+	      userId = sessionStorage.userid;
+	    }
+
+	    var serverRequest = $.get("/health1/server/habit/user", { userid: userId }, function (result) {
 	      result = JSON.parse(result);
 	      _store2.default.dispatch({ type: 'UPDATE', data: result });
 	    });
@@ -37076,16 +37073,16 @@
 	  //also clear formHabit so new habit can be added
 	  //Takes in a callback, if ajax success feed the callback with true, so addinghabit.js will know to reset form progress
 	  updateHabitListing: function updateHabitListing(callback) {
-	    var temp;
+
+	    var userId = 123; //for testing purposes
 	    if (sessionStorage.userid) {
-	      temp = sessionStorage.userid;
-	    } else {
-	      temp = 123;
+	      userId = sessionStorage.userid;
 	    }
+
 	    if (this.validate()) {
 	      console.log(this.newHabitInfo.days.join(" "));
 	      var newHabitData = {
-	        userid: temp,
+	        userid: userId,
 	        description: this.newHabitInfo.description,
 	        frequency: this.newHabitInfo.frequency,
 	        startDay: this.newHabitInfo.startDay,
@@ -37096,7 +37093,8 @@
 	        type: 'POST',
 	        data: newHabitData,
 	        success: function success(data) {
-	          var serverRequest = $.get("/health1/server/habit/user", { userid: 123 }, function (result) {
+
+	          var serverRequest = $.get("/health1/server/habit/user", { userid: userId }, function (result) {
 	            result = JSON.parse(result);
 	            _store2.default.dispatch({ type: 'UPDATE', data: result });
 	          });

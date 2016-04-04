@@ -13,15 +13,6 @@ import store from './store/store';
 import { Router, Route, hashHistory  } from 'react-router';
 
 
-// var userId;
-//
-// if (sessionStorage.userid){
-//   userId = sessionStorage.userid;
-//
-// }else{
-//   userId = 123;
-// }
-// console.log(userId);
 var TestComponent = React.createClass({
   render: function(){
     return(

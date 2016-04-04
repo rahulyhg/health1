@@ -13,7 +13,13 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
   //the root component for the habit listing section
   var HabitModel = React.createClass({
     componentDidMount: function(){
-      var serverRequest = $.get("/health1/server/habit/user", {userid:123}, function(result){
+
+      var userId = 123; //for testing purposes
+      if (sessionStorage.userid){
+        userId = sessionStorage.userid;
+      }
+
+      var serverRequest = $.get("/health1/server/habit/user", {userid: userId}, function(result){
         result = JSON.parse(result);
         store.dispatch({type:'UPDATE', data: result});
       });

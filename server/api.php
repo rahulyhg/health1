@@ -90,12 +90,11 @@ function getHabits(){
 	$app = \Slim\Slim::getInstance();
 	$userid = $app->request->params('userid');
 	//$query = "Select * From habit where userid = '$userid'";
-
+	//should verify token too
 	$db = getDB();
 
 	$result = $db->prepare("Select * From habit where userid = ?");
 	$result->execute(array($userid));
-
 	$result->setFetchmode(PDO::FETCH_ASSOC);
 
 
