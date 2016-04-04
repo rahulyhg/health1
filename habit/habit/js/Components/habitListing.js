@@ -64,6 +64,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         });
       },
       render: function(){
+        console.log("everything get rerender");
         return (
           <div>
           <HabitList
@@ -168,34 +169,34 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
 
     var CurrentHabit = React.createClass({
       componentDidUpdate : function(prevProps){
-if (this.props.habit != "") { //making sure this is not the initial render with no habit data
         var main = this;
-
-        $('#calendar').pickmeup({
+        $('#calendar_button').pickmeup({
           mode: 'multiple',
           format: 'Y-m-d',
+          position: 'bottom',
           before_show: function(){
             var self = $(this);
-            console.log('the date ' + main.props.habit.startDate);
-            self.pickmeup('set_date', main.props.habit.startDate);
+            var startDate = main.props.habit.startDate;
+            console.log("asdkfjalksfjsadjfasjlkfs" + startDate);
+            if (startDate != ""){
+              self.pickmeup('set_date', startDate);
+            }
           },
           hide: function(){
             var self = $(this);
             var habitID = main.props.habit.habitid;
-            console.log("the ID is " + JSON.stringify(habitID));
+            console.log("the dates are " + JSON.stringify(self.pickmeup('get_date', true)));
             store.dispatch({type:'UPDATE_HABIT_COMPLETED',
-                            data: {
-                                    id: habitID,
-                                    startDate: self.pickmeup('get_date', true)
-                                  }
-                            });
-          }
-        });
-  }
-        return true;
-
-      },
-      render: function(){
+            data: {
+              id: habitID,
+              startDate: self.pickmeup('get_date', true)
+            }
+          });
+        }
+      });
+      return true;
+    },
+    render: function(){
         console.log("render");
         //If user clicked on a habit on the listing, display the info, else display empty
         var startDate = this.props.habit.startDate;
@@ -208,16 +209,15 @@ if (this.props.habit != "") { //making sure this is not the initial render with 
           {this.props.habit.description} <br />
           start day: { startDate != null && startDate.constructor  === Array
                         ? startDate.map(function(item, i){
-                            return <li key={i}> {item} </li>
+                            return <li key={i}> {item} </li> //style = {{ listStyle: 'none' }}
                         })
-
-
                         : startDate
                       }
                       <br />
-          goal day: {this.props.habit.goalDate} <br />
+          Frequency: {this.props.habit.frequency} <br />
+          Planned days: {this.props.habit.day} <br />
 
-          <div id ='calendar'> Check me to select/update the dates which youve completed the habit </div>
+          <div id ='calendar_button'> Open Calendar </div>
         </div>
         :
         "Nothing to see here" ;

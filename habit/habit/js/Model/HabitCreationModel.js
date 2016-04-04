@@ -75,13 +75,13 @@ var formModel = {
       temp = 123;
     }
     if(this.validate()){
-      console.log(this.newHabitInfo.days.join(""));
+      console.log(this.newHabitInfo.days.join(" "));
       var newHabitData = {
         userid: temp,
         description: this.newHabitInfo.description,
         frequency: this.newHabitInfo.frequency,
         startDay: this.newHabitInfo.startDay,
-        days: this.newHabitInfo.days.join("")
+        days: this.newHabitInfo.days.join(" ")
       }
       $.ajax({
           url: "/health1/server/habit/user",
@@ -103,7 +103,7 @@ var formModel = {
       this.clearModel();
 
     }else{//user not logged in
-      alert("you must log in first");
+      alert("You didnt fill out all the forms yet/you must log in first");
     }
   },
   /**check if user's input are valid

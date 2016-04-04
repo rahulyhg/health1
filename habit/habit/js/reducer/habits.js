@@ -24,6 +24,7 @@ export default function reducer(state, action){
       return Object.assign({}, state, {filteredModel: jarray});
 
     case 'UPDATE_HABIT_COMPLETED':
+    console.log("in update habit");
       var jarray = JSON.parse(JSON.stringify(state));
       jarray.model.forEach(function(item){
         if (item.habitid == action.data.id){

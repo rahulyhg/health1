@@ -1,6 +1,21 @@
 body{
   background:#ecf0f1;
 }
+
+#calendar_button{
+    background: #E4E4E2;
+    padding-left: 5%;
+    padding-top: 3%;
+    padding-bottom:3%;
+    margin-left:25%;
+    margin-right:25%;
+    border:dotted 3px #ecf0f1;
+}
+
+#calendar_button:hover{
+  	  background: #F4F4F2;
+
+}
 #lean_overlay {
   position: fixed;
   z-index:100;
