@@ -178,7 +178,6 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
           before_show: function(){
             var self = $(this);
             var startDate = main.props.habit.startDate;
-            console.log("asdkfjalksfjsadjfasjlkfs" + startDate);
             if (startDate != ""){
               self.pickmeup('set_date', startDate);
             }
@@ -206,15 +205,20 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         <div>
           The habit you clicked on is:
           <br />
-          description:
-          {this.props.habit.description} <br />
-          start day: { startDate != null && startDate.constructor  === Array
+          description: <span style={{color: 'Red'}}>
+          {this.props.habit.description}
+                        </span> <br />
+
+          start day: <ul className = "checkbox-grid" style={{color: 'Blue'}} >
+                      { startDate != null && startDate.constructor  === Array
                         ? startDate.map(function(item, i){
                             return <li key={i}> {item} </li> //style = {{ listStyle: 'none' }}
                         })
                         : startDate
                       }
+                      </ul>
                       <br />
+                      <div className="wrapper-Clear-Flow" />
           Frequency: {this.props.habit.frequency} <br />
           Planned days: {this.props.habit.day} <br />
 
@@ -224,7 +228,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         "Nothing to see here" ;
         console.log("end render");
         return(
-          <div id = "current_habit_modal">
+          <div id = "current_habit_modal" >
             {popup}
           </div>
         )

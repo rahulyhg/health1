@@ -66,13 +66,6 @@ body{
   background: #E74C3C;
 }
 
-/*#add_more {
-margin-top: 30px;
-margin-left: 8px;
-border-radius: 6px 16px 16px 116px;
--moz-border-radius: 6px 16px 16px 116px;
--webkit-border-radius: 6px 16px 16px 116px;
-}*/
 
 #habit_list > li:hover{
   background:#F25C5C;
@@ -132,6 +125,10 @@ border-radius: 6px 16px 16px 116px;
   display: block;
   float: left;
   width: 50%;
+}
+.wrapper-Clear-Flow{
+    clear: right;
+    clear: left;
 }
 .wrapper-Clear{
   overflow: hidden;
