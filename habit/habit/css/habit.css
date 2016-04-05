@@ -34,8 +34,11 @@ body{
   padding: 20px;
   background: white;
   display:none;
-
 }
+#habit_input_modal{
+  width: 40%
+}
+
 #habit_list{
   list-style: none;
 }
@@ -95,6 +98,13 @@ body{
     width:100%;
   }
   #habit_input_modal, #current_habit_modal{
+    width: 60%;
+  }
+
+
+  .checkbox-grid-frequency li{
+    display: block;
+    float: left;
     width: 50%;
   }
 }
@@ -132,8 +142,9 @@ body{
 }
 .wrapper-Clear{
   overflow: hidden;
-
 }
+
+
 
 #habit_listing_nav{
   margin-right: 21%;
