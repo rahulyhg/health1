@@ -8,7 +8,7 @@ There are two main part to this project (can be viewed as independent of each ot
   - root folder(entry points index html) mainly focus on jquery, css, zurb foundation
   - habit folder (entry points habit.html) focus on ReactJS, Redux and javascript, with modularized codes
 
-1. habit folder
+1. habit folder -	https://github.com/veagletsui/health1/tree/master/habit/habit
    - environment: 
        - Webpack (with babel as loader for es6's import/export and react JSX preset). To build please follow package.json and install the nesscary packages using node.js
        - xampp for localhost server
