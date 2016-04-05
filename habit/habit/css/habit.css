@@ -3,17 +3,16 @@ body{
 }
 
 #calendar_button{
-    background: #E4E4E2;
-    padding-left: 5%;
-    padding-top: 3%;
-    padding-bottom:3%;
-    margin-left:25%;
-    margin-right:25%;
-    border:dotted 3px #ecf0f1;
+  background: #E4E4E2;
+  padding-top: 3%;
+  padding-bottom:3%;
+  margin-left:25%;
+  margin-right:25%;
+  border:dotted 3px #ecf0f1;
 }
 
 #calendar_button:hover{
-  	  background: #F4F4F2;
+  background: #F4F4F2;
 
 }
 #lean_overlay {
@@ -43,7 +42,6 @@ body{
 
 #habit-section{
   padding-bottom:5%;
-
 }
 #habit_wrapper{
   /*border:dotted 5px #ecf0f1;*/
@@ -68,6 +66,14 @@ body{
   background: #E74C3C;
 }
 
+/*#add_more {
+margin-top: 30px;
+margin-left: 8px;
+border-radius: 6px 16px 16px 116px;
+-moz-border-radius: 6px 16px 16px 116px;
+-webkit-border-radius: 6px 16px 16px 116px;
+}*/
+
 #habit_list > li:hover{
   background:#F25C5C;
 
@@ -85,6 +91,41 @@ body{
 #upper-right{
   float:right;
   width: 20%;
+
+}
+
+@media (max-width: 50em) {
+  #upper-right {
+    display: none;
+  }
+  #upper-left{
+    width:100%;
+  }
+  #habit_input_modal, #current_habit_modal{
+    width: 50%;
+  }
+}
+
+@media (max-width: 30em) {
+  #upper-left{
+    width:100%;
+    padding:0px;
+  }
+  #habit_list > li{
+    padding:10%;
+  }
+  #habit_wrapper{
+    margin-left:0%;
+    margin-right:0%;
+  }
+  #add_more{
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+  }
+  #habit_input_modal, #current_habit_modal{
+    width: 100%;
+  }
 }
 
 .checkbox-grid li {

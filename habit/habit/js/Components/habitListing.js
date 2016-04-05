@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import constant from "../../config/config.js"; //contants all constants
 import habitsReducer from '../reducer/habits';
 import store from '../store/store';
-import {Link} from 'react-router';
 import '../../plugins/calendar/jquery.pickmeup.min.js';
 "use strict";
 
@@ -27,11 +26,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
     render: function(){
       return(
         <div>
-        <ul role="nav">
-         <li><Link to="/about">About</Link></li>
-        </ul>
         <NavHabit dataList={this.props.data} />
-        {this.props.children}
         </div>
       );
     }
@@ -223,7 +218,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
           Frequency: {this.props.habit.frequency} <br />
           Planned days: {this.props.habit.day} <br />
 
-          <div id ='calendar_button'> Open Calendar </div>
+          <div id ='calendar_button' className ="text-center"> Open Calendar </div>
         </div>
         :
         "Nothing to see here" ;

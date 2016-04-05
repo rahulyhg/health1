@@ -474,6 +474,7 @@ $(document).ready(function(){
 
 
 	$("#register_button").click(function(){
+    console.log("here");
 		if ($("#register_form").valid()){
 			var name = $('input#new_name').val();
 			var pw = $('input#new_pw').val();
@@ -492,6 +493,7 @@ $(document).ready(function(){
 				}
 			});
 		}
+    console.log("there");
 	});
 
 
