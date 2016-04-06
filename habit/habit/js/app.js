@@ -9,29 +9,9 @@ import Filter from './Components/filter.js'
 import { Provider } from 'react-redux';
 import store from './store/store';
 
+import RewardComponent from './Components/rankingHabit.js';
 
 import { Router, Route, hashHistory  } from 'react-router';
-
-//
-// var TestComponent = React.createClass({
-//   render: function(){
-//     return(
-//         <div> about us </div>
-//     )
-//
-//   }
-// })
-//
-// ReactDom.render(
-//   <Provider store = {store}>
-//     <Router history = {hashHistory}>
-//       <Route path="/" component={HabitModel}/>
-//       <Route path="/about" component={TestComponent}/>
-//
-//     </Router>
-//   </Provider>,
-//   document.getElementById('habit_listing')
-// )
 
 
   //Listing out all the habit
@@ -56,6 +36,13 @@ import { Router, Route, hashHistory  } from 'react-router';
     document.getElementById('new_habit_popup')
   );
 
+  //reward section
+  ReactDom.render(
+    <Provider store = {store}>
+    <RewardComponent />
+    </Provider>,
+    document.getElementById('upper-right')
+  );
   //adding some pop up affect to the overall user experience
   $("#add_more").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
   $(".habits_display").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });

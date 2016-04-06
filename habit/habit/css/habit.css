@@ -46,6 +46,10 @@ body{
 #habit-section{
   padding-bottom:5%;
 }
+#habit-section p{
+  margin:auto;
+  width:50%;
+}
 #habit_wrapper{
   /*border:dotted 5px #ecf0f1;*/
   /*border-left:dotted 4px #ecf0f1;*/
@@ -75,7 +79,32 @@ body{
 
 }
 
+.listing-boxes{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.listing-boxes li{
+  background: white;
+  /*border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;*/
+  box-shadow: 0px 0px 5px #888888;
+  list-style:none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+  margin-right: 5%;
+  margin-left: 5%;
+  padding-left: 15%;
+  padding-right:15%;
+  transition: background-color 0.2s linear;
+}
+.listing-boxes li:hover{
+  background: #E74C3C;
+  color: white;
 
+
+}
 #page_nav{
 }
 

@@ -105,7 +105,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         }
 
         return (
-            <div id="habit-section">habit list follows:
+            <div id="habit-section"> <p>Browse your habits below:</p>
               <div id = "habit_wrapper">
                 <ul id = "habit_list">
                 {   newList.map(function(dataRow, i) { //mapping each habit that need to display to a li element, and whenever each item is clicked it will trigger a modal
@@ -206,10 +206,10 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
           The habit you clicked on is:
           <br />
           description: <span style={{color: 'Red'}}>
-          {this.props.habit.description}
+                          {this.props.habit.description}
                         </span> <br />
 
-          start day: <ul className = "checkbox-grid" style={{color: 'Blue'}} >
+          Completed dates: <ul className = "checkbox-grid" style={{color: 'Blue'}} >
                       { startDate != null && startDate.constructor  === Array
                         ? startDate.map(function(item, i){
                             return <li key={i}> {item} </li> //style = {{ listStyle: 'none' }}
