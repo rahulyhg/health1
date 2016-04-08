@@ -1,5 +1,69 @@
 body{
   background:#ecf0f1;
+  	font-family: 'Source Sans Pro', sans-serif;
+    /*background-image: url('http://blog.hostbaby.com/wp-content/uploads/2014/03/PaintSquares_1400x900-1024x658.jpg');*/
+}
+#upper-left{
+  float:left;
+  width:50%;
+}
+
+#upper-right{
+  float:right;
+  width: 20%;
+}
+
+#arrows{
+  float:left;
+  width:10%;
+}
+#arrows li{
+  list-style: none;
+  margin-top:50px;
+}
+
+.arrow {
+    position: relative;
+}
+.arrow:after {
+    content: "\f0d9";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+/*--adjust as necessary--*/
+    position: relative;
+    color: rgba(77,77,77,1);
+    font-size: 18px;
+    left: -330%;
+}
+
+#intro-text{
+  text-align: center;
+  font: normal normal normal 80px/1.2em 'Noticia Text',serif;
+  color: rgba(77,77,77,1);
+  float:right;
+  width: 90%;
+}
+
+#intro-text p{
+  position: relative;
+  left: -10%;
+  text-align: left;
+    font: normal normal normal 25px/1.2em 'Noticia Text',serif;
+}
+#intro-text p:nth-child(2){
+  text-align: right;
+}
+
+#intro-text p:nth-child(5){
+  left: -30%;
+}
+
+
+#introduction-section{
+  float:left;
+  width: 30%;
 }
 
 #calendar_button{
@@ -49,16 +113,21 @@ body{
 #habit-section p{
   margin:auto;
   width:50%;
+  font: normal normal normal 17px/1.2em 'Noticia Text',serif;
 }
+
+
 #habit_wrapper{
   /*border:dotted 5px #ecf0f1;*/
   /*border-left:dotted 4px #ecf0f1;*/
-  padding-right:2%;
+  /*padding-right:2%;*/
   /*background:#282C34;*/
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-left:20%;
-  margin-right:40%;
+  /*margin-right:40%;
+  margin-left:20%;*/
+  margin: auto;
+  width: 50%;
   border-radius: 6px 16px 16px 100px;
   -moz-border-radius: 6px 16px 16px 116px;
   -webkit-border-radius: 6px 16px 16px 100px;
@@ -71,13 +140,16 @@ body{
   margin-top: 10px;
   margin-bottom:10px;
   background: #E74C3C;
+    box-shadow: 0px 0px 5px #888888;
+  transition: background-color color 0.2s linear;
 }
-
-
 #habit_list > li:hover{
   background-color:#F25C5C;
-
+  color: white;
 }
+
+
+
 
 .listing-boxes{
   padding-top: 5px;
@@ -105,19 +177,7 @@ body{
 
 
 }
-#page_nav{
-}
 
-#upper-left{
-  float:left;
-  width:80%;
-}
-
-#upper-right{
-  float:right;
-  width: 20%;
-
-}
 
 @media (max-width: 50em) {
   #upper-right {
@@ -129,7 +189,9 @@ body{
   #habit_input_modal, #current_habit_modal{
     width: 60%;
   }
-
+#introduction-section{
+  display:none;
+}
 
   .checkbox-grid-frequency li{
     display: block;
@@ -147,17 +209,20 @@ body{
     padding:10%;
   }
   #habit_wrapper{
-    margin-left:0%;
-    margin-right:0%;
+    margin:0%;
+    width: 100%;
   }
   #add_more{
-    border-radius: 2px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+    border-radius: 16px 16px 116px 116px!important;
+    -moz-border-radius: 16px 16px 116px 116px!important;
+    -webkit-border-radius: 16px 16px 116px 116px!important;
+    margin-left: 0%!important;
   }
   #habit_input_modal, #current_habit_modal{
     width: 100%;
   }
+
+
 }
 
 .checkbox-grid li {

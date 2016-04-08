@@ -119,7 +119,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
                 //each list habit item can trigger the modal to appear when clicked, this is made possible with a Jquery plugin that get initialize later on
               }
               <hr></hr>
-                  <li className = " text-center" id="add_more" style = {{marginTop: '30px', marginLeft: '8px', borderRadius: '6px 16px 16px 116px', MozBorderRadius: '6px 16px 16px 116px', WebkitBorderRadius: '6px 16px 16px 116px'}} href="#habit_input_modal">add more</li>
+                  <li className = " text-center" id="add_more" style = {{marginTop: '30px', marginLeft: '8px', borderRadius: '6px 16px 16px 116px', MozBorderRadius: '6px 16px 16px 116px', WebkitBorderRadius: '6px 16px 16px 116px'}} href="#habit_input_modal">+</li>
                 </ul>
               </div>
             </div>

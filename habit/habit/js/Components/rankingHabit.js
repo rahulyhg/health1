@@ -12,7 +12,7 @@ var RankingRoot = React.createClass({
 });
 
 var mapStateToProps = function(state){
-    return {habitModel: state.filteredModel}
+    return {habitModel: state.model}
 }
 
 var ReduxRankingRoot = connect(mapStateToProps)(RankingRoot); //now reduxrankingRoot replaced RankingRoot

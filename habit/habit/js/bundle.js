@@ -29751,7 +29751,7 @@
 	          _react2.default.createElement(
 	            "li",
 	            { className: " text-center", id: "add_more", style: { marginTop: '30px', marginLeft: '8px', borderRadius: '6px 16px 16px 116px', MozBorderRadius: '6px 16px 16px 116px', WebkitBorderRadius: '6px 16px 16px 116px' }, href: "#habit_input_modal" },
-	            "add more"
+	            "+"
 	          )
 	        )
 	      )
@@ -32107,7 +32107,7 @@
 	});
 
 	var mapStateToProps = function mapStateToProps(state) {
-	  return { habitModel: state.filteredModel };
+	  return { habitModel: state.model };
 	};
 
 	var ReduxRankingRoot = (0, _reactRedux.connect)(mapStateToProps)(RankingRoot); //now reduxrankingRoot replaced RankingRoot
