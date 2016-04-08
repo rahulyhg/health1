@@ -31443,8 +31443,8 @@
 	  }
 	  switch (action.type) {
 	    case 'UPDATE':
-	      //whenever we make a call to RestApi. filterList should also be reseted
-	      //return action.data;
+	      //whenever we make a call to RestApi. Update model, but filterList should also be reseted
+	      //because habitListiing (what user sees) read from filteredModel
 	      return Object.assign({}, state, { model: action.data, filteredModel: action.data });
 
 	    case 'FILTER':
@@ -31804,7 +31804,7 @@
 	          _react2.default.createElement("input", { id: "Monday", type: "checkbox", onClick: this.userInput.bind(this, 1), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(1) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Monday" },
 	            "Monday"
 	          )
 	        ),
@@ -31814,7 +31814,7 @@
 	          _react2.default.createElement("input", { id: "Tuesday", type: "checkbox", onClick: this.userInput.bind(this, 2), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(2) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Tuesday" },
 	            "Tuesday"
 	          )
 	        ),
@@ -31824,7 +31824,7 @@
 	          _react2.default.createElement("input", { id: "Wednesday", type: "checkbox", onClick: this.userInput.bind(this, 3), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(3) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Wednesday" },
 	            "Wednesday"
 	          ),
 	          " "
@@ -31835,7 +31835,7 @@
 	          _react2.default.createElement("input", { id: "Thursday", type: "checkbox", onClick: this.userInput.bind(this, 4), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(4) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Thursday" },
 	            "Thursday"
 	          )
 	        ),
@@ -31845,7 +31845,7 @@
 	          _react2.default.createElement("input", { id: "Friday", type: "checkbox", onClick: this.userInput.bind(this, 5), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(5) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Friday" },
 	            "Friday"
 	          )
 	        ),
@@ -31855,7 +31855,7 @@
 	          _react2.default.createElement("input", { id: "Saturaday", type: "checkbox", onClick: this.userInput.bind(this, 6), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(6) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Saturaday" },
 	            "Saturaday"
 	          )
 	        ),
@@ -31865,7 +31865,7 @@
 	          _react2.default.createElement("input", { id: "Sunday", type: "checkbox", onClick: this.userInput.bind(this, 7), defaultChecked: _HabitCreationModel2.default.getDays().indexOf(7) > -1 }),
 	          _react2.default.createElement(
 	            "label",
-	            null,
+	            { htmlFor: "Sunday" },
 	            "Sunday"
 	          )
 	        )
@@ -32115,6 +32115,15 @@
 	var ComputeRanks = _react2.default.createClass({
 	  displayName: 'ComputeRanks',
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      new_Notify_Counts: 0
+	    };
+	  },
+	  handleCounts: function handleCounts(change) {
+	    console.log("in counts");
+	    this.setState({ new_Notify_Counts: this.state.new_Notify_Counts + change });
+	  },
 	  render: function render() {
 	    var list = this.props.list.slice(0);
 	    list.sort(function (a, b) {
@@ -32123,12 +32132,15 @@
 	      a.startDate.constructor === Array ? alength = a.startDate.length : "";
 	      b.startDate.constructor === Array ? blength = b.startDate.length : "";
 	      return blength - alength;
-	    });
+	    }); //<Notification counts = {this.state.new_Notify_Counts}/>
 	    return _react2.default.createElement(
 	      'div',
 	      { className: 'text-center' },
+	      _react2.default.createElement(NotificationCount, { counts: this.state.new_Notify_Counts }),
 	      'Achievements/Rewards:',
-	      _react2.default.createElement(DisplayList, { sortedList: list })
+	      _react2.default.createElement(DisplayList, { sortedList: list,
+	        changeCounts: this.handleCounts
+	      })
 	    );
 	  }
 	});
@@ -32136,7 +32148,73 @@
 	var DisplayList = _react2.default.createClass({
 	  displayName: 'DisplayList',
 
+	  getInitialState: function getInitialState() {
+	    return {
+	      changedHabit: [] //an array of habitID that was changed
+	    };
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    console.log("entering displaylist componentWillReceiveProps");
+	    //this.props.list hold the current list, nextProps.list holds the coming in new list
+	    //check changing. Find the changed habitID, store it in the startDate
+	    //then in render give the changedHabit a different css color.
+	    //also a new change/a new push to changedHabit, add one to Notification
+
+	    //also do a handle click, when a li is clicked, check if habitID is in changedHabit list, if it is
+	    //decrement parent notification count
+	    var self = this;
+	    var firstList = this.props.sortedList;
+	    var secondList = nextProps.sortedList;
+
+	    //find the unique (newly) added item
+	    var uniqueInSecond = secondList.filter(function (obj) {
+	      return !firstList.some(function (obj2) {
+	        return obj.habitid == obj2.habitid;
+	      });
+	    });
+
+	    //check for extra new habit from the newly coming props, find it and store in
+	    //this.state.changedHabit for rendering
+	    uniqueInSecond.forEach(function (item) {
+	      console.log("the unique item is " + JSON.stringify(item));
+	      self.props.changeCounts(1);
+	      self.setState({ changedHabit: self.state.changedHabit.concat(item.habitid) });
+	    });
+
+	    //if there wasnt any newly coming props, there might have been a change in
+	    //one of the habits, find it and store in this.state.changedHabit for rendering
+	    if (uniqueInSecond.length == 0) {
+	      console.log("enter find duplicate change ");
+	      for (var i = 0; i < firstList.length; i++) {
+	        for (var j = 0; j < secondList.length; j++) {
+	          if (firstList[i].habitid == secondList[j].habitid) {
+	            if (JSON.stringify(firstList[i]) != JSON.stringify(secondList[j])) {
+	              //get here when the two element has the same habitId but different contents
+	              if (self.state.changedHabit.indexOf(firstList[i].habitid) == -1) {
+	                self.props.changeCounts(1);
+	                self.setState({ changedHabit: self.state.changedHabit.concat(firstList[i].habitid) });
+	              }
+	              break;
+	            }
+	          }
+	        }
+	      }
+	    }
+	  },
+	  handleMouse: function handleMouse(event) {
+	    event.currentTarget.style.backgroundColor = 'white';
+	    this.props.changeCounts(-1); //since the user clicked on one of the newly added list item, we should decrement one of the notification count
+
+	    //take out the clicked li element, which will triger a re-rendering
+	    //so the clicked li element will not have a click handler on it
+	    var newArr = this.state.changedHabit.filter(function (item) {
+	      return item != event.currentTarget.id;
+	    });
+	    this.setState({ changedHabit: newArr });
+	  },
+
 	  render: function render() {
+	    var self = this;
 	    return _react2.default.createElement(
 	      'div',
 	      { id: 'listing-boxes-wrapper' },
@@ -32144,23 +32222,58 @@
 	        'ul',
 	        { className: 'listing-boxes' },
 	        this.props.sortedList.map(function (item, index) {
-	          return _react2.default.createElement(
-	            'li',
-	            { key: index, className: 'text-center' },
-	            item.description,
-	            ' :',
-	            _react2.default.createElement(Awards, { days: item.startDate })
-	          );
+	          var targetIn = self.state.changedHabit.indexOf(item.habitid);
+	          if (targetIn > -1) {
+	            return _react2.default.createElement(
+	              'li',
+	              { key: index, id: item.habitid, style: { backgroundColor: '#ccc' }, className: 'text-center', onClick: self.handleMouse },
+	              item.description,
+	              ' : ',
+	              _react2.default.createElement('br', null),
+	              _react2.default.createElement(Awards, { days: item.startDate })
+	            );
+	          } else {
+	            return _react2.default.createElement(
+	              'li',
+	              { key: index, className: ' text-center' },
+	              item.description,
+	              ' : ',
+	              _react2.default.createElement('br', null),
+	              _react2.default.createElement(Awards, { days: item.startDate })
+	            );
+	          }
 	        })
-	      )
+	      ),
+	      _react2.default.createElement(Tester, { list: this.state.changedHabit })
 	    );
 	  }
 	});
 
+	var Tester = _react2.default.createClass({
+	  displayName: 'Tester',
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      null,
+	      this.props.list.map(function (item, i) {
+	        return _react2.default.createElement(
+	          'li',
+	          { key: i },
+	          ' ',
+	          item,
+	          ' '
+	        );
+	      })
+	    );
+	  }
+	});
 	var Awards = _react2.default.createClass({
 	  displayName: 'Awards',
 
 	  render: function render() {
+	    var count = this.props.days.length;
+
 	    return _react2.default.createElement(
 	      'span',
 	      null,
@@ -32168,7 +32281,17 @@
 	    );
 	  }
 	});
+	var NotificationCount = _react2.default.createClass({
+	  displayName: 'NotificationCount',
 
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'span',
+	      { id: 'notification-bubble' },
+	      this.props.counts
+	    );
+	  }
+	});
 	exports.default = ReduxRankingRoot;
 
 /***/ },

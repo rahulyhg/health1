@@ -9,8 +9,8 @@ export default function reducer(state, action){
     return initialState; //initial state
   }
   switch (action.type){
-    case 'UPDATE': //whenever we make a call to RestApi. filterList should also be reseted
-    //return action.data;
+    case 'UPDATE': //whenever we make a call to RestApi. Update model, but filterList should also be reseted
+                   //because habitListiing (what user sees) read from filteredModel 
       return Object.assign({}, state, {model: action.data, filteredModel: action.data});
 
     case 'FILTER':

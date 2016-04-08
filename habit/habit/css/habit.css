@@ -75,7 +75,7 @@ body{
 
 
 #habit_list > li:hover{
-  background:#F25C5C;
+  background-color:#F25C5C;
 
 }
 
@@ -84,7 +84,7 @@ body{
   padding-bottom: 5px;
 }
 .listing-boxes li{
-  background: white;
+  background-color: white;
   /*border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;*/
@@ -100,7 +100,7 @@ body{
   transition: background-color 0.2s linear;
 }
 .listing-boxes li:hover{
-  background: #E74C3C;
+  background-color: #E74C3C!important;
   color: white;
 
 
@@ -173,6 +173,35 @@ body{
   overflow: hidden;
 }
 
+#notification-bubble{
+  position: relative;
+  right: 5%;
+  top: 2px;
+  /*border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;*/
+  background-color: #E74C3C;
+  padding: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+
+   /*margin-top: 100px;*/
+}
+#notification-bubble{ /*for the text inside*/
+  color: white;
+  font-size: 13px;
+}
+#notification-bubble:after{
+  position: absolute;
+  top:25px;
+  left:20px;
+  color: #E74C3C;
+  content: " ";
+  border-style:solid;
+	border-width:5px;
+  border-color: #E74C3C transparent transparent transparent;
+
+}
 
 
 #habit_listing_nav{

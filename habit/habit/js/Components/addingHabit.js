@@ -195,13 +195,13 @@ import constant from "../../config/config.js"; //contants all constants
           <fieldset className="fieldset">
           <legend>Which days?</legend>
           <ul className ="checkbox-grid">
-          <li><input id="Monday" type="checkbox" onClick={this.userInput.bind(this, 1)} defaultChecked={formModel.getDays().indexOf(1) > -1}/><label >Monday</label></li>
-          <li><input id="Tuesday" type="checkbox" onClick={this.userInput.bind(this, 2)} defaultChecked={formModel.getDays().indexOf(2) > -1} /><label >Tuesday</label></li>
-          <li><input id="Wednesday" type="checkbox" onClick={this.userInput.bind(this, 3)} defaultChecked={formModel.getDays().indexOf(3) > -1} /><label >Wednesday</label> </li>
-          <li><input id="Thursday" type="checkbox" onClick={this.userInput.bind(this, 4)} defaultChecked={formModel.getDays().indexOf(4) > -1} /><label >Thursday</label></li>
-          <li><input id="Friday" type="checkbox" onClick={this.userInput.bind(this, 5)} defaultChecked={formModel.getDays().indexOf(5) > -1} /><label >Friday</label></li>
-          <li><input id="Saturaday" type="checkbox" onClick={this.userInput.bind(this, 6)} defaultChecked={formModel.getDays().indexOf(6) > -1} /><label >Saturaday</label></li>
-          <li><input id="Sunday" type="checkbox" onClick={this.userInput.bind(this, 7)} defaultChecked={formModel.getDays().indexOf(7) > -1} /><label >Sunday</label></li>
+          <li><input id="Monday" type="checkbox" onClick={this.userInput.bind(this, 1)} defaultChecked={formModel.getDays().indexOf(1) > -1}/><label htmlFor="Monday">Monday</label></li>
+          <li><input id="Tuesday" type="checkbox" onClick={this.userInput.bind(this, 2)} defaultChecked={formModel.getDays().indexOf(2) > -1} /><label htmlFor="Tuesday">Tuesday</label></li>
+          <li><input id="Wednesday" type="checkbox" onClick={this.userInput.bind(this, 3)} defaultChecked={formModel.getDays().indexOf(3) > -1} /><label htmlFor="Wednesday">Wednesday</label> </li>
+          <li><input id="Thursday" type="checkbox" onClick={this.userInput.bind(this, 4)} defaultChecked={formModel.getDays().indexOf(4) > -1} /><label htmlFor="Thursday">Thursday</label></li>
+          <li><input id="Friday" type="checkbox" onClick={this.userInput.bind(this, 5)} defaultChecked={formModel.getDays().indexOf(5) > -1} /><label htmlFor="Friday">Friday</label></li>
+          <li><input id="Saturaday" type="checkbox" onClick={this.userInput.bind(this, 6)} defaultChecked={formModel.getDays().indexOf(6) > -1} /><label htmlFor="Saturaday">Saturaday</label></li>
+          <li><input id="Sunday" type="checkbox" onClick={this.userInput.bind(this, 7)} defaultChecked={formModel.getDays().indexOf(7) > -1} /><label htmlFor="Sunday">Sunday</label></li>
           </ul>
           </fieldset>
         )
