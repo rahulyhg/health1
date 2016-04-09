@@ -50,16 +50,28 @@ body{
   position: relative;
   left: -10%;
   text-align: left;
-    font: normal normal normal 25px/1.2em 'Noticia Text',serif;
+  font: normal normal normal 25px/1.2em 'Noticia Text',serif;
 }
 #intro-text p:nth-child(2){
   text-align: right;
 }
-
 #intro-text p:nth-child(5){
-  left: -30%;
+  top: 26px;
+  left: -45%;
+  font: normal normal normal 15px/1.2em 'Noticia Text',serif;
 }
-
+#intro-text p:nth-child(5):before{
+  content: "\f100";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+/*--adjust as necessary--*/
+  position: relative;
+  color: rgba(77,77,77,1);
+  font-size: 18px;
+  left: -5%;
+}
 
 #introduction-section{
   float:left;
@@ -147,7 +159,16 @@ body{
   background-color:#F25C5C;
   color: white;
 }
-
+#add_more{
+  border-radius: 16px 16px 116px 116px!important;
+  -moz-border-radius: 16px 16px 116px 116px!important;
+  -webkit-border-radius: 16px 16px 116px 116px!important;
+  margin-left: 0%!important;
+  width: 100%!important;
+  padding:17px!important;
+  color:white;
+  font: normal normal normal 17px/1.2em 'Open Sans',sans-serif;
+}
 
 
 
@@ -193,6 +214,8 @@ body{
   display:none;
 }
 
+
+
   .checkbox-grid-frequency li{
     display: block;
     float: left;
@@ -222,8 +245,9 @@ body{
     width: 100%;
   }
 
-
 }
+
+
 
 .checkbox-grid li {
   display: block;
@@ -270,5 +294,6 @@ body{
 
 
 #habit_listing_nav{
-  margin-right: 21%;
+  width: 100%;
+  margin: auto;
 }

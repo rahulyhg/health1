@@ -29750,8 +29750,8 @@
 	          _react2.default.createElement("hr", null),
 	          _react2.default.createElement(
 	            "li",
-	            { className: " text-center", id: "add_more", style: { marginTop: '30px', marginLeft: '8px', borderRadius: '6px 16px 16px 116px', MozBorderRadius: '6px 16px 16px 116px', WebkitBorderRadius: '6px 16px 16px 116px' }, href: "#habit_input_modal" },
-	            "+"
+	            { className: " text-center", id: "add_more", href: "#habit_input_modal" },
+	            "It begins here"
 	          )
 	        )
 	      )
