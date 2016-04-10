@@ -37,8 +37,8 @@ var ComputeRanks = React.createClass({
       }); //<Notification counts = {this.state.new_Notify_Counts}/>
     return(
       <div className = "text-center">
-        <NotificationCount counts = {this.state.new_Notify_Counts} />Achievements/Rewards:
-        <DisplayList sortedList = {list}
+        <NotificationCount counts = {this.state.new_Notify_Counts} /> <span id="section-title">Achievements/Rewards</span>
+        <DisplayLogic sortedList = {list}
                      changeCounts = {this.handleCounts}
         />
       </div>
@@ -47,7 +47,7 @@ var ComputeRanks = React.createClass({
 })
 
 
-var DisplayList = React.createClass({
+var DisplayLogic = React.createClass({
   getInitialState: function(){
     return{
       changedHabit: [] //an array of habitID that was changed
@@ -112,52 +112,71 @@ var DisplayList = React.createClass({
     })
     this.setState({changedHabit: newArr });
   },
+  render: function(){
+    return(
+      <DisplayListing sortedList = {this.props.sortedList}
+                      changedHabit = {this.state.changedHabit}
+                      handleMouse = {this.handleMouse} />
+    )
+  }
+});
 
+var DisplayListing = React.createClass({
   render: function(){
     var self = this;
     return(
       <div id = "listing-boxes-wrapper">
         <ul className="listing-boxes">
           {
-
             this.props.sortedList.map(function(item, index){
-              var targetIn = self.state.changedHabit.indexOf(item.habitid);
-              if (targetIn > -1) {
-                return  <li key={index} id = {item.habitid} style={{backgroundColor: '#ccc'}} className = "text-center" onClick={self.handleMouse}>{item.description} : <br/>
+              if (self.props.changedHabit.indexOf(item.habitid) > -1) {
+                return  <li key={index} id = {item.habitid} style={{backgroundColor: '#ccc'}} className = "text-center" onClick={self.props.handleMouse}>{item.description} : <br/>
                           <Awards days = {item.startDate} />
+                          <DeleteHabit habitid= {item.habitid} />
                         </li>
               }else{
                 return  <li key={index} className =" text-center">{item.description} : <br/>
                           <Awards days = {item.startDate} />
+                          <DeleteHabit habitid= {item.habitid} />
                         </li>
               }
             })
           }
         </ul>
-        <Tester list = {this.state.changedHabit}/>
-      </div>
-    )
-  }
-});
-
-var Tester = React.createClass({
-  render: function(){
-    return(
-      <div>
-      { this.props.list.map(function(item, i){
-          return <li key={i}> {item} </li>
-      })
-    }
       </div>
     )
   }
 })
+
+var DeleteHabit = React.createClass({
+  handleClick: function(habitid){
+    //later, should also attach userid and token, for valification
+    $.ajax({
+       url: '/health1/server/habit/'+habitid,
+       type: 'DELETE',
+       success: function(result){
+         //if successful delete it from redux store. so user can see the updateHabitListing via the frontend UI
+           store.dispatch({type:'DELETE', id: habitid});
+       }
+    });
+  },
+  render(){
+      return(
+        <span onClick={this.handleClick.bind(this, this.props.habitid)}><i id= "delete-icon" className='fa fa-times'></i></span>
+      )
+  }
+
+});
+
+
+
 var Awards = React.createClass({
   render: function(){
     var count = this.props.days.length;
-
+    console.log("the days are: " + JSON.stringify(this.props.days) + " the length is: " + count);
     return(
-      <span>{this.props.days}</span>
+      <div>Completed Counts: {this.props.days.length}
+      </div>
     )
   }
 });

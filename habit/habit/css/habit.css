@@ -152,12 +152,14 @@ body{
   margin-top: 10px;
   margin-bottom:10px;
   background: #E74C3C;
-    box-shadow: 0px 0px 5px #888888;
+    box-shadow: 0px 0px 10px #888888;
   transition: background-color color 0.2s linear;
 }
 #habit_list > li:hover{
   background-color:#F25C5C;
   color: white;
+
+    /*box-shadow: 0px 0px 5px #ecf0f1;*/
 }
 #add_more{
   border-radius: 16px 16px 116px 116px!important;
@@ -171,10 +173,20 @@ body{
 }
 
 
+#section-title {
+  font: normal normal normal 17px/1.2em 'Noticia Text',serif;
+  color: rgba(77,77,77,1);
+  position:relative;
+
+}
+
+
 
 .listing-boxes{
   padding-top: 5px;
   padding-bottom: 5px;
+  border-left: thin dotted white;
+
 }
 .listing-boxes li{
   background-color: white;
@@ -195,8 +207,9 @@ body{
 .listing-boxes li:hover{
   background-color: #E74C3C!important;
   color: white;
-
-
+}
+#delete-icon{
+  color: #f5f5f5;
 }
 
 
@@ -265,7 +278,7 @@ body{
 #notification-bubble{
   position: relative;
   right: 5%;
-  top: 2px;
+  top: -3px;
   /*border-radius: 50%;
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;*/
@@ -289,7 +302,6 @@ body{
   border-style:solid;
 	border-width:5px;
   border-color: #E74C3C transparent transparent transparent;
-
 }
 
 

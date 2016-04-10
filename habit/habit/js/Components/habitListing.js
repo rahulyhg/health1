@@ -113,7 +113,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
                     console.log("add habits display");
                     return  <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, dataRow)} href="#current_habit_modal">{dataRow.description}</li>
                   }else{
-                    return <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, "")} href="#current_habit_modal" style={{color: 'white'}}>Click add more to add a new habit here</li>
+                    return <li className="habits_display" key={i} onClick={this.handleCurrentHabit.bind(this, "")} href="#current_habit_modal" style={{color: 'white'}}>Click below to add a new habit</li>
                   }
                 }, this)
                 //each list habit item can trigger the modal to appear when clicked, this is made possible with a Jquery plugin that get initialize later on
@@ -185,6 +185,8 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
           hide: function(){
             var self = $(this);
             var habitID = main.props.habit.habitid;
+            //ajax to server, with habitid and array of Days
+            //overwrite all
             console.log("the dates are " + JSON.stringify(self.pickmeup('get_date', true)));
             store.dispatch({type:'UPDATE_HABIT_COMPLETED',
             data: {

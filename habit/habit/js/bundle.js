@@ -29741,7 +29741,7 @@
 	              return _react2.default.createElement(
 	                "li",
 	                { className: "habits_display", key: i, onClick: this.handleCurrentHabit.bind(this, ""), href: "#current_habit_modal", style: { color: 'white' } },
-	                "Click add more to add a new habit here"
+	                "Click below to add a new habit"
 	              );
 	            }
 	          }, this)
@@ -29829,6 +29829,8 @@
 	      hide: function hide() {
 	        var self = $(this);
 	        var habitID = main.props.habit.habitid;
+	        //ajax to server, with habitid and array of Days
+	        //overwrite all
 	        console.log("the dates are " + JSON.stringify(self.pickmeup('get_date', true)));
 	        _store2.default.dispatch({ type: 'UPDATE_HABIT_COMPLETED',
 	          data: {
@@ -31473,8 +31475,16 @@
 	          return;
 	        }
 	      });
-
 	      return jarray;
+
+	    case 'DELETE':
+	      var modelAfterDel = state.model.filter(function (item) {
+	        return item.habitid != action.id;
+	      });
+	      var filteredModelAfterDel = state.filteredModel.filter(function (item) {
+	        return item.habitid != action.id;
+	      });
+	      return { model: modelAfterDel, filteredModel: filteredModelAfterDel };
 
 	  }
 	  return state;
@@ -32080,7 +32090,7 @@
 /* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -32137,16 +32147,21 @@
 	      'div',
 	      { className: 'text-center' },
 	      _react2.default.createElement(NotificationCount, { counts: this.state.new_Notify_Counts }),
-	      'Achievements/Rewards:',
-	      _react2.default.createElement(DisplayList, { sortedList: list,
+	      ' ',
+	      _react2.default.createElement(
+	        'span',
+	        { id: 'section-title' },
+	        'Achievements/Rewards'
+	      ),
+	      _react2.default.createElement(DisplayLogic, { sortedList: list,
 	        changeCounts: this.handleCounts
 	      })
 	    );
 	  }
 	});
 
-	var DisplayList = _react2.default.createClass({
-	  displayName: 'DisplayList',
+	var DisplayLogic = _react2.default.createClass({
+	  displayName: 'DisplayLogic',
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -32212,6 +32227,15 @@
 	    });
 	    this.setState({ changedHabit: newArr });
 	  },
+	  render: function render() {
+	    return _react2.default.createElement(DisplayListing, { sortedList: this.props.sortedList,
+	      changedHabit: this.state.changedHabit,
+	      handleMouse: this.handleMouse });
+	  }
+	});
+
+	var DisplayListing = _react2.default.createClass({
+	  displayName: 'DisplayListing',
 
 	  render: function render() {
 	    var self = this;
@@ -32222,15 +32246,15 @@
 	        'ul',
 	        { className: 'listing-boxes' },
 	        this.props.sortedList.map(function (item, index) {
-	          var targetIn = self.state.changedHabit.indexOf(item.habitid);
-	          if (targetIn > -1) {
+	          if (self.props.changedHabit.indexOf(item.habitid) > -1) {
 	            return _react2.default.createElement(
 	              'li',
-	              { key: index, id: item.habitid, style: { backgroundColor: '#ccc' }, className: 'text-center', onClick: self.handleMouse },
+	              { key: index, id: item.habitid, style: { backgroundColor: '#ccc' }, className: 'text-center', onClick: self.props.handleMouse },
 	              item.description,
 	              ' : ',
 	              _react2.default.createElement('br', null),
-	              _react2.default.createElement(Awards, { days: item.startDate })
+	              _react2.default.createElement(Awards, { days: item.startDate }),
+	              _react2.default.createElement(DeleteHabit, { habitid: item.habitid })
 	            );
 	          } else {
 	            return _react2.default.createElement(
@@ -32239,45 +32263,50 @@
 	              item.description,
 	              ' : ',
 	              _react2.default.createElement('br', null),
-	              _react2.default.createElement(Awards, { days: item.startDate })
+	              _react2.default.createElement(Awards, { days: item.startDate }),
+	              _react2.default.createElement(DeleteHabit, { habitid: item.habitid })
 	            );
 	          }
 	        })
-	      ),
-	      _react2.default.createElement(Tester, { list: this.state.changedHabit })
+	      )
 	    );
 	  }
 	});
 
-	var Tester = _react2.default.createClass({
-	  displayName: 'Tester',
+	var DeleteHabit = _react2.default.createClass({
+	  displayName: 'DeleteHabit',
 
+	  handleClick: function handleClick(habitid) {
+	    //later, should also attach userid and token, for valification
+	    $.ajax({
+	      url: '/health1/server/habit/' + habitid,
+	      type: 'DELETE',
+	      success: function success(result) {
+	        //if successful delete it from redux store. so user can see the updateHabitListing via the frontend UI
+	        _store2.default.dispatch({ type: 'DELETE', id: habitid });
+	      }
+	    });
+	  },
 	  render: function render() {
 	    return _react2.default.createElement(
-	      'div',
-	      null,
-	      this.props.list.map(function (item, i) {
-	        return _react2.default.createElement(
-	          'li',
-	          { key: i },
-	          ' ',
-	          item,
-	          ' '
-	        );
-	      })
+	      'span',
+	      { onClick: this.handleClick.bind(this, this.props.habitid) },
+	      _react2.default.createElement('i', { id: 'delete-icon', className: 'fa fa-times' })
 	    );
 	  }
 	});
+
 	var Awards = _react2.default.createClass({
 	  displayName: 'Awards',
 
 	  render: function render() {
 	    var count = this.props.days.length;
-
+	    console.log("the days are: " + JSON.stringify(this.props.days) + " the length is: " + count);
 	    return _react2.default.createElement(
-	      'span',
+	      'div',
 	      null,
-	      this.props.days
+	      'Completed Counts: ',
+	      this.props.days.length
 	    );
 	  }
 	});
@@ -32293,6 +32322,7 @@
 	  }
 	});
 	exports.default = ReduxRankingRoot;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
 /* 194 */

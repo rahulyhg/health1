@@ -5,7 +5,6 @@ require '/accessToken.php';
 
 $app = new \Slim\Slim();
 
-
 //all the route
 $app->get('/account/:userid', 'getUserAccount');
 $app->post('/account', 'createNewAccount'); //Will create and return a new token and userid for the User, in the form of JSON_encode($array)
@@ -13,10 +12,8 @@ $app->delete('/account/:userid', 'deleteAccount'); //delete account by user id
 $app->post('/account/facebookuser', "createFacebookAccount"); //create an account base on facebook login if he doesnt have account with us. Will also assign an accesstoken
 //$app->delete('/account/facebookuser/:userid, "deleteFacebookAccount");
 
-
 $app->post('/user/session', 'giveToken'); //authenticates credentials against database, gives token to client
 //$app->post('/user/facebook/session', 'giveFbToken'); // same as above but for fb user
-
 
 $app->get('/user/session', 'valifyToken'); //currently give back username if token/userid is valid. in Json format
 $app->delete('/user/session', 'deleteToken'); //bascially logging out, delete the token for the user
@@ -24,23 +21,14 @@ $app->delete('/user/session', 'deleteToken'); //bascially logging out, delete th
 //verify: each time a page is loaded, client send token and userid to server to verify. IF they have a userid set in the sessionStorage, if not skip
 //			it work the same for fb user. If token is valid, give them to logged in page. Change the login/register to username, and other info
 
-
-
-
 $app->get('/habit/user', 'getHabits');
 $app->post('/habit/user', 'createHabit');
+$app->delete('/habit/:habitid', 'delHabit');
 //$app->group('/post', function() use($app) {
-//
 //		$app->post('/:userid', "createPost");
-//
 //		$app->get('/byUser/:userid', "getPostByUser");
-//
 //		$app->get('/byPost/:postid', "getPostB;	yPost")
-//
-//
 //});
-
-
 
 $app->run();
 
@@ -48,6 +36,22 @@ $app->run();
 //facebook
 //require 'facebookini.php';
 //facebook stuff
+
+function delHabit($habitid){
+	$app = \Slim\Slim::getInstance();
+//should also try, userid and token
+//then check if the habitid belong to that user before deleting
+		try{
+		$db = getDB();
+		$query = "Delete FROM habit
+					WHERE habitid = '$habitid'";
+
+		$result = $db->query($query);
+		}catch(PDOException $e){
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
+		echo "it is done";
+}
 
 function createHabit(){
 	$app = \Slim\Slim::getInstance();
@@ -66,25 +70,25 @@ function createHabit(){
 	// }
 	$db = getDB();
 	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); //since we are using prepare here
-try {
-	$result = $db->prepare("INSERT INTO Habit(habitid, userid, description, startDate, frequency, day)
-	VALUES (:habitid, :userid, :description, :startDate, :frequency, :day)");
-	$result->execute(array(
-		"habitid" => NULL,
-		"userid" => $userid,
-		"description" => $description,
-		"startDate" => $startDay,
-		"frequency" => $frequency,
-		"day" => $days
-	));
-}
-catch(Exception $e) {
-    echo 'Exception -> ';
-    var_dump($e->getMessage());
+	try {
+		$result = $db->prepare("INSERT INTO Habit(habitid, userid, description, startDate, frequency, day)
+		VALUES (:habitid, :userid, :description, :startDate, :frequency, :day)");
+		$result->execute(array(
+			"habitid" => NULL,
+			"userid" => $userid,
+			"description" => $description,
+			"startDate" => $startDay,
+			"frequency" => $frequency,
+			"day" => $days
+		));
+	}
+	catch(Exception $e) {
+		echo 'Exception -> ';
+		var_dump($e->getMessage());
+	}
 }
 
 
-}
 function getHabits(){
 
 	$app = \Slim\Slim::getInstance();

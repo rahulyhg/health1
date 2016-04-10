@@ -10,7 +10,7 @@ export default function reducer(state, action){
   }
   switch (action.type){
     case 'UPDATE': //whenever we make a call to RestApi. Update model, but filterList should also be reseted
-                   //because habitListiing (what user sees) read from filteredModel 
+                   //because habitListiing (what user sees) read from filteredModel
       return Object.assign({}, state, {model: action.data, filteredModel: action.data});
 
     case 'FILTER':
@@ -38,8 +38,18 @@ export default function reducer(state, action){
           return;
         }
       })
-
       return jarray;
+      
+     case 'DELETE':
+      var modelAfterDel = state.model.filter(function(item){
+        return item.habitid != action.id;
+      });
+      var filteredModelAfterDel = state.filteredModel.filter(function(item){
+        return item.habitid != action.id;
+      });
+      return {model: modelAfterDel, filteredModel: filteredModelAfterDel};
+
+
 
   }
   return state;
