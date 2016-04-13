@@ -172,10 +172,10 @@ var DeleteHabit = React.createClass({
 
 var Awards = React.createClass({
   render: function(){
-    var count = this.props.days.length;
-    console.log("the days are: " + JSON.stringify(this.props.days) + " the length is: " + count);
+    var count = 1;
+    (this.props.days.constructor === Array) ? count = this.props.days.length: "";
     return(
-      <div>Completed Counts: {this.props.days.length}
+      <div>Completed Counts: {count}
       </div>
     )
   }

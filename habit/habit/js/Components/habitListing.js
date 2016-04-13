@@ -175,6 +175,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
           mode: 'multiple',
           format: 'Y-m-d',
           position: 'bottom',
+
           before_show: function(){
             var self = $(this);
             var startDate = main.props.habit.startDate;
@@ -187,17 +188,55 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
             var habitID = main.props.habit.habitid;
             //ajax to server, with habitid and array of Days
             //overwrite all
-            console.log("the dates are " + JSON.stringify(self.pickmeup('get_date', true)));
-            store.dispatch({type:'UPDATE_HABIT_COMPLETED',
-            data: {
-              id: habitID,
-              startDate: self.pickmeup('get_date', true)
+            var newDates = self.pickmeup('get_date', true);
+            var oldDates = main.props.habit.startDate;
+
+            if (newDates != oldDates){ //if there are newly added dates
+
+                // var deleteDays = newDates.filter(function(item){
+                //   return oldDates.some(function(item2){
+                //           return item != item2;
+                //   });
+                // });
+                //
+                // var updatedDays = oldDates.filter(function(item){
+                //   return newDates.filter(function(item2){
+                //           return item != item2;
+                //   });
+                // });
+
+
+              //this will insert whatever new
+              //we need to also del the ones that is in the old array but not in the new array
+              $.ajax({
+                type: 'PUT',
+                data: {completed: JSON.stringify(newDates)},
+                url: '/health1/server/habit/days/' + habitID,
+
+                success: function(data){
+                  alert("good" + JSON.stringify(data));
+
+                  //successful call to restapi, so we can update current viewing
+                  store.dispatch(
+                    {
+                      type:'UPDATE_HABIT_COMPLETED',
+                      data: {
+                        id: habitID,
+                        startDate: newDates
+                      }
+                    });
+                  },
+
+                  error: function(data){
+                    alert("ERROR" + JSON.stringify(data));
+                  }
+
+                });
+              }
             }
           });
-        }
-      });
-      return true;
-    },
+          return true;
+        },
     render: function(){
         console.log("render");
         //If user clicked on a habit on the listing, display the info, else display empty
@@ -214,7 +253,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
           Completed dates: <ul className = "checkbox-grid" style={{color: 'Blue'}} >
                       { startDate != null && startDate.constructor  === Array
                         ? startDate.map(function(item, i){
-                            return <li key={i}> {item} </li> //style = {{ listStyle: 'none' }}
+                            return <li key={i}> {item} </li>
                         })
                         : startDate
                       }

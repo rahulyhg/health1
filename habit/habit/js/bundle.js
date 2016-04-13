@@ -29819,6 +29819,7 @@
 	      mode: 'multiple',
 	      format: 'Y-m-d',
 	      position: 'bottom',
+
 	      before_show: function before_show() {
 	        var self = $(this);
 	        var startDate = main.props.habit.startDate;
@@ -29831,13 +29832,50 @@
 	        var habitID = main.props.habit.habitid;
 	        //ajax to server, with habitid and array of Days
 	        //overwrite all
-	        console.log("the dates are " + JSON.stringify(self.pickmeup('get_date', true)));
-	        _store2.default.dispatch({ type: 'UPDATE_HABIT_COMPLETED',
-	          data: {
-	            id: habitID,
-	            startDate: self.pickmeup('get_date', true)
-	          }
-	        });
+	        var newDates = self.pickmeup('get_date', true);
+	        var oldDates = main.props.habit.startDate;
+
+	        if (newDates != oldDates) {
+	          //if there are newly added dates
+
+	          // var deleteDays = newDates.filter(function(item){
+	          //   return oldDates.some(function(item2){
+	          //           return item != item2;
+	          //   });
+	          // });
+	          //
+	          // var updatedDays = oldDates.filter(function(item){
+	          //   return newDates.filter(function(item2){
+	          //           return item != item2;
+	          //   });
+	          // });
+
+	          //this will insert whatever new
+	          //we need to also del the ones that is in the old array but not in the new array
+	          $.ajax({
+	            type: 'PUT',
+	            data: { completed: JSON.stringify(newDates) },
+	            url: '/health1/server/habit/days/' + habitID,
+
+	            success: function success(data) {
+	              alert("good" + JSON.stringify(data));
+
+	              //successful call to restapi, so we can update current viewing
+	              _store2.default.dispatch({
+	                type: 'UPDATE_HABIT_COMPLETED',
+	                data: {
+	                  id: habitID,
+	                  startDate: newDates
+	                }
+	              });
+	            },
+
+	            error: function error(data) {
+	              alert("ERROR" + JSON.stringify(data));
+	            }
+
+	          });
+	        }
 	      }
 	    });
 	    return true;
@@ -29871,7 +29909,7 @@
 	            " ",
 	            item,
 	            " "
-	          ); //style = {{ listStyle: 'none' }}
+	          );
 	        }) : startDate
 	      ),
 	      _react2.default.createElement("br", null),
@@ -32300,13 +32338,13 @@
 	  displayName: 'Awards',
 
 	  render: function render() {
-	    var count = this.props.days.length;
-	    console.log("the days are: " + JSON.stringify(this.props.days) + " the length is: " + count);
+	    var count = 1;
+	    this.props.days.constructor === Array ? count = this.props.days.length : "";
 	    return _react2.default.createElement(
 	      'div',
 	      null,
 	      'Completed Counts: ',
-	      this.props.days.length
+	      count
 	    );
 	  }
 	});

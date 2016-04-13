@@ -21,14 +21,14 @@ $app->delete('/user/session', 'deleteToken'); //bascially logging out, delete th
 //verify: each time a page is loaded, client send token and userid to server to verify. IF they have a userid set in the sessionStorage, if not skip
 //			it work the same for fb user. If token is valid, give them to logged in page. Change the login/register to username, and other info
 
-$app->get('/habit/user', 'getHabits');
-$app->post('/habit/user', 'createHabit');
-$app->delete('/habit/:habitid', 'delHabit');
-//$app->group('/post', function() use($app) {
-//		$app->post('/:userid', "createPost");
-//		$app->get('/byUser/:userid', "getPostByUser");
-//		$app->get('/byPost/:postid', "getPostB;	yPost")
-//});
+$app->group('/habit', function()use($app){
+		$app->get('/user', 'getHabits');
+		$app->post('/user', 'createHabit');
+		$app->delete('/:habitid', 'delHabit');
+		$app->put('/days/:habitid', 'completedDays');	//idempotent, even if they keep calling the same way the database stay the same. as oppose to post
+	//	$app->delete('/days/:habitid', 'deleteDays');
+
+});
 
 $app->run();
 
@@ -36,6 +36,29 @@ $app->run();
 //facebook
 //require 'facebookini.php';
 //facebook stuff
+function completedDays($habitid){
+	$app =\Slim\Slim::getInstance();
+	$completed = $app->request->params('completed');
+	//should also try, userid and token
+	//then check if the habitid belong to that user before updating
+	$completed = json_decode($completed);
+
+	try{
+		$db = getDB();
+		$result = $db->prepare("INSERT IGNORE INTO habit_dates (habitid, completed_Days) VALUES (:id, :day)");
+		foreach($completed as $day){
+			$result->bindValue('id', $habitid, PDO::PARAM_STR);
+			$result->bindValue('day', $day, PDO::PARAM_STR);
+			$result->execute();
+		}
+
+	}catch(PDOException $e){
+		echo '{"error":{"text":'. $e->getMessage() .'}}';
+	}
+	echo "it is done";
+}
+
+
 
 function delHabit($habitid){
 	$app = \Slim\Slim::getInstance();
@@ -73,6 +96,7 @@ function createHabit(){
 	try {
 		$result = $db->prepare("INSERT INTO Habit(habitid, userid, description, startDate, frequency, day)
 		VALUES (:habitid, :userid, :description, :startDate, :frequency, :day)");
+
 		$result->execute(array(
 			"habitid" => NULL,
 			"userid" => $userid,
@@ -81,7 +105,19 @@ function createHabit(){
 			"frequency" => $frequency,
 			"day" => $days
 		));
+
+
+		$habitid = $db->lastInsertId();
+		//$completed = $app->request->params('completed');
+
+
+
+
+
 	}
+
+
+
 	catch(Exception $e) {
 		echo 'Exception -> ';
 		var_dump($e->getMessage());
