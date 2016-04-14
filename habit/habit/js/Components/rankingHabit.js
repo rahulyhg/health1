@@ -30,10 +30,7 @@ var ComputeRanks = React.createClass({
   render: function(){
       var list = this.props.list.slice(0);
       list.sort(function(a, b){
-         var alength = 1, blength = 1;
-         (a.startDate.constructor === Array) ? alength = a.startDate.length : "";
-         (b.startDate.constructor === Array) ? blength = b.startDate.length : "";
-         return blength - alength;
+         return b.completed_Days.length - a.completed_Days.length;
       }); //<Notification counts = {this.state.new_Notify_Counts}/>
     return(
       <div className = "text-center">
@@ -131,12 +128,12 @@ var DisplayListing = React.createClass({
             this.props.sortedList.map(function(item, index){
               if (self.props.changedHabit.indexOf(item.habitid) > -1) {
                 return  <li key={index} id = {item.habitid} style={{backgroundColor: '#ccc'}} className = "text-center" onClick={self.props.handleMouse}>{item.description} : <br/>
-                          <Awards days = {item.startDate} />
+                          <Awards days = {item.completed_Days} />
                           <DeleteHabit habitid= {item.habitid} />
                         </li>
               }else{
                 return  <li key={index} className =" text-center">{item.description} : <br/>
-                          <Awards days = {item.startDate} />
+                          <Awards days = {item.completed_Days} />
                           <DeleteHabit habitid= {item.habitid} />
                         </li>
               }

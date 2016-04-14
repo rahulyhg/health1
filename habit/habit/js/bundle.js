@@ -29628,6 +29628,11 @@
 
 	    var serverRequest = $.get("/health1/server/habit/user", { userid: userId }, function (result) {
 	      result = JSON.parse(result);
+	      //have to parse completed_Days into an Array
+	      result.forEach(function (item) {
+	        item.completed_Days = item.completed_Days == null ? [] : item.completed_Days.split(",");
+	      });
+
 	      _store2.default.dispatch({ type: 'UPDATE', data: result });
 	    });
 	  },
@@ -29821,61 +29826,98 @@
 	      position: 'bottom',
 
 	      before_show: function before_show() {
-	        var self = $(this);
-	        var startDate = main.props.habit.startDate;
-	        if (startDate != "") {
-	          self.pickmeup('set_date', startDate);
+	        var self = $(this); // dont think u need the $
+	        //the following is nesscary because pickmeup set_date mutiate the array
+	        var completed_Days = JSON.parse(JSON.stringify(main.props.habit.completed_Days));
+
+	        if (completed_Days.length > 0) {
+	          self.pickmeup('set_date', completed_Days);
+	        } else {
+	          self.pickmeup('clear'); //if there is no completed days, clear it, so it wont show the previous viewed habit days
 	        }
 	      },
 	      hide: function hide() {
 	        var self = $(this);
 	        var habitID = main.props.habit.habitid;
+
+	        // alert("the habitall " + JSON.stringify(main.props.habit));
 	        //ajax to server, with habitid and array of Days
 	        //overwrite all
+
+	        //newDates: contain all the completed dates
+	        //oldDates: are the completed dates before this current user selection
+	        //we use both to update RestApi. If both success we can just update
+	        //client habit model with newDates
 	        var newDates = self.pickmeup('get_date', true);
-	        var oldDates = main.props.habit.startDate;
+	        var oldDates = main.props.habit.completed_Days;
+	        // alert("the new " + JSON.stringify(newDates));
+	        //   alert("the old" + JSON.stringify(oldDates));
 
-	        if (newDates != oldDates) {
-	          //if there are newly added dates
+	        var newlyAddedDays = newDates.filter(function (item) {
+	          return !oldDates.some(function (item2) {
+	            return item == item2;
+	          });
+	        });
 
-	          // var deleteDays = newDates.filter(function(item){
-	          //   return oldDates.some(function(item2){
-	          //           return item != item2;
-	          //   });
-	          // });
-	          //
-	          // var updatedDays = oldDates.filter(function(item){
-	          //   return newDates.filter(function(item2){
-	          //           return item != item2;
-	          //   });
-	          // });
+	        var deletedDays = oldDates.filter(function (item) {
+	          return !newDates.some(function (item2) {
+	            return item == item2;
+	          });
+	        });
+	        // alert("the needed to add " + JSON.stringify(newlyAddedDays));
+	        //   alert("the needed to delete: " + JSON.stringify(deletedDays));
 
-	          //this will insert whatever new
-	          //we need to also del the ones that is in the old array but not in the new array
+	        if (newlyAddedDays.length > 0) {
+	          // there were newly added dates, PUT to restapi
+
 	          $.ajax({
 	            type: 'PUT',
-	            data: { completed: JSON.stringify(newDates) },
+	            data: { completed: JSON.stringify(newlyAddedDays) },
 	            url: '/health1/server/habit/days/' + habitID,
 
 	            success: function success(data) {
-	              alert("good" + JSON.stringify(data));
+	              console.log("good added " + JSON.stringify(data));
 
 	              //successful call to restapi, so we can update current viewing
-	              _store2.default.dispatch({
-	                type: 'UPDATE_HABIT_COMPLETED',
-	                data: {
-	                  id: habitID,
-	                  startDate: newDates
-	                }
-	              });
 	            },
-
 	            error: function error(data) {
 	              alert("ERROR" + JSON.stringify(data));
 	            }
 
 	          });
 	        }
+
+	        if (deletedDays.length > 0) {
+	          // there were deleted dates, DELETE to restapi
+
+	          $.ajax({
+	            type: 'DELETE',
+	            data: { completed: JSON.stringify(deletedDays) },
+	            url: '/health1/server/habit/days/' + habitID,
+
+	            success: function success(data) {
+	              console.log("good deleted " + JSON.stringify(data));
+
+	              //successful call to restapi, so we can update current viewing
+	            },
+	            error: function error(data) {
+	              alert("ERROR" + JSON.stringify(data));
+	            }
+
+	          });
+	        }
+
+	        //after server updated, and everything is good, we can update the client's habit model
+	        _store2.default.dispatch({
+	          type: 'UPDATE_HABIT_COMPLETED',
+	          data: {
+	            id: habitID,
+	            completed_Days: newDates
+	          }
+	        });
+
+	        //this will insert whatever new
+	        //we need to also del the ones that is in the old array but not in the new array
 	      }
 	    });
 	    return true;
@@ -29885,50 +29927,55 @@
 	    //If user clicked on a habit on the listing, display the info, else display empty
 	    var startDate = this.props.habit.startDate;
 
-	    var popup = this.props.habit != "" ? _react2.default.createElement(
-	      "div",
-	      null,
-	      "The habit you clicked on is:",
-	      _react2.default.createElement("br", null),
-	      "description: ",
-	      _react2.default.createElement(
-	        "span",
-	        { style: { color: 'Red' } },
-	        this.props.habit.description
-	      ),
-	      " ",
-	      _react2.default.createElement("br", null),
-	      "Completed dates: ",
-	      _react2.default.createElement(
-	        "ul",
-	        { className: "checkbox-grid", style: { color: 'Blue' } },
-	        startDate != null && startDate.constructor === Array ? startDate.map(function (item, i) {
-	          return _react2.default.createElement(
-	            "li",
-	            { key: i },
-	            " ",
-	            item,
-	            " "
-	          );
-	        }) : startDate
-	      ),
-	      _react2.default.createElement("br", null),
-	      _react2.default.createElement("div", { className: "wrapper-Clear-Flow" }),
-	      "Frequency: ",
-	      this.props.habit.frequency,
-	      " ",
-	      _react2.default.createElement("br", null),
-	      "Planned days: ",
-	      this.props.habit.day,
-	      " ",
-	      _react2.default.createElement("br", null),
-	      _react2.default.createElement(
+	    if (this.props.habit != "") {
+	      var completedDate = this.props.habit.completed_Days;
+	      var popup = _react2.default.createElement(
 	        "div",
-	        { id: "calendar_button", className: "text-center" },
-	        " Open Calendar "
-	      )
-	    ) : "Nothing to see here";
-	    console.log("end render");
+	        null,
+	        "The habit you clicked on is:",
+	        _react2.default.createElement("br", null),
+	        "description: ",
+	        _react2.default.createElement(
+	          "span",
+	          { style: { color: 'Red' } },
+	          this.props.habit.description
+	        ),
+	        " ",
+	        _react2.default.createElement("br", null),
+	        "Completed dates: ",
+	        _react2.default.createElement(
+	          "ul",
+	          { className: "checkbox-grid", style: { color: 'Blue' } },
+	          completedDate.map(function (item, i) {
+	            return _react2.default.createElement(
+	              "li",
+	              { key: i },
+	              " ",
+	              item,
+	              " "
+	            );
+	          })
+	        ),
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement("div", { className: "wrapper-Clear-Flow" }),
+	        "Frequency: ",
+	        this.props.habit.frequency,
+	        " ",
+	        _react2.default.createElement("br", null),
+	        "Planned days: ",
+	        this.props.habit.day,
+	        " ",
+	        _react2.default.createElement("br", null),
+	        _react2.default.createElement(
+	          "div",
+	          { id: "calendar_button", className: "text-center" },
+	          " Open Calendar "
+	        )
+	      );
+	    } else {
+	      var popup = "Nothing to see here";
+	    }
+
 	    return _react2.default.createElement(
 	      "div",
 	      { id: "current_habit_modal" },
@@ -31503,13 +31550,13 @@
 	      var jarray = JSON.parse(JSON.stringify(state));
 	      jarray.model.forEach(function (item) {
 	        if (item.habitid == action.data.id) {
-	          item.startDate = action.data.startDate;
+	          item.completed_Days = action.data.completed_Days;
 	          return;
 	        }
 	      });
 	      jarray.filteredModel.forEach(function (item) {
 	        if (item.habitid == action.data.id) {
-	          item.startDate = action.data.startDate;
+	          item.completed_Days = action.data.completed_Days;
 	          return;
 	        }
 	      });
@@ -32062,6 +32109,10 @@
 
 	          var serverRequest = $.get("/health1/server/habit/user", { userid: userId }, function (result) {
 	            result = JSON.parse(result);
+	            result.forEach(function (item) {
+	              //have to parse completed_Days into an Array
+	              item.completed_Days = item.completed_Days == null ? [] : item.completed_Days.split(",");
+	            });
 	            _store2.default.dispatch({ type: 'UPDATE', data: result });
 	          });
 	          callback(true);
@@ -32175,11 +32226,7 @@
 	  render: function render() {
 	    var list = this.props.list.slice(0);
 	    list.sort(function (a, b) {
-	      var alength = 1,
-	          blength = 1;
-	      a.startDate.constructor === Array ? alength = a.startDate.length : "";
-	      b.startDate.constructor === Array ? blength = b.startDate.length : "";
-	      return blength - alength;
+	      return b.completed_Days.length - a.completed_Days.length;
 	    }); //<Notification counts = {this.state.new_Notify_Counts}/>
 	    return _react2.default.createElement(
 	      'div',
@@ -32291,7 +32338,7 @@
 	              item.description,
 	              ' : ',
 	              _react2.default.createElement('br', null),
-	              _react2.default.createElement(Awards, { days: item.startDate }),
+	              _react2.default.createElement(Awards, { days: item.completed_Days }),
 	              _react2.default.createElement(DeleteHabit, { habitid: item.habitid })
 	            );
 	          } else {
@@ -32301,7 +32348,7 @@
 	              item.description,
 	              ' : ',
 	              _react2.default.createElement('br', null),
-	              _react2.default.createElement(Awards, { days: item.startDate }),
+	              _react2.default.createElement(Awards, { days: item.completed_Days }),
 	              _react2.default.createElement(DeleteHabit, { habitid: item.habitid })
 	            );
 	          }

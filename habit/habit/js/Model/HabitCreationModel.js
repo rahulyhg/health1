@@ -91,6 +91,9 @@ var formModel = {
 
               var serverRequest = $.get("/health1/server/habit/user", {userid: userId}, function(result){
                 result = JSON.parse(result);
+                result.forEach(function(item){//have to parse completed_Days into an Array
+                    item.completed_Days = (item.completed_Days == null) ? [] : item.completed_Days.split(",");
+                });
                 store.dispatch({type:'UPDATE', data: result});
               });
               callback(true);

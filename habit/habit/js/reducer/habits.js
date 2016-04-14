@@ -28,18 +28,18 @@ export default function reducer(state, action){
       var jarray = JSON.parse(JSON.stringify(state));
       jarray.model.forEach(function(item){
         if (item.habitid == action.data.id){
-          item.startDate = action.data.startDate;
+          item.completed_Days = action.data.completed_Days;
           return;
         }
       })
       jarray.filteredModel.forEach(function(item){
         if (item.habitid == action.data.id){
-          item.startDate = action.data.startDate;
+          item.completed_Days = action.data.completed_Days;
           return;
         }
       })
       return jarray;
-      
+
      case 'DELETE':
       var modelAfterDel = state.model.filter(function(item){
         return item.habitid != action.id;

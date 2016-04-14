@@ -26,7 +26,7 @@ $app->group('/habit', function()use($app){
 		$app->post('/user', 'createHabit');
 		$app->delete('/:habitid', 'delHabit');
 		$app->put('/days/:habitid', 'completedDays');	//idempotent, even if they keep calling the same way the database stay the same. as oppose to post
-	//	$app->delete('/days/:habitid', 'deleteDays');
+		$app->delete('/days/:habitid', 'deleteDays');
 
 });
 
@@ -36,6 +36,29 @@ $app->run();
 //facebook
 //require 'facebookini.php';
 //facebook stuff
+
+function deleteDays($habitid){
+	$app =\Slim\Slim::getInstance();
+	$completed = $app->request->params('completed');
+	//should also try, userid and token
+	//then check if the habitid belong to that user before updating
+	$completed = json_decode($completed);
+
+	try{
+		$db = getDB();
+		$result = $db->prepare("DELETE FROM habit_dates WHERE habitid = :id AND completed_Days = :day");
+		foreach($completed as $day){
+			$result->bindValue('id', $habitid, PDO::PARAM_STR);
+			$result->bindValue('day', $day, PDO::PARAM_STR);
+			$result->execute();
+		}
+
+	}catch(PDOException $e){
+		echo '{"error":{"text":'. $e->getMessage() .'}}';
+	}
+	echo "it is done";
+}
+
 function completedDays($habitid){
 	$app =\Slim\Slim::getInstance();
 	$completed = $app->request->params('completed');
@@ -64,6 +87,8 @@ function delHabit($habitid){
 	$app = \Slim\Slim::getInstance();
 //should also try, userid and token
 //then check if the habitid belong to that user before deleting
+
+//rmb to delete all the completed days too for that habit too
 		try{
 		$db = getDB();
 		$query = "Delete FROM habit
@@ -106,18 +131,9 @@ function createHabit(){
 			"day" => $days
 		));
 
-
-		$habitid = $db->lastInsertId();
-		//$completed = $app->request->params('completed');
-
-
-
-
+		//$habitid = $db->lastInsertId();
 
 	}
-
-
-
 	catch(Exception $e) {
 		echo 'Exception -> ';
 		var_dump($e->getMessage());
@@ -131,16 +147,41 @@ function getHabits(){
 	$userid = $app->request->params('userid');
 	//$query = "Select * From habit where userid = '$userid'";
 	//should verify token too
-	$db = getDB();
+	try{
+		$db = getDB();
 
-	$result = $db->prepare("Select * From habit where userid = ?");
-	$result->execute(array($userid));
-	$result->setFetchmode(PDO::FETCH_ASSOC);
+		$result = $db->prepare("SELECT t.habitid
+		      , t.userid
+					, t.description
+		      , t.startDate
+		      , t.Frequency
+					, t.day
+		      , GROUP_CONCAT(d.completed_Days) AS `completed_Days`
+		   FROM (Select * From habit where userid = ?) as t
+		   LEFT
+		   JOIN habit_dates d
+		     ON d.habitid = t.habitid
+			GROUP BY t.habitid
+			ORDER BY t.habitid");
 
+		$result->execute(array($userid));
+		$result->setFetchmode(PDO::FETCH_ASSOC);
 
+		echo json_encode($result->fetchAll());
 
-	echo json_encode($result->fetchAll());
+	}catch(PDOException $e){
+		echo '{"error":{"text":'. $e->getMessage() .'}}';
+	}
+
 }
+
+
+
+
+
+
+
+
 
 function deleteToken(){
 	$app = \Slim\Slim::getInstance();
