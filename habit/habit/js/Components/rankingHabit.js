@@ -73,7 +73,6 @@ var DisplayLogic = React.createClass({
     //check for extra new habit from the newly coming props, find it and store in
     //this.state.changedHabit for rendering
     uniqueInSecond.forEach(function(item){
-      console.log("the unique item is " + JSON.stringify(item));
       self.props.changeCounts(1);
       self.setState({changedHabit: self.state.changedHabit.concat(item.habitid)});
     });

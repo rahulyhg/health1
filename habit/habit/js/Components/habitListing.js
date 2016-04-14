@@ -174,6 +174,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
     });
 
     var CurrentHabit = React.createClass({
+
       componentDidUpdate : function(prevProps){
         var main = this;
         $('#calendar_button').pickmeup({
@@ -192,127 +193,119 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
                 self.pickmeup('clear'); //if there is no completed days, clear it, so it wont show the previous viewed habit days
             }
           },
+
           hide: function(){
             var self = $(this);
             var habitID = main.props.habit.habitid;
-
-      // alert("the habitall " + JSON.stringify(main.props.habit));
-            //ajax to server, with habitid and array of Days
-            //overwrite all
-
             //newDates: contain all the completed dates
             //oldDates: are the completed dates before this current user selection
             //we use both to update RestApi. If both success we can just update
             //client habit model with newDates
             var newDates = self.pickmeup('get_date', true);
             var oldDates = main.props.habit.completed_Days;
-            // alert("the new " + JSON.stringify(newDates));
-            //   alert("the old" + JSON.stringify(oldDates));
 
-                var newlyAddedDays = newDates.filter(function(item){
-                  return !oldDates.some(function(item2){
-                          return item == item2;
-                  });
-                });
+            var newlyAddedDays = newDates.filter(function(item){
+              return !oldDates.some(function(item2){
+                return item == item2;
+              });
+            });
 
-                var deletedDays = oldDates.filter(function(item){
-                  return !newDates.some(function(item2){
-                          return item == item2;
-                  });
-                });
-  // alert("the needed to add " + JSON.stringify(newlyAddedDays));
-  //   alert("the needed to delete: " + JSON.stringify(deletedDays));
+            var deletedDays = oldDates.filter(function(item){
+              return !newDates.some(function(item2){
+                return item == item2;
+              });
+            });
 
-              if (newlyAddedDays.length > 0){ // there were newly added dates, PUT to restapi
+            if (newlyAddedDays.length > 0){ // there were newly added dates, PUT to restapi
+              $.ajax({
+                type: 'PUT',
+                data: {completed: JSON.stringify(newlyAddedDays)},
+                url: '/health1/server/habit/days/' + habitID,
+                success: function(data){
+                  //successful call to restapi, so we can update current viewing
+                },
+                error: function(data){
+                  alert("ERROR writing to server, couldnt update habit" + JSON.stringify(data));
+                }
+              });
+            }
 
-                $.ajax({
-                  type: 'PUT',
-                  data: {completed: JSON.stringify(newlyAddedDays)},
-                  url: '/health1/server/habit/days/' + habitID,
-
-                  success: function(data){
-                    console.log("good added " + JSON.stringify(data));
-
-                    //successful call to restapi, so we can update current viewing
-
-                    },
-                    error: function(data){
-                      alert("ERROR" + JSON.stringify(data));
-                    }
-
-                  });
-              }
-
-              if (deletedDays.length > 0 ){ // there were deleted dates, DELETE to restapi
-
-
-                $.ajax({
-                  type: 'DELETE',
-                  data: {completed: JSON.stringify(deletedDays)},
-                  url: '/health1/server/habit/days/' + habitID,
-
-                  success: function(data){
-                    console.log("good deleted " + JSON.stringify(data));
-
-                    //successful call to restapi, so we can update current viewing
-
-                    },
-                    error: function(data){
-                      alert("ERROR" + JSON.stringify(data));
-                    }
-
-                  });
-
-              }
-
-              //after server updated, and everything is good, we can update the client's habit model
-              store.dispatch(
-                {
-                  type:'UPDATE_HABIT_COMPLETED',
-                  data: {
-                    id: habitID,
-                    completed_Days: newDates
-                  }
-                });
-
-              //this will insert whatever new
-              //we need to also del the ones that is in the old array but not in the new array
-
-
-
-
+            if (deletedDays.length > 0 ){ // there were deleted dates, DELETE to restapi
+              $.ajax({
+                type: 'DELETE',
+                data: {completed: JSON.stringify(deletedDays)},
+                url: '/health1/server/habit/days/' + habitID,
+                success: function(data){
+                  //successful call to restapi, so we can update current viewing
+                },
+                error: function(data){
+                  alert("ERROR writing to server, couldnt delete days" + JSON.stringify(data));
+                }
+              });
+            }
+            //update the client's habit model, note even if failed to upload to server
+            //it will still update user UI (for presenting to employer purpose)
+            //if server fail it will alert
+            store.dispatch(
+              {
+                type:'UPDATE_HABIT_COMPLETED',
+                data: {
+                  id: habitID,
+                  completed_Days: newDates
+                }
+              });
             }
           });
           return true;
         },
+
+    convertNumToDay: function(i){
+        return ["M","T","W","Th","Fri","Sat","Sun"][i-1];
+
+    },
+    convertNumToFreq: function(i){ //see config.js for constant
+        if(constant.DAILY == i){ return "Daily"}
+        else if(constant.WEEKLY == i){return "Weekly"}
+        else if(constant.BIWEEKLY == i){return "BiWeekly"}
+    },
     render: function(){
         console.log("render");
         //If user clicked on a habit on the listing, display the info, else display empty
-        var startDate = this.props.habit.startDate;
-
-
         if (this.props.habit != ""){
           var completedDate = this.props.habit.completed_Days;
           var popup =
-          <div>
-            The habit you clicked on is:
-            <br />
-            description: <span style={{color: 'Red'}}>
-                            {this.props.habit.description}
-                          </span> <br />
+          <div id="habit_detail_list_wrapper">
 
-            Completed dates: <ul className = "checkbox-grid" style={{color: 'Blue'}} >
-                        {
-                           completedDate.map(function(item, i){
-                              return <li key={i}> {item} </li>
-                          })
-                        }
-                        </ul>
-                        <br />
-                        <div className="wrapper-Clear-Flow" />
-            Frequency: {this.props.habit.frequency} <br />
-            Planned days: {this.props.habit.day} <br />
+              <ul className="habit_detail_list">
 
+                <li>Description <div>
+                                  {this.props.habit.description}
+                                </div>
+                </li>
+                <li>Planned Start Day <div>
+                                      {this.props.habit.startDate}
+                                      </div>
+                </li>
+                <li>Completed dates <div> <ul className = "checkbox-grid">
+                              {
+                                 completedDate.map(function(item, i){
+                                    return <li key={i}> {item} </li>
+                                })
+                              }
+                              <div className="wrapper-Clear-Flow" />
+                              </ul> </div>
+                </li>
+                <li>Frequency <div>{this.convertNumToFreq(this.props.habit.frequency)}</div>
+                </li>
+                <li>Planned days <div>{
+                                        this.props.habit.day.split("").sort().map(function(item){
+                                            return this.convertNumToDay(item) + " ";
+                                        }, this)
+
+                                      }</div>
+                </li>
+                <div className="wrapper-Clear-Flow" />
+              </ul>
             <div id ='calendar_button' className ="text-center"> Open Calendar </div>
           </div>
         }else{

@@ -44,5 +44,5 @@ import { Router, Route, hashHistory  } from 'react-router';
     document.getElementById('upper-right')
   );
   //adding some pop up affect to the overall user experience
-  $("#add_more").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
-  $(".habits_display").leanModal({ top : 200, overlay : 0.8, closeButton: ".modal_close" });
+  $("#add_more").leanModal({ top : 100, overlay : 0.8, closeButton: ".modal_close" });
+  $(".habits_display").leanModal({ top : 50, overlay : 0.8, closeButton: ".modal_close" });

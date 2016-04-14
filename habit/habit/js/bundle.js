@@ -113,8 +113,8 @@
 	  _react2.default.createElement(_rankingHabit2.default, null)
 	), document.getElementById('upper-right'));
 	//adding some pop up affect to the overall user experience
-	$("#add_more").leanModal({ top: 200, overlay: 0.8, closeButton: ".modal_close" });
-	$(".habits_display").leanModal({ top: 200, overlay: 0.8, closeButton: ".modal_close" });
+	$("#add_more").leanModal({ top: 100, overlay: 0.8, closeButton: ".modal_close" });
+	$(".habits_display").leanModal({ top: 50, overlay: 0.8, closeButton: ".modal_close" });
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
@@ -29818,6 +29818,7 @@
 	var CurrentHabit = _react2.default.createClass({
 	  displayName: "CurrentHabit",
 
+
 	  componentDidUpdate: function componentDidUpdate(prevProps) {
 	    var main = this;
 	    $('#calendar_button').pickmeup({
@@ -29836,22 +29837,16 @@
 	          self.pickmeup('clear'); //if there is no completed days, clear it, so it wont show the previous viewed habit days
 	        }
 	      },
+
 	      hide: function hide() {
 	        var self = $(this);
 	        var habitID = main.props.habit.habitid;
-
-	        // alert("the habitall " + JSON.stringify(main.props.habit));
-	        //ajax to server, with habitid and array of Days
-	        //overwrite all
-
 	        //newDates: contain all the completed dates
 	        //oldDates: are the completed dates before this current user selection
 	        //we use both to update RestApi. If both success we can just update
 	        //client habit model with newDates
 	        var newDates = self.pickmeup('get_date', true);
 	        var oldDates = main.props.habit.completed_Days;
-	        // alert("the new " + JSON.stringify(newDates));
-	        //   alert("the old" + JSON.stringify(oldDates));
 
 	        var newlyAddedDays = newDates.filter(function (item) {
 	          return !oldDates.some(function (item2) {
@@ -29864,50 +29859,39 @@
 	            return item == item2;
 	          });
 	        });
-	        // alert("the needed to add " + JSON.stringify(newlyAddedDays));
-	        //   alert("the needed to delete: " + JSON.stringify(deletedDays));
 
 	        if (newlyAddedDays.length > 0) {
 	          // there were newly added dates, PUT to restapi
-
 	          $.ajax({
 	            type: 'PUT',
 	            data: { completed: JSON.stringify(newlyAddedDays) },
 	            url: '/health1/server/habit/days/' + habitID,
-
 	            success: function success(data) {
-	              console.log("good added " + JSON.stringify(data));
-
 	              //successful call to restapi, so we can update current viewing
 	            },
 	            error: function error(data) {
-	              alert("ERROR" + JSON.stringify(data));
+	              alert("ERROR writing to server, couldnt update habit" + JSON.stringify(data));
 	            }
-
 	          });
 	        }
 
 	        if (deletedDays.length > 0) {
 	          // there were deleted dates, DELETE to restapi
-
 	          $.ajax({
 	            type: 'DELETE',
 	            data: { completed: JSON.stringify(deletedDays) },
 	            url: '/health1/server/habit/days/' + habitID,
-
 	            success: function success(data) {
-	              console.log("good deleted " + JSON.stringify(data));
-
 	              //successful call to restapi, so we can update current viewing
 	            },
 	            error: function error(data) {
-	              alert("ERROR" + JSON.stringify(data));
+	              alert("ERROR writing to server, couldnt delete days" + JSON.stringify(data));
 	            }
-
 	          });
 	        }
-
-	        //after server updated, and everything is good, we can update the client's habit model
+	        //update the client's habit model, note even if failed to upload to server
+	        //it will still update user UI (for presenting to employer purpose)
+	        //if server fail it will alert
 	        _store2.default.dispatch({
 	          type: 'UPDATE_HABIT_COMPLETED',
 	          data: {
@@ -29915,57 +29899,104 @@
 	            completed_Days: newDates
 	          }
 	        });
-
-	        //this will insert whatever new
-	        //we need to also del the ones that is in the old array but not in the new array
 	      }
 	    });
 	    return true;
 	  },
+
+	  convertNumToDay: function convertNumToDay(i) {
+	    return ["M", "T", "W", "Th", "Fri", "Sat", "Sun"][i - 1];
+	  },
+	  convertNumToFreq: function convertNumToFreq(i) {
+	    //see config.js for constant
+	    if (_config2.default.DAILY == i) {
+	      return "Daily";
+	    } else if (_config2.default.WEEKLY == i) {
+	      return "Weekly";
+	    } else if (_config2.default.BIWEEKLY == i) {
+	      return "BiWeekly";
+	    }
+	  },
 	  render: function render() {
 	    console.log("render");
 	    //If user clicked on a habit on the listing, display the info, else display empty
-	    var startDate = this.props.habit.startDate;
-
 	    if (this.props.habit != "") {
 	      var completedDate = this.props.habit.completed_Days;
 	      var popup = _react2.default.createElement(
 	        "div",
-	        null,
-	        "The habit you clicked on is:",
-	        _react2.default.createElement("br", null),
-	        "description: ",
-	        _react2.default.createElement(
-	          "span",
-	          { style: { color: 'Red' } },
-	          this.props.habit.description
-	        ),
-	        " ",
-	        _react2.default.createElement("br", null),
-	        "Completed dates: ",
+	        { id: "habit_detail_list_wrapper" },
 	        _react2.default.createElement(
 	          "ul",
-	          { className: "checkbox-grid", style: { color: 'Blue' } },
-	          completedDate.map(function (item, i) {
-	            return _react2.default.createElement(
-	              "li",
-	              { key: i },
+	          { className: "habit_detail_list" },
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            "Description ",
+	            _react2.default.createElement(
+	              "div",
+	              null,
+	              this.props.habit.description
+	            )
+	          ),
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            "Planned Start Day ",
+	            _react2.default.createElement(
+	              "div",
+	              null,
+	              this.props.habit.startDate
+	            )
+	          ),
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            "Completed dates ",
+	            _react2.default.createElement(
+	              "div",
+	              null,
 	              " ",
-	              item,
+	              _react2.default.createElement(
+	                "ul",
+	                { className: "checkbox-grid" },
+	                completedDate.map(function (item, i) {
+	                  return _react2.default.createElement(
+	                    "li",
+	                    { key: i },
+	                    " ",
+	                    item,
+	                    " "
+	                  );
+	                }),
+	                _react2.default.createElement("div", { className: "wrapper-Clear-Flow" })
+	              ),
 	              " "
-	            );
-	          })
+	            )
+	          ),
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            "Frequency ",
+	            _react2.default.createElement(
+	              "div",
+	              null,
+	              this.convertNumToFreq(this.props.habit.frequency)
+	            )
+	          ),
+	          _react2.default.createElement(
+	            "li",
+	            null,
+	            "Planned days ",
+	            _react2.default.createElement(
+	              "div",
+	              null,
+	              this.props.habit.day.split("").sort().map(function (item) {
+	                return this.convertNumToDay(item) + " ";
+	              }, this)
+	            )
+	          ),
+	          _react2.default.createElement("div", { className: "wrapper-Clear-Flow" })
 	        ),
-	        _react2.default.createElement("br", null),
-	        _react2.default.createElement("div", { className: "wrapper-Clear-Flow" }),
-	        "Frequency: ",
-	        this.props.habit.frequency,
-	        " ",
-	        _react2.default.createElement("br", null),
-	        "Planned days: ",
-	        this.props.habit.day,
-	        " ",
-	        _react2.default.createElement("br", null),
 	        _react2.default.createElement(
 	          "div",
 	          { id: "calendar_button", className: "text-center" },
@@ -32276,7 +32307,6 @@
 	    //check for extra new habit from the newly coming props, find it and store in
 	    //this.state.changedHabit for rendering
 	    uniqueInSecond.forEach(function (item) {
-	      console.log("the unique item is " + JSON.stringify(item));
 	      self.props.changeCounts(1);
 	      self.setState({ changedHabit: self.state.changedHabit.concat(item.habitid) });
 	    });
