@@ -5,7 +5,7 @@ habit folder contains the react app
 # To employers
 There are two main part to this project (can be viewed as independent of each other)
 
-  - root folder(entry points index html) mainly focus on jquery, css, zurb foundation
+  - root folder(entry points index html) mainly focus on jquery, css, zurb foundation, Restful api server
   - habit folder (entry points habit.html) focus on ReactJS, Redux and javascript, with modularized codes
 
 1. habit folder -	https://github.com/veagletsui/health1/tree/master/habit/habit
