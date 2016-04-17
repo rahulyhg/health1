@@ -462,7 +462,7 @@ body{
   list-style:none;
   position:relative;
   font-size: 15px;
-  top:-10px;
+  top:0px;
   cursor: pointer;
   height:50px;
 }
@@ -471,6 +471,7 @@ body{
   background-color:white;
   border-radius: 2px 2px 2px 2px;
   transition: background-color 2ms linear;
+  color:#CBCBCB;
 }
 
 #quote-menu > li{
@@ -482,35 +483,11 @@ body{
   border-radius: 2px 2px 2px 2px;
   box-shadow: 0px 0px 5px #888888;
 }
-#quote-menu > li:nth-child(1){
-  background-color:#E54A45;
-}
-#quote-menu > li:nth-child(2){
-  background-color:#3387B6;
-}
-#quote-menu > li:nth-child(3){
-  background-color:#42A65D;
-}
-#quote-menu > li:nth-child(4){
-  background-color:#34B798;
-}
 
 
 #quote-menu > li > div:hover{
   border-radius: 2px 2px 2px 2px;
   color:white;
-}
-#quote-menu > li:nth-child(1) > div:hover{
-  background-color:#E54A45;
-}
-#quote-menu > li:nth-child(2) > div:hover{
-  background-color:#3387B6;
-}
-#quote-menu > li:nth-child(3) > div:hover{
-  background-color:#42A65D;
-}
-#quote-menu > li:nth-child(4) > div:hover{
-  background-color:#34B798;
 }
 
 

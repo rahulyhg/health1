@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
 import constant from "../../config/config.js"; //contants all constants
-import habitsReducer from '../reducer/habits';
 import store from '../store/store';
 import '../../plugins/calendar/jquery.pickmeup.min.js';
 "use strict";

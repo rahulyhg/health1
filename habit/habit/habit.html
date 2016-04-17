@@ -19,7 +19,7 @@
 <div id ="filterDiv"></div>
 
 <ul id="reference">
-  
+
   <li>Welcome,</li>
   <li>Veagle</li>
   <li><a>Log out</a></li>
@@ -36,35 +36,6 @@
 
 
   $("#reference").slideMenu({handler: 'click', icon: 'fa-user'});
-  //
-  // $("#container").on('dragstart', function(e) {
-  //
-  //  })
-  //
-  //  $("#container").on('drag', function(e) {
-  //    console.log("this " + $(this).position().top);
-  //    console.log(e.pageX);
-  // //   e.dataTransfer.setDragImage("",0,0);
-  //    var x = e.pageX;
-  //     var y = e.pageY;
-  //        $(this).css({
-  //       top: y + "px",
-  //       left: x + "px"
-  //     })
-  //  })
-  //
-  //   $("#container").on('dragend', function(e) {
-  //     console.log("ENDED this " + $(this).position().top);
-  //     console.log("ENDED " + e.pageX);
-  //     var x = e.pageX;
-  //      var y = e.pageY;
-  //      //top: y minus mouseposition relative to the original position
-  //         $(this).css({
-  //        top: y + "px",
-  //        left: x + "px"
-  //      })
-  //  })
-  //
 
 </script>
 
@@ -101,38 +72,6 @@
       </div>
 
     </div>
-<script>
-$(document).ready(function(){
-  // $("#wtf").on("click", function(e){
-  //   console.log(this.offsetLeft);
-  // })
- //  var y = e.pageY;
- //  var x = e.pageX ;
- //  var offsetY= $(this).position().top;
- //  var offsetX= $(this).position().left;
- // $(this).css({
- //    top: y  - offsetY + "px",
- //    left: x - offsetX + "px"
- //  })
-
- $("#wtf").on('drag', function(e) {
-   $(this).hide()
- })
-
- $("#wtf").on('dragend', function(e) {
-   var x = e.pageX;
-   var y = e.pageY;
-   //top: y minus mouseposition relative to the original position
-   $(this).show().css({
-
-     top: y -340 + "px",
-     left: x -575+ "px"
-   })
- })
-
-});
-</script>
-
 
 
     <div id = "upper-right">
@@ -166,7 +105,6 @@ $(document).ready(function(){
     </div>
   </div>
 </div>
-<!-- <script src="https://npmcdn.com/redux@latest/dist/redux.min.js"></script> -->
 
 <script type="text/javascript" src="./js/bundle.js"></script>
 

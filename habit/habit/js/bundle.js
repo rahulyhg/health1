@@ -81,7 +81,7 @@
 
 	var _reactRedux = __webpack_require__(163);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(187);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -117,7 +117,11 @@
 	  _react2.default.createElement(_rankingHabit2.default, null)
 	), document.getElementById('upper-right'));
 
-	_reactDom2.default.render(_react2.default.createElement(_quote2.default, null), document.getElementById('quotation-section'));
+	_reactDom2.default.render(_react2.default.createElement(
+	  _reactRedux.Provider,
+	  { store: _store2.default },
+	  _react2.default.createElement(_quote2.default, null)
+	), document.getElementById('quotation-section'));
 
 	//adding some pop up affect to the overall user experience
 	$("#add_more").leanModal({ top: 100, overlay: 0.8, closeButton: ".modal_close" });
@@ -29606,11 +29610,7 @@
 
 	var _config2 = _interopRequireDefault(_config);
 
-	var _habits = __webpack_require__(187);
-
-	var _habits2 = _interopRequireDefault(_habits);
-
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(187);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -29618,11 +29618,12 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	//contants all constants
+
 	"use strict";
 
 	//this Component is only for storing the habits data from server
 	//the root component for the habit listing section
-	//contants all constants
 	var HabitModel = _react2.default.createClass({
 	  displayName: "HabitModel",
 
@@ -31548,6 +31549,28 @@
 
 /***/ },
 /* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redux = __webpack_require__(169);
+
+	var _habits = __webpack_require__(188);
+
+	var _habits2 = _interopRequireDefault(_habits);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var store = (0, _redux.createStore)(_habits2.default);
+
+	exports.default = store;
+
+/***/ },
+/* 188 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -31555,14 +31578,17 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.default = reducer;
+	exports.default = habitsReducer;
 
 	var initialState = {
 	  model: [],
-	  filteredModel: []
+	  filteredModel: [],
+	  pastQuotes: [],
+	  quote: "Mistakes",
+	  futureQuotes: []
 	};
 
-	function reducer(state, action) {
+	function habitsReducer(state, action) {
 	  if (typeof state === 'undefined') {
 	    return initialState; //initial state
 	  }
@@ -31607,33 +31633,46 @@
 	      var filteredModelAfterDel = state.filteredModel.filter(function (item) {
 	        return item.habitid != action.id;
 	      });
-	      return { model: modelAfterDel, filteredModel: filteredModelAfterDel };
+	      return Object.assign({}, state, { model: modelAfterDel, filteredModel: filteredModelAfterDel });
+
+	    //////for quote.js
+	    case 'SUBMIT_QUOTE':
+	      if (state.quote === action.newQuote) {
+	        return state; //quote werent changed no need to do anything
+	      }
+	      var newPast = state.pastQuotes.slice();
+	      newPast.push(state.quote);
+	      //need to empty the future stack, cause after a new submit there shouldnt be any redo
+	      return Object.assign({}, state, { pastQuotes: newPast, quote: action.newQuote, futureQuotes: [] });
+
+	    case "UNDO":
+	      if (state.pastQuotes.length <= 0) {
+	        return state; //nothing to undo, return state
+	      }
+	      var newFuture = state.futureQuotes.slice();
+	      newFuture.push(state.quote);
+	      var newCurrent = state.pastQuotes[state.pastQuotes.length - 1];
+	      var newPast = state.pastQuotes.slice(0, state.pastQuotes.length - 1);
+
+	      return Object.assign({}, state, { pastQuotes: newPast, quote: newCurrent, futureQuotes: newFuture });
+
+	    case "REDO":
+	      if (state.futureQuotes.length <= 0) {
+	        return state; //nothing to redo, return state
+	      }
+
+	      var newPast = state.pastQuotes.slice();
+	      newPast.push(state.quote);
+	      var newCurrent = state.futureQuotes[state.futureQuotes.length - 1];
+	      var newFuture = state.futureQuotes.slice(0, state.futureQuotes.length - 1);
+
+	      return Object.assign({}, state, { pastQuotes: newPast, quote: newCurrent, futureQuotes: newFuture });
+
+	    ///end of quote.js actions
 
 	  }
 	  return state;
 	}
-
-/***/ },
-/* 188 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _redux = __webpack_require__(169);
-
-	var _habits = __webpack_require__(187);
-
-	var _habits2 = _interopRequireDefault(_habits);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var store = (0, _redux.createStore)(_habits2.default);
-
-	exports.default = store;
 
 /***/ },
 /* 189 */
@@ -32050,7 +32089,7 @@
 	  value: true
 	});
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(187);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -32192,7 +32231,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(187);
 
 	var _store2 = _interopRequireDefault(_store);
 
@@ -32217,7 +32256,7 @@
 /* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {"use strict";
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -32228,6 +32267,12 @@
 	var _react = __webpack_require__(4);
 
 	var _react2 = _interopRequireDefault(_react);
+
+	var _store = __webpack_require__(187);
+
+	var _store2 = _interopRequireDefault(_store);
+
+	var _reactRedux = __webpack_require__(163);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32248,26 +32293,28 @@
 	    _this.state = {
 	      navigation: 0, //0: first quote, 1:second etc
 	      draggable: true, //0: cant be drag, but can edit, if 1 child will render a new quote with a handler
-	      //when 0 can edit, will also give option/menu to get random quote or check old quote
-	      pos: { x: 0, y: 0 }, //position of the quote, last location
-	      quote: "MISTAKE"
-	    };
+	      //when 0 can edit, will also give option/menu
+	      pos: { x: 0, y: 0 } };
 	    return _this;
 	  }
 
 	  _createClass(Quote, [{
-	    key: "switchDraggability",
+	    key: 'switchDraggability',
+	    //position of the quote, last location
 	    value: function switchDraggability() {
 	      this.setState({ draggable: !this.state.draggable });
 	    }
 	  }, {
-	    key: "handleDrag",
+	    key: 'handleDrag',
 	    value: function handleDrag() {
 	      $("#quote-text").hide();
+	      //  document.getElementById("left-quote")
+	      $("#left-quote").hide();
 	    }
 	  }, {
-	    key: "handleDragEnd",
+	    key: 'handleDragEnd',
 	    value: function handleDragEnd(e) {
+	      $("#left-quote").show();
 	      var x = e.pageX;
 	      var y = e.pageY;
 	      //top: y minus mouseposition relative to the original position
@@ -32277,31 +32324,27 @@
 	      });
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        "div",
+	        'div',
 	        null,
-	        _react2.default.createElement("i", { className: "fa fa-quote-left", style: { cursor: "pointer", fontSize: "15px" }, onClick: this.switchDraggability.bind(this) }),
-	        this.state.draggable ? _react2.default.createElement(
-	          "span",
+	        _react2.default.createElement('i', { id: 'left-quote', className: 'fa fa-quote-left', style: { cursor: "pointer", fontSize: "15px", position: "relative", top: "-10" }, onClick: this.switchDraggability.bind(this) }),
+	        this.state.draggable ? //WHEN user can drag the quote, no mini menu here
+	        _react2.default.createElement(
+	          'span',
+	          { id: 'quote-text', draggable: 'true', onDrag: this.handleDrag.bind(this), onDragEnd: this.handleDragEnd.bind(this) },
+	          _react2.default.createElement(DisplayQuote, { quote: this.props.quote })
+	        ) : //WHEN user cannot drag the quote, can edit quote, also show mini menu/editor here
+	        _react2.default.createElement(
+	          'span',
 	          null,
 	          _react2.default.createElement(
-	            "span",
-	            { id: "quote-text", draggable: "true", onDrag: this.handleDrag.bind(this), onDragEnd: this.handleDragEnd.bind(this) },
-	            _react2.default.createElement(DisplayQuote, { quote: this.state.quote })
+	            'span',
+	            { id: 'quote-text', contentEditable: 'true' },
+	            _react2.default.createElement(DisplayQuote, { quote: this.props.quote })
 	          ),
-	          _react2.default.createElement("i", { className: "fa fa-quote-right" })
-	        ) : _react2.default.createElement(
-	          "span",
-	          null,
-	          _react2.default.createElement(
-	            "span",
-	            { id: "quote-text", contentEditable: "true" },
-	            _react2.default.createElement(DisplayQuote, { quote: this.state.quote })
-	          ),
-	          _react2.default.createElement("i", { className: "fa fa-quote-right" }),
-	          _react2.default.createElement(Editor, { cancel: this.switchDraggability.bind(this) })
+	          _react2.default.createElement(Editor, { closeMenu: this.switchDraggability.bind(this) })
 	        )
 	      );
 	    }
@@ -32309,6 +32352,13 @@
 
 	  return Quote;
 	}(_react2.default.Component);
+
+	var mapStateToProps = function mapStateToProps(state) {
+	  return { quote: state.quote };
+	};
+	//connect the parent component Quote to redux store, creating a new component call NewReduxQuoteComponent.
+	//Store will now pass the state:quote to Quote as props
+	var NewReduxQuoteComponent = (0, _reactRedux.connect)(mapStateToProps)(Quote);
 
 	var DisplayQuote = function (_React$Component2) {
 	  _inherits(DisplayQuote, _React$Component2);
@@ -32320,10 +32370,10 @@
 	  }
 
 	  _createClass(DisplayQuote, [{
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        "span",
+	        'span',
 	        null,
 	        this.props.quote
 	      );
@@ -32349,45 +32399,79 @@
 	  }
 
 	  _createClass(Editor, [{
-	    key: "componentWillMount",
+	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      //refreshing memory, .bind(this). All the "this" inside the function will be refering to the binded (this)
-	      var random = _react2.default.createElement(MenuListItem, { handleClick: this.handleClick.bind(this), key: "1",
-	        handleDrag: this.handleDrag.bind(this), handleDragStart: this.handleDragStart.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
-	        texts: "random" });
-	      var history = _react2.default.createElement(MenuListItem, { handleClick: this.handleClick.bind(this), key: "2", handleDragStart: this.handleDragStart.bind(this), handleDrag: this.handleDrag.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
-	        texts: "history" });
-	      var submit = _react2.default.createElement(MenuListItem, { handleClick: this.handleClick.bind(this), key: "3", handleDragStart: this.handleDragStart.bind(this), handleDrag: this.handleDrag.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
-	        texts: "submit" });
-	      var cancel = _react2.default.createElement(MenuListItem, { handleClick: this.props.cancel.bind(this), key: "4", handleDragStart: this.handleDragStart.bind(this), handleDrag: this.handleDrag.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
-	        texts: "cancel" });
+	      var redo = _react2.default.createElement(MenuListItem, { handleClick: this.handleRedoClick.bind(this), key: '1', handleDrag: this.handleDrag.bind(this), handleDragStart: this.handleDragStart.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
+	        handleHover: this.handleHover.bind(this, "#42A65D"),
+	        handleLeave: this.handleLeave.bind(this),
+	        color: '#42A65D',
+	        iconName: 'fa-hand-o-right',
+	        texts: ' redo' });
+	      var undo = _react2.default.createElement(MenuListItem, { handleClick: this.handleUndoClick.bind(this), key: '2', handleDragStart: this.handleDragStart.bind(this), handleDrag: this.handleDrag.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
+	        handleHover: this.handleHover.bind(this, "#3387B6"),
+	        handleLeave: this.handleLeave.bind(this),
+	        color: '#3387B6',
+	        iconName: 'fa-hand-o-left',
+	        texts: ' undo' });
+	      var submit = _react2.default.createElement(MenuListItem, { handleClick: this.handleSubmitClick.bind(this), key: '3', handleDragStart: this.handleDragStart.bind(this), handleDrag: this.handleDrag.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
+	        handleHover: this.handleHover.bind(this, "#E54A45"),
+	        handleLeave: this.handleLeave.bind(this),
+	        color: '#E54A45',
+	        iconName: 'fa-play',
+	        texts: ' submit' });
+	      var cancel = _react2.default.createElement(MenuListItem, { handleClick: this.props.closeMenu.bind(this), key: '4', handleDragStart: this.handleDragStart.bind(this), handleDrag: this.handleDrag.bind(this), handleDragEnd: this.handleDragEnd.bind(this),
+	        handleHover: this.handleHover.bind(this, "#34B798"),
+	        handleLeave: this.handleLeave.bind(this),
+	        color: '#34B798',
+	        iconName: 'fa-eject',
+	        texts: ' cancel' });
 
-	      this.setState({ order: [{ name: "random", component: random }, { name: "history", component: history }, { name: "submit", component: submit }, { name: "cancel", component: cancel }] });
+	      this.setState({ order: [{ name: "submit", component: submit }, { name: "undo", component: undo }, { name: "redo", component: redo }, { name: "cancel", component: cancel }] });
 	    }
 	  }, {
-	    key: "handleClick",
+	    key: 'handleSubmitClick',
+	    value: function handleSubmitClick() {
+	      var ele = document.getElementById("quote-text");
+	      _store2.default.dispatch({ type: "SUBMIT_QUOTE", newQuote: ele.textContent });
+	      this.props.closeMenu();
+	    }
+	  }, {
+	    key: 'handleUndoClick',
+	    value: function handleUndoClick() {
+	      _store2.default.dispatch({ type: "UNDO" });
+	    }
+	  }, {
+	    key: 'handleRedoClick',
+	    value: function handleRedoClick() {
+	      _store2.default.dispatch({ type: "REDO" });
+	    }
+	  }, {
+	    key: 'handleClick',
 	    value: function handleClick() {
 	      console.log("clicked");
 	    }
 	  }, {
-	    key: "handleDrag",
+	    key: 'handleHover',
+	    value: function handleHover(color, e) {
+	      e.stopPropagation();
+	      var ele = e.currentTarget;
+	      ele.style.backgroundColor = color;
+	      ele.style.color = 'white';
+	    }
+	  }, {
+	    key: 'handleLeave',
+	    value: function handleLeave(e) {
+	      e.stopPropagation();
+	      var ele = e.currentTarget;
+	      ele.style.backgroundColor = 'white';
+	      ele.style.color = '#CBCBCB';
+	    }
+	  }, {
+	    key: 'handleDrag',
 	    value: function handleDrag(e) {
 	      $("#quote-menu").css({
 	        borderStyle: 'dotted'
-	      });
-	    }
-	  }, {
-	    key: "handleDragStart",
-	    value: function handleDragStart(e) {
-	      //console.log(e.currentTarget.offsetLeft); //3 73 143 213
-
-	      this.setState({ dragged: e.currentTarget });
-	    }
-	  }, {
-	    key: "handleDragEnd",
-	    value: function handleDragEnd(e) {
-	      $("#quote-menu").css({
-	        borderStyle: 'none'
 	      });
 	      var x = e.pageX - $('#quote-menu').offset().left;
 	      var y = e.pageY - $('#quote-menu').offset().top;
@@ -32395,12 +32479,11 @@
 	      var newOrder = this.state.order.slice();
 	      var draggedEle;
 	      for (var i = 0; i < newOrder.length; i++) {
-	        if (this.state.dragged.firstChild.innerHTML == newOrder[i].name) {
+	        if (this.state.dragged.firstChild.innerHTML.indexOf(newOrder[i].name) > -1) {
 	          draggedEle = newOrder.splice(i, 1);
 	          break;
 	        }
 	      }
-
 	      // this.state.dragged.style.display = '';
 	      if (x <= 73) {
 	        //put the dragged box in first
@@ -32418,20 +32501,33 @@
 	      this.setState({ order: newOrder });
 	    }
 	  }, {
-	    key: "allowDrop",
+	    key: 'handleDragStart',
+	    value: function handleDragStart(e) {
+	      //console.log(e.currentTarget.offsetLeft); //3 73 143 213
+	      this.setState({ dragged: e.currentTarget });
+	    }
+	  }, {
+	    key: 'handleDragEnd',
+	    value: function handleDragEnd(e) {
+	      $("#quote-menu").css({
+	        borderStyle: 'none'
+	      });
+	    }
+	  }, {
+	    key: 'allowDrop',
 	    value: function allowDrop(e) {
 	      e.preventDefault();
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      var print = [];
 	      for (var i = 0; i < this.state.order.length; i++) {
 	        print.push(this.state.order[i].component);
 	      }
 	      return _react2.default.createElement(
-	        "ul",
-	        { id: "quote-menu", onDragOver: this.allowDrop.bind(this) },
+	        'ul',
+	        { id: 'quote-menu', onDragOver: this.allowDrop.bind(this) },
 	        print
 	      );
 	    }
@@ -32450,18 +32546,22 @@
 	  }
 
 	  _createClass(MenuListItem, [{
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
+	      var color = this.props.color;
 	      return _react2.default.createElement(
-	        "li",
-	        { draggable: "true", key: this.props.key,
+	        'li',
+	        { style: { backgroundColor: color }, draggable: 'true', key: this.props.key,
 	          onClick: this.props.handleClick.bind(this),
 	          onDrag: this.props.handleDrag.bind(this),
 	          onDragStart: this.props.handleDragStart.bind(this),
 	          onDragEnd: this.props.handleDragEnd.bind(this) },
 	        _react2.default.createElement(
-	          "div",
-	          null,
+	          'div',
+	          {
+	            onMouseEnter: this.props.handleHover.bind(this),
+	            onMouseLeave: this.props.handleLeave.bind(this) },
+	          _react2.default.createElement('i', { style: { color: "#CBCBCB" }, className: "fa " + this.props.iconName }),
 	          this.props.texts
 	        )
 	      );
@@ -32471,7 +32571,7 @@
 	  return MenuListItem;
 	}(_react2.default.Component);
 
-	exports.default = Quote;
+	exports.default = NewReduxQuoteComponent;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
@@ -32488,7 +32588,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _store = __webpack_require__(188);
+	var _store = __webpack_require__(187);
 
 	var _store2 = _interopRequireDefault(_store);
 

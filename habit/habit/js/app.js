@@ -46,7 +46,9 @@ import { Router, Route, hashHistory  } from 'react-router';
   );
 
   ReactDom.render(
-    <Quote />,
+    <Provider store={store}>
+    <Quote />
+    </Provider>,
     document.getElementById('quotation-section')
   );
 

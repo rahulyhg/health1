@@ -1,10 +1,13 @@
 
 var initialState={
   model:[],
-  filteredModel:[]
+  filteredModel:[],
+  pastQuotes:[],
+  quote: "Mistakes",
+  futureQuotes:[]
 }
 
-export default function reducer(state, action){
+export default function habitsReducer(state, action){
   if(typeof(state)==='undefined'){
     return initialState; //initial state
   }
@@ -47,7 +50,44 @@ export default function reducer(state, action){
       var filteredModelAfterDel = state.filteredModel.filter(function(item){
         return item.habitid != action.id;
       });
-      return {model: modelAfterDel, filteredModel: filteredModelAfterDel};
+      return Object.assign({}, state, {model: modelAfterDel, filteredModel: filteredModelAfterDel});
+
+
+      //////for quote.js
+      case 'SUBMIT_QUOTE':
+        if(state.quote === action.newQuote){
+          return state; //quote werent changed no need to do anything
+        }
+        var newPast = state.pastQuotes.slice();
+        newPast.push(state.quote);
+        //need to empty the future stack, cause after a new submit there shouldnt be any redo
+        return Object.assign({}, state, {pastQuotes: newPast, quote: action.newQuote, futureQuotes: []});
+
+      case "UNDO":
+        if (state.pastQuotes.length <= 0){
+          return state; //nothing to undo, return state
+        }
+        var newFuture = state.futureQuotes.slice();
+        newFuture.push(state.quote);
+        var newCurrent = state.pastQuotes[state.pastQuotes.length-1];
+        var newPast = state.pastQuotes.slice(0, state.pastQuotes.length-1);
+
+        return Object.assign({}, state, {pastQuotes: newPast, quote: newCurrent, futureQuotes: newFuture});
+
+      case "REDO":
+          if(state.futureQuotes.length <= 0){
+            return state; //nothing to redo, return state
+          }
+
+          var newPast = state.pastQuotes.slice();
+          newPast.push(state.quote);
+          var newCurrent = state.futureQuotes[state.futureQuotes.length-1];
+          var newFuture = state.futureQuotes.slice(0, state.futureQuotes.length-1);
+
+          return Object.assign({}, state, {pastQuotes: newPast, quote: newCurrent, futureQuotes: newFuture});
+
+    ///end of quote.js actions
+
 
 
 

@@ -1,5 +1,6 @@
 import React from 'react';
-
+import store from '../store/store';
+import {connect} from 'react-redux';
 
 class Quote extends React.Component{
   constructor(props){
@@ -7,19 +8,20 @@ class Quote extends React.Component{
     this.state = {
       navigation: 0, //0: first quote, 1:second etc
       draggable: true, //0: cant be drag, but can edit, if 1 child will render a new quote with a handler
-                        //when 0 can edit, will also give option/menu to get random quote or check old quote
+                        //when 0 can edit, will also give option/menu
       pos: {x:0, y:0}, //position of the quote, last location
-      quote: "MISTAKE"
     }
   }
   switchDraggability(){
-    this.setState({draggable:!this.state.draggable});
+    this.setState({ draggable:!this.state.draggable });
   }
   handleDrag(){
      $("#quote-text").hide();
-
+    //  document.getElementById("left-quote")
+    $("#left-quote").hide();
   }
   handleDragEnd(e){
+    $("#left-quote").show();
     var x = e.pageX;
     var y = e.pageY;
     //top: y minus mouseposition relative to the original position
@@ -31,26 +33,32 @@ class Quote extends React.Component{
   render(){
     return(
       <div>
-        <i className="fa fa-quote-left"  style ={{cursor: "pointer", fontSize: "15px"}} onClick={this.switchDraggability.bind(this)}></i>
+        <i id = "left-quote" className="fa fa-quote-left"  style ={{cursor: "pointer", fontSize: "15px", position: "relative", top: "-10"}} onClick={this.switchDraggability.bind(this)}></i>
         {(this.state.draggable
-              ? <span>
+              ? //WHEN user can drag the quote, no mini menu here
                   <span id = "quote-text" draggable ="true" onDrag={this.handleDrag.bind(this)} onDragEnd={this.handleDragEnd.bind(this)}>
-                    <DisplayQuote quote={this.state.quote}/>
+                    <DisplayQuote quote={this.props.quote}/>
                   </span>
-                  <i className="fa fa-quote-right"></i>
-                </span>
-             :  <span>
+             : //WHEN user cannot drag the quote, can edit quote, also show mini menu/editor here
+                <span>
                   <span id = "quote-text" contentEditable="true">
-                    <DisplayQuote quote={this.state.quote}/>
+                    <DisplayQuote quote={this.props.quote}/>
                   </span>
-                  <i className="fa fa-quote-right"></i>
-                  <Editor cancel={this.switchDraggability.bind(this)}/>
+                  <Editor closeMenu={this.switchDraggability.bind(this)}/>
                 </span>
         )}
       </div>
     )
   }
 }
+
+
+var mapStateToProps = function(state){
+  return {quote : state.quote}
+}
+//connect the parent component Quote to redux store, creating a new component call NewReduxQuoteComponent.
+//Store will now pass the state:quote to Quote as props
+var NewReduxQuoteComponent = connect(mapStateToProps)(Quote);
 
 
 class DisplayQuote extends React.Component{
@@ -74,39 +82,70 @@ class Editor extends React.Component{
   }
   componentWillMount(){
     //refreshing memory, .bind(this). All the "this" inside the function will be refering to the binded (this)
-    var random =  <MenuListItem handleClick={this.handleClick.bind(this)} key = "1"
-                                handleDrag={this.handleDrag.bind(this)} handleDragStart={this.handleDragStart.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
-                                texts="random" />;
-    var history = <MenuListItem handleClick={this.handleClick.bind(this)} key = "2" handleDragStart={this.handleDragStart.bind(this)} handleDrag={this.handleDrag.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
-                                texts="history" />;
-    var submit =  <MenuListItem handleClick={this.handleClick.bind(this)} key = "3" handleDragStart={this.handleDragStart.bind(this)} handleDrag={this.handleDrag.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
-                                texts="submit" />;
-    var cancel =  <MenuListItem handleClick={this.props.cancel.bind(this)} key = "4" handleDragStart={this.handleDragStart.bind(this)} handleDrag={this.handleDrag.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
-                                texts="cancel" />;
+    var redo =  <MenuListItem handleClick={this.handleRedoClick.bind(this)} key = "1" handleDrag={this.handleDrag.bind(this)} handleDragStart={this.handleDragStart.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
+                                handleHover={this.handleHover.bind(this, "#42A65D")}
+                                handleLeave = {this.handleLeave.bind(this)}
+                                color = "#42A65D"
+                                iconName = "fa-hand-o-right"
+                                texts=" redo" />;
+    var undo = <MenuListItem handleClick={this.handleUndoClick.bind(this)} key = "2" handleDragStart={this.handleDragStart.bind(this)} handleDrag={this.handleDrag.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
+                                handleHover={this.handleHover.bind(this, "#3387B6")}
+                                handleLeave = {this.handleLeave.bind(this)}
+                                color="#3387B6"
+                                iconName = "fa-hand-o-left"
+                                texts=" undo" />;
+    var submit =  <MenuListItem handleClick={this.handleSubmitClick.bind(this)} key = "3" handleDragStart={this.handleDragStart.bind(this)} handleDrag={this.handleDrag.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
+                                handleHover={this.handleHover.bind(this, "#E54A45")}
+                                handleLeave = {this.handleLeave.bind(this)}
+                                color="#E54A45"
+                                iconName = "fa-play"
+                                texts=" submit" />;
+    var cancel =  <MenuListItem handleClick={this.props.closeMenu.bind(this)} key = "4" handleDragStart={this.handleDragStart.bind(this)} handleDrag={this.handleDrag.bind(this)} handleDragEnd={this.handleDragEnd.bind(this)}
+                                handleHover={this.handleHover.bind(this, "#34B798")}
+                                handleLeave = {this.handleLeave.bind(this)}
+                                color="#34B798"
+                                iconName = "fa-eject"
+                                texts=" cancel" />;
 
-    this.setState({order: [ {name: "random", component: random},
-                            {name: "history", component: history},
+    this.setState({order: [
                             {name: "submit", component: submit},
+                            {name: "undo", component: undo},
+                            {name: "redo", component: redo},
                             {name: "cancel", component: cancel} ] });
 
+  }
+  handleSubmitClick(){
+    var ele = document.getElementById("quote-text");
+    store.dispatch({type: "SUBMIT_QUOTE", newQuote: ele.textContent});
+    this.props.closeMenu();
+  }
+  handleUndoClick(){
+    store.dispatch({type: "UNDO"});
+  }
+  handleRedoClick(){
+    store.dispatch({type: "REDO"});
   }
   handleClick(){
     console.log("clicked");
   }
 
+  handleHover(color, e){
+    e.stopPropagation();
+    var ele = e.currentTarget;
+      ele.style.backgroundColor = color;
+      ele.style.color = 'white';
+  }
+
+  handleLeave(e){
+    e.stopPropagation();
+    var ele = e.currentTarget;
+      ele.style.backgroundColor = 'white';
+      ele.style.color = '#CBCBCB';
+  }
+
   handleDrag(e){
     $("#quote-menu").css({
       borderStyle: 'dotted'
-    });
-  }
-  handleDragStart(e){
-    //console.log(e.currentTarget.offsetLeft); //3 73 143 213
-
-    this.setState({dragged: e.currentTarget});
-  }
-  handleDragEnd(e){
-    $("#quote-menu").css({
-      borderStyle: 'none'
     });
     var x = e.pageX - $('#quote-menu').offset().left;
     var y = e.pageY - $('#quote-menu').offset().top;
@@ -114,12 +153,11 @@ class Editor extends React.Component{
     var newOrder = this.state.order.slice();
     var draggedEle;
     for(let i = 0; i<newOrder.length; i++){
-      if(this.state.dragged.firstChild.innerHTML == newOrder[i].name){
+      if(this.state.dragged.firstChild.innerHTML.indexOf(newOrder[i].name) > -1){
         draggedEle = newOrder.splice(i, 1);
         break;
       }
     }
-
     // this.state.dragged.style.display = '';
     if (x <= 73){ //put the dragged box in first
         newOrder.splice(0, 0, draggedEle[0]);
@@ -134,10 +172,21 @@ class Editor extends React.Component{
     this.setState({order: newOrder});
 
   }
+  handleDragStart(e){
+    //console.log(e.currentTarget.offsetLeft); //3 73 143 213
+    this.setState({dragged: e.currentTarget});
+  }
+
+  handleDragEnd(e){
+    $("#quote-menu").css({
+      borderStyle: 'none'
+    });
+  }
 
   allowDrop(e){
     e.preventDefault();
   }
+
   render(){
     var print = [];
     for(let i = 0; i < this.state.order.length; i++){
@@ -157,15 +206,22 @@ class MenuListItem extends React.Component{
   }
 
   render(){
+    var color = this.props.color;
     return(
-      <li draggable="true"   key={this.props.key}
+      <li style ={{backgroundColor: color}} draggable="true"   key={this.props.key}
                              onClick={this.props.handleClick.bind(this)}
                              onDrag={this.props.handleDrag.bind(this)}
                              onDragStart={this.props.handleDragStart.bind(this)}
-                             onDragEnd={this.props.handleDragEnd.bind(this)}><div>{this.props.texts}</div>
+                             onDragEnd={this.props.handleDragEnd.bind(this)}>
+                             <div
+                                  onMouseEnter={this.props.handleHover.bind(this)}
+                                  onMouseLeave={this.props.handleLeave.bind(this)}>
+                                  <i style = {{color: "#CBCBCB"}} className={"fa " + this.props.iconName}></i>
+                                  {this.props.texts}
+                             </div>
       </li>
     )
   }
 
 }
-export default Quote;
+export default NewReduxQuoteComponent;
