@@ -38,6 +38,10 @@ body{
     left: -330%;
 }
 
+
+
+/*********************************The text on the website wall****/
+
 #intro-text{
   text-align: center;
   font: normal normal normal 80px/1.2em 'Noticia Text',serif;
@@ -49,7 +53,6 @@ body{
 #intro-text p{
   position: relative;
   left: -10%;
-  text-align: left;
   font: normal normal normal 25px/1.2em 'Noticia Text',serif;
 }
 #intro-text p:nth-child(2){
@@ -57,9 +60,8 @@ body{
 }
 
 #intro-text p:nth-child(5){
-  position:relative;
   top: 20px;
-  left: -45%;
+  left: -90%;
   font: normal normal normal 15px/1.2em 'Noticia Text',serif;
 }
 #intro-text p:nth-child(5):before{
@@ -75,17 +77,43 @@ body{
   left: -5%;
 }
 
+#intro-text > div{
+  position: relative;
+  top: -60px;
+  left: -50px;
+  color:#CBCBCB;
+}
 #intro-text > div > i{
   position:relative;
-  top:-40px;
-  left:-10%;
+  top:-5px;
+  /*left:-10%;*/
   font-size:20px;
+}
+
+#intro-text > div > span{
+  font-size: 30px;
+  line-height: 1.2em;
+
 }
 
 #introduction-section{
   float:left;
   width: 30%;
 }
+
+#quote-text{
+  outline: 0px solid transparent;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position:relative;
+  font-size:30px;
+  line-height: 1.2em;
+}
+
+/**********END of website wall****/
+
 
 #calendar_button{
   background: #E4E4E2;
@@ -156,6 +184,10 @@ body{
   border-radius: 6px 16px 16px 100px;
   -moz-border-radius: 6px 16px 16px 116px;
   -webkit-border-radius: 6px 16px 16px 100px;
+}
+#habit_list{
+  position:relative;
+  z-index:100;
 }
 #habit_list > li{
   border-radius: 2px;
@@ -281,6 +313,7 @@ body{
   width:100%;
   margin: auto;
 }
+
 /*#E54A45
 #3387B6
 #8B4A9E
@@ -288,11 +321,14 @@ body{
 #42A65D
 
 #34B798*/
+
+/*******************************rankingHabit.js css*/
 .listing-boxes{
+  position:relative;
   padding-top: 5px;
   padding-bottom: 5px;
   border-left: thin dotted white;
-
+  z-index:100;
 }
 .listing-boxes > li{
   background-color: white;
@@ -309,6 +345,7 @@ body{
   padding-left: 15%;
   padding-right:15%;
   transition: background-color 0.2s linear;
+
 }
 .listing-boxes > li:hover{
   background-color: #E74C3C!important;
@@ -317,7 +354,7 @@ body{
 #delete-icon{
   color: #f5f5f5;
 }
-
+/***end of rankingHabit.js css****/
 
 @media (max-width: 50em) {
   #upper-right {
@@ -415,3 +452,67 @@ body{
   width: 100%;
   margin: auto;
 }
+
+
+
+
+
+/**************************quote.js*/
+#quote-menu{
+  list-style:none;
+  position:relative;
+  font-size: 15px;
+  top:-10px;
+  cursor: pointer;
+  height:50px;
+}
+
+#quote-menu > li > div{
+  background-color:white;
+  border-radius: 2px 2px 2px 2px;
+  transition: background-color 2ms linear;
+}
+
+#quote-menu > li{
+  float:left;
+  width:22%;
+  padding:1px;
+  padding-top:15px;
+  margin:1%;
+  border-radius: 2px 2px 2px 2px;
+  box-shadow: 0px 0px 5px #888888;
+}
+#quote-menu > li:nth-child(1){
+  background-color:#E54A45;
+}
+#quote-menu > li:nth-child(2){
+  background-color:#3387B6;
+}
+#quote-menu > li:nth-child(3){
+  background-color:#42A65D;
+}
+#quote-menu > li:nth-child(4){
+  background-color:#34B798;
+}
+
+
+#quote-menu > li > div:hover{
+  border-radius: 2px 2px 2px 2px;
+  color:white;
+}
+#quote-menu > li:nth-child(1) > div:hover{
+  background-color:#E54A45;
+}
+#quote-menu > li:nth-child(2) > div:hover{
+  background-color:#3387B6;
+}
+#quote-menu > li:nth-child(3) > div:hover{
+  background-color:#42A65D;
+}
+#quote-menu > li:nth-child(4) > div:hover{
+  background-color:#34B798;
+}
+
+
+
+/*end of quote.js*/

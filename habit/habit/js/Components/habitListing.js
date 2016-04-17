@@ -288,7 +288,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
                 </li>
                 <li>Completed dates <div> <ul className = "checkbox-grid">
                               {
-                                 completedDate.map(function(item, i){
+                                 completedDate.sort().map(function(item, i){
                                     return <li key={i}> {item} </li>
                                 })
                               }

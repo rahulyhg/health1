@@ -126,7 +126,7 @@ var DisplayListing = React.createClass({
           {
             this.props.sortedList.map(function(item, index){
               if (self.props.changedHabit.indexOf(item.habitid) > -1) {
-                return  <li key={index} id = {item.habitid} style={{backgroundColor: '#ccc'}} className = "text-center" onClick={self.props.handleMouse}>{item.description} : <br/>
+                return  <li key={index} id = {item.habitid} style={{backgroundColor: '#DDDDDD'}} className = "text-center" onClick={self.props.handleMouse}>{item.description} : <br/>
                           <Awards days = {item.completed_Days} />
                           <DeleteHabit habitid= {item.habitid} />
                         </li>

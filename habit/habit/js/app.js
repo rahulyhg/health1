@@ -5,6 +5,7 @@ import ReactDom from "react-dom";
 import HabitModel from "./Components/habitListing.js";
 import AddingNewHabit from "./Components/addingHabit.js"
 import Filter from './Components/filter.js'
+import Quote from './Components/quote.js'
 
 import { Provider } from 'react-redux';
 import store from './store/store';
@@ -43,6 +44,13 @@ import { Router, Route, hashHistory  } from 'react-router';
     </Provider>,
     document.getElementById('upper-right')
   );
+
+  ReactDom.render(
+    <Quote />,
+    document.getElementById('quotation-section')
+  );
+
+
   //adding some pop up affect to the overall user experience
   $("#add_more").leanModal({ top : 100, overlay : 0.8, closeButton: ".modal_close" });
   $(".habits_display").leanModal({ top : 50, overlay : 0.8, closeButton: ".modal_close" });
