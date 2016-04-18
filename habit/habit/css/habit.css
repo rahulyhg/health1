@@ -265,7 +265,6 @@ body{
 }
 
 .habit_detail_list > li:nth-child(2){
-
   background-color: #5B9FC4;
 }
 .habit_detail_list > li:nth-child(2):hover{
@@ -288,8 +287,6 @@ body{
 }
 .habit_detail_list > li:nth-child(4):hover{
   background-color: #42A65D;
-  width:49%;
-  float:left;
 }
 
 .habit_detail_list > li:nth-child(5){
@@ -299,8 +296,6 @@ body{
 }
 .habit_detail_list > li:nth-child(5):hover{
   background-color: #34B798;
-  width:49%;
-  float:right;
 }
 
 .habit_detail_list ul{
@@ -363,10 +358,6 @@ body{
 #introduction-section{
   display:none;
 }
-
-
-
-
 
 .checkbox-grid-frequency > li{
     display: block;
