@@ -102,15 +102,9 @@ body{
 }
 
 #quote-text{
-  outline: 0px solid transparent;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  position:relative;
-  font-size:30px;
-  line-height: 1.2em;
+  /***check quote.js section at the bottom*/
 }
+
 
 /**********END of website wall****/
 
@@ -458,6 +452,15 @@ body{
 
 
 /**************************quote.js*/
+#left-quote{
+cursor: pointer;
+font-size: 15px;
+position: relative;
+top: -10px;
+left: -5px;
+color: 	#D5D5D5;
+}
+
 #quote-menu{
   list-style:none;
   position:relative;
@@ -490,6 +493,15 @@ body{
   color:white;
 }
 
-
+#quote-text{
+  outline: 0px solid transparent;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position:relative;
+  font-size:30px;
+  line-height: 1.2em;
+}
 
 /*end of quote.js*/

@@ -3,7 +3,7 @@ var initialState={
   model:[],
   filteredModel:[],
   pastQuotes:[],
-  quote: "Mistakes",
+  quote: "Mistake",
   futureQuotes:[]
 }
 

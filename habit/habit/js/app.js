@@ -1,4 +1,5 @@
 import '../plugins/leanModal/jquery.leanModal.min.js';
+import '../plugins/myPlugin/menuSlider.js';
 
 import React from "react";
 import ReactDom from "react-dom";
@@ -56,3 +57,4 @@ import { Router, Route, hashHistory  } from 'react-router';
   //adding some pop up affect to the overall user experience
   $("#add_more").leanModal({ top : 100, overlay : 0.8, closeButton: ".modal_close" });
   $(".habits_display").leanModal({ top : 50, overlay : 0.8, closeButton: ".modal_close" });
+  $("#reference").slideMenu({handler: 'click', icon: 'fa-user'});

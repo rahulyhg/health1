@@ -15,28 +15,33 @@ class Quote extends React.Component{
   switchDraggability(){
     this.setState({ draggable:!this.state.draggable });
   }
-  handleDrag(){
-     $("#quote-text").hide();
-    //  document.getElementById("left-quote")
-    $("#left-quote").hide();
+  handleDrag(e){
+    //  $("#quote-text").hide();
+  //  $("#left-quote").hide();
+    var x = e.pageX - $("#left-quote").offset().left;
+    var y = e.pageY - $("#left-quote").offset().top;
+    console.log("x " + x + " y " + y );
+    e.target.style.top = y + "px";
+    e.target.style.left = x +"px";
   }
   handleDragEnd(e){
-    $("#left-quote").show();
-    var x = e.pageX;
-    var y = e.pageY;
-    //top: y minus mouseposition relative to the original position
-    $("#"+e.currentTarget.id).show().css({
-      top: y -340 + "px",
-      left: x -575+ "px"
-    })
+    //$("#left-quote").show();
+    var x = e.pageX ;
+    var y = e.pageY ;
+    var x = e.pageX - $("#left-quote").offset().left;
+    var y = e.pageY - $("#left-quote").offset().top;
+    console.log("x " + x + " y " + y );
+    e.target.style.top = y + "px";
+    e.target.style.left = x +"px";
   }
   render(){
     return(
       <div>
-        <i id = "left-quote" className="fa fa-quote-left"  style ={{cursor: "pointer", fontSize: "15px", position: "relative", top: "-10"}} onClick={this.switchDraggability.bind(this)}></i>
+        <i id = "left-quote" className="fa fa-quote-left" onClick={this.switchDraggability.bind(this)}></i>
         {(this.state.draggable
               ? //WHEN user can drag the quote, no mini menu here
-                  <span id = "quote-text" draggable ="true" onDrag={this.handleDrag.bind(this)} onDragEnd={this.handleDragEnd.bind(this)}>
+                  <span id = "quote-text" draggable ="true" onDrag={this.handleDrag.bind(this)}
+                                                            onDragEnd={this.handleDragEnd.bind(this)}>
                     <DisplayQuote quote={this.props.quote}/>
                   </span>
              : //WHEN user cannot drag the quote, can edit quote, also show mini menu/editor here
