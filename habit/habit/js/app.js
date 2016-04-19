@@ -15,6 +15,7 @@ import RewardComponent from './Components/rankingHabit.js';
 
 import { Router, Route, hashHistory  } from 'react-router';
 
+require('../css/habit.scss');
 
   //Listing out all the habit
   ReactDom.render(

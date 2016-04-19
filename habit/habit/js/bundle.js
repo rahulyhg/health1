@@ -95,6 +95,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	__webpack_require__(253);
+
 	//Listing out all the habit
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -31650,7 +31652,7 @@
 	  model: [],
 	  filteredModel: [],
 	  pastQuotes: [],
-	  quote: "Mistake",
+	  quote: "KEEP CALM",
 	  futureQuotes: []
 	};
 
@@ -32357,39 +32359,30 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Quote).call(this, props));
 
 	    _this.state = {
-	      navigation: 0, //0: first quote, 1:second etc
-	      draggable: true, //0: cant be drag, but can edit, if 1 child will render a new quote with a handler
-	      //when 0 can edit, will also give option/menu
-	      pos: { x: 0, y: 0 } };
+	      draggable: true };
 	    return _this;
 	  }
 
 	  _createClass(Quote, [{
 	    key: 'switchDraggability',
-	    //position of the quote, last location
+	    //0: cant be drag, but can edit, if 1 child will render a new quote with a handler
+	    //when 0 can edit, will also give option/menu
 	    value: function switchDraggability() {
 	      this.setState({ draggable: !this.state.draggable });
 	    }
 	  }, {
 	    key: 'handleDrag',
 	    value: function handleDrag(e) {
-	      //  $("#quote-text").hide();
-	      //  $("#left-quote").hide();
 	      var x = e.pageX - $("#left-quote").offset().left;
 	      var y = e.pageY - $("#left-quote").offset().top;
-	      console.log("x " + x + " y " + y);
 	      e.target.style.top = y + "px";
 	      e.target.style.left = x + "px";
 	    }
 	  }, {
 	    key: 'handleDragEnd',
 	    value: function handleDragEnd(e) {
-	      //$("#left-quote").show();
-	      var x = e.pageX;
-	      var y = e.pageY;
 	      var x = e.pageX - $("#left-quote").offset().left;
 	      var y = e.pageY - $("#left-quote").offset().top;
-	      console.log("x " + x + " y " + y);
 	      e.target.style.top = y + "px";
 	      e.target.style.left = x + "px";
 	    }
@@ -37940,6 +37933,354 @@
 
 	exports['default'] = _createRouterHistory2['default'](_historyLibCreateHashHistory2['default']);
 	module.exports = exports['default'];
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(254);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(256)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./habit.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./habit.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(255)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "body {\n  background: #ecf0f1;\n  font-family: 'Source Sans Pro', sans-serif;\n  /*background-image: url('http://blog.hostbaby.com/wp-content/uploads/2014/03/PaintSquares_1400x900-1024x658.jpg');*/ }\n\n#upper-left {\n  float: left;\n  width: 50%; }\n\n#upper-right {\n  float: right;\n  width: 20%; }\n\n#arrows {\n  float: left;\n  width: 10%; }\n\n#arrows li {\n  list-style: none;\n  margin-top: 50px; }\n\n.arrow {\n  position: relative; }\n\n.arrow:after {\n  content: \"\\F0D9\";\n  font-family: FontAwesome;\n  font-style: normal;\n  font-weight: normal;\n  text-decoration: inherit;\n  /*--adjust as necessary--*/\n  position: relative;\n  color: #4d4d4d;\n  font-size: 18px;\n  left: -330%; }\n\n/*********************************The text on the website wall****/\n#intro-text {\n  font: normal normal normal 80px/1.2em \"Noticia Text\", serif;\n  text-align: center;\n  color: #4d4d4d;\n  float: right;\n  width: 90%; }\n\n#intro-text p {\n  font: normal normal normal 25px/1.2em \"Noticia Text\", serif;\n  position: relative;\n  left: -10%; }\n  #intro-text p:nth-child(2) {\n    text-align: right; }\n  #intro-text p:nth-child(5) {\n    top: 20px;\n    left: -90%;\n    font: normal normal normal 15px/1.2em \"Noticia Text\", serif; }\n  #intro-text p:nth-child(5):before {\n    content: \"\\F100\";\n    font-family: FontAwesome;\n    font-style: normal;\n    font-weight: normal;\n    text-decoration: inherit;\n    /*--adjust as necessary--*/\n    position: relative;\n    color: #4d4d4d;\n    font-size: 18px;\n    left: -5%; }\n\n#intro-text > div {\n  position: relative;\n  top: -60px;\n  left: -50px;\n  color: #CBCBCB; }\n  #intro-text > div > i {\n    position: relative;\n    top: -5px;\n    /*left:-10%;*/\n    font-size: 20px; }\n  #intro-text > div > span {\n    font-size: 30px;\n    line-height: 1.2em; }\n\n#introduction-section {\n  float: left;\n  width: 30%; }\n\n#quote-text {\n  /***check quote.js section at the bottom*/ }\n\n/**********END of website wall****/\n#calendar_button {\n  background: #E4E4E2;\n  padding-top: 3%;\n  padding-bottom: 3%;\n  margin-left: 25%;\n  margin-right: 25%;\n  border: dotted 3px #ecf0f1; }\n  #calendar_button:hover {\n    background: #F4F4F2; }\n\n#lean_overlay {\n  position: fixed;\n  z-index: 100;\n  top: 0px;\n  left: 0px;\n  height: 100%;\n  width: 100%;\n  background: #000;\n  display: none; }\n\n#habit_input_modal, #current_habit_modal {\n  border-radius: 2px;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  width: 30%;\n  background: white;\n  display: none;\n  padding: 20px; }\n\n#habit_input_modal {\n  width: 40%; }\n\n#current_habit_modal {\n  padding: 10px;\n  border-radius: 5px;\n  -moz-border-radius: 5px;\n  -webkit-border-radius: 5px; }\n\n#habit_list {\n  list-style: none; }\n\n#habit-section {\n  padding-bottom: 5%; }\n  #habit-section p {\n    margin: auto;\n    width: 50%;\n    font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n\n#habit_wrapper {\n  /*border:dotted 5px #ecf0f1;*/\n  /*border-left:dotted 4px #ecf0f1;*/\n  /*padding-right:2%;*/\n  /*background:#282C34;*/\n  padding-top: 10px;\n  padding-bottom: 10px;\n  /*margin-right:40%;\r\n  margin-left:20%;*/\n  margin: auto;\n  width: 50%;\n  border-radius: 6px 16px 16px 100px;\n  -moz-border-radius: 6px 16px 16px 116px;\n  -webkit-border-radius: 6px 16px 16px 100px; }\n\n#habit_list {\n  position: relative;\n  z-index: 100; }\n\n#habit_list > li {\n  border-radius: 2px;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  padding: 20px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n  background: #E74C3C;\n  box-shadow: 0px 0px 10px #888888;\n  transition: background-color color 0.2s linear;\n  color: #4d4d4d;\n  font-weight: bold; }\n  #habit_list > li:hover {\n    background-color: #F25C5C;\n    color: white;\n    /*box-shadow: 0px 0px 5px #ecf0f1;*/ }\n\n#add_more {\n  border-radius: 16px 16px 116px 116px !important;\n  -moz-border-radius: 16px 16px 116px 116px !important;\n  -webkit-border-radius: 16px 16px 116px 116px !important;\n  margin-left: 0% !important;\n  width: 100% !important;\n  padding: 17px !important;\n  color: white !important;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n\n#section-title {\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif;\n  color: #4d4d4d;\n  position: relative; }\n\n.modal_title {\n  font: normal normal normal 20px/1.2em \"Noticia Text\", serif;\n  text-align: center;\n  color: #4d4d4d; }\n\n.habit_detail_list {\n  color: white;\n  /*font: normal normal normal 20px 'Source Sans Pro',serif;*/ }\n\n.habit_detail_list > li {\n  text-align: left;\n  list-style: none;\n  margin-bottom: 5px;\n  border-radius: 5px 5px 5px 5px;\n  padding: 1px;\n  padding-top: 5px;\n  transition: background-color 5ms linear; }\n  .habit_detail_list > li > span {\n    margin-left: 3%; }\n\n.habit_detail_list > li > div {\n  text-align: center;\n  background-color: white;\n  margin: auto;\n  width: 100%;\n  border-radius: 0px 0px 5px 5px;\n  color: #4d4d4d;\n  margin-top: 0px;\n  padding-top: 6px;\n  padding-bottom: 6px;\n  font: normal normal normal 15px 'SOFIA PRO',serif; }\n\n.habit_detail_list > li:nth-child(1) {\n  background-color: #EB6E6B; }\n  .habit_detail_list > li:nth-child(1):hover {\n    background-color: #E54A45; }\n\n.habit_detail_list > li:nth-child(2) {\n  background-color: #5B9FC4; }\n  .habit_detail_list > li:nth-child(2):hover {\n    background-color: #3387B6; }\n\n.habit_detail_list > li:nth-child(3) {\n  background-color: #A36EB2;\n  clear: both; }\n  .habit_detail_list > li:nth-child(3):hover {\n    background-color: #8B4A9E; }\n\n.habit_detail_list > li:nth-child(4) {\n  background-color: #68B87D;\n  width: 49%;\n  float: left; }\n  .habit_detail_list > li:nth-child(4):hover {\n    background-color: #42A65D; }\n\n.habit_detail_list > li:nth-child(5) {\n  background-color: #5CC5AC;\n  width: 49%;\n  float: right; }\n  .habit_detail_list > li:nth-child(5):hover {\n    background-color: #34B798; }\n\n.habit_detail_list ul {\n  width: 100%;\n  margin: auto; }\n\n/*******************************rankingHabit.js css*/\n.listing-boxes {\n  position: relative;\n  padding-top: 5px;\n  padding-bottom: 5px;\n  border-left: thin dotted white;\n  z-index: 100; }\n  .listing-boxes li {\n    background-color: white;\n    /*border-radius: 3px;\r\n    -moz-border-radius: 3px;\r\n    -webkit-border-radius: 3px;*/\n    box-shadow: 0px 0px 5px #888888;\n    list-style: none;\n    padding-top: 5px;\n    padding-bottom: 5px;\n    margin-bottom: 5px;\n    margin-right: 5%;\n    margin-left: 5%;\n    padding-left: 15%;\n    padding-right: 15%;\n    transition: background-color 0.2s linear; }\n    .listing-boxes li:hover {\n      background-color: #E74C3C !important;\n      color: white; }\n\n#delete-icon {\n  color: #f5f5f5; }\n\n/***end of rankingHabit.js css****/\n@media (max-width: 50em) {\n  #upper-right {\n    display: none; }\n  #upper-left {\n    width: 100%; }\n  #habit_input_modal, #current_habit_modal {\n    width: 60%; }\n  #introduction-section {\n    display: none; }\n  .checkbox-grid-frequency > li {\n    display: block;\n    float: left;\n    width: 50%; } }\n\n@media (max-width: 30em) {\n  #upper-left {\n    width: 100%;\n    padding: 0px; }\n  #habit_list > li {\n    padding: 10%; }\n  #habit_wrapper {\n    margin: 0%;\n    width: 100%; }\n  #add_more {\n    border-radius: 16px 16px 116px 116px !important;\n    -moz-border-radius: 16px 16px 116px 116px !important;\n    -webkit-border-radius: 16px 16px 116px 116px !important;\n    margin-left: 0% !important; }\n  #habit_input_modal, #current_habit_modal {\n    width: 100%; } }\n\n.checkbox-grid li {\n  display: block;\n  float: left;\n  width: 50%; }\n\n.wrapper-Clear-Flow {\n  clear: right;\n  clear: left; }\n\n.wrapper-Clear {\n  overflow: hidden; }\n\n#notification-bubble {\n  position: relative;\n  right: 5%;\n  top: -3px;\n  /*border-radius: 50%;\r\n  -moz-border-radius: 50%;\r\n  -webkit-border-radius: 50%;*/\n  background-color: #E74C3C;\n  padding: 5px;\n  padding-left: 12px;\n  padding-right: 12px;\n  /*margin-top: 100px;*/ }\n\n#notification-bubble {\n  /*for the text inside*/\n  color: white;\n  font-size: 13px; }\n  #notification-bubble:after {\n    position: absolute;\n    top: 25px;\n    left: 20px;\n    color: #E74C3C;\n    content: \" \";\n    border-style: solid;\n    border-width: 5px;\n    border-color: #E74C3C transparent transparent transparent; }\n\n#habit_listing_nav {\n  width: 100%;\n  margin: auto; }\n\n/**************************quote.js*/\n#left-quote {\n  cursor: pointer;\n  font-size: 15px;\n  position: relative;\n  top: -10px;\n  left: -5px;\n  color: #D5D5D5; }\n\n#quote-menu {\n  list-style: none;\n  position: relative;\n  font-size: 15px;\n  top: 0px;\n  cursor: pointer;\n  height: 50px; }\n  #quote-menu li {\n    float: left;\n    width: 22%;\n    padding: 1px;\n    padding-top: 15px;\n    margin: 1%;\n    border-radius: 2px 2px 2px 2px;\n    box-shadow: 0px 0px 5px #888888; }\n    #quote-menu li div {\n      background-color: white;\n      border-radius: 2px 2px 2px 2px;\n      transition: background-color 2ms linear;\n      color: #CBCBCB; }\n      #quote-menu li div:hover {\n        border-radius: 2px 2px 2px 2px;\n        color: white; }\n\n#quote-text {\n  outline: 0px solid transparent;\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  position: relative;\n  font-size: 30px;\n  line-height: 1.2em; }\n\n/*end of quote.js*/\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 255 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
 
 /***/ }
 /******/ ]);

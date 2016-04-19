@@ -6,31 +6,22 @@ class Quote extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      navigation: 0, //0: first quote, 1:second etc
       draggable: true, //0: cant be drag, but can edit, if 1 child will render a new quote with a handler
                         //when 0 can edit, will also give option/menu
-      pos: {x:0, y:0}, //position of the quote, last location
     }
   }
   switchDraggability(){
     this.setState({ draggable:!this.state.draggable });
   }
   handleDrag(e){
-    //  $("#quote-text").hide();
-  //  $("#left-quote").hide();
     var x = e.pageX - $("#left-quote").offset().left;
     var y = e.pageY - $("#left-quote").offset().top;
-    console.log("x " + x + " y " + y );
     e.target.style.top = y + "px";
     e.target.style.left = x +"px";
   }
   handleDragEnd(e){
-    //$("#left-quote").show();
-    var x = e.pageX ;
-    var y = e.pageY ;
     var x = e.pageX - $("#left-quote").offset().left;
     var y = e.pageY - $("#left-quote").offset().top;
-    console.log("x " + x + " y " + y );
     e.target.style.top = y + "px";
     e.target.style.left = x +"px";
   }
