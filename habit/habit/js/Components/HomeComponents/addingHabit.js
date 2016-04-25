@@ -1,6 +1,6 @@
 import React from "react";
-import formModel from "./../Model/HabitCreationModel.js";
-import constant from "../../config/config.js"; //contants all constants
+import formModel from "./../../Model/HabitCreationModel.js";
+import constant from "../../../config/config.js"; //contants all constants
 
 /*
 *formModel: store state of forms information, and provide a api to manipulate the data

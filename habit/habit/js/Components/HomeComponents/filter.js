@@ -1,5 +1,5 @@
 import React from 'react';
-import store from '../store/store';
+import store from '../../store/store';
 
 
 var Filter = React.createClass({
@@ -9,7 +9,9 @@ var Filter = React.createClass({
 
   render: function(){
     return(
-    <input type='text' placeholder='input your filter' onChange={this.handleChange}></input>
+    <div id ="filterDiv">
+      <input type='text' placeholder='input your filter' onChange={this.handleChange}></input>
+    </div>
     )
   }
 

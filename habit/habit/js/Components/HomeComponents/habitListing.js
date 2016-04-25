@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from 'react-redux';
-import constant from "../../config/config.js"; //contants all constants
-import store from '../store/store';
-import '../../plugins/calendar/jquery.pickmeup.min.js';
+import constant from "../../../config/config.js"; //contants all constants
+import store from '../../store/store';
+import '../../../plugins/calendar/jquery.pickmeup.min.js';
 "use strict";
 
 
@@ -91,7 +91,10 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
     });
 
     var HabitList = React.createClass({
-
+      componentDidMount: function(){
+        $("#add_more").leanModal({ top : 100, overlay : 0.8, closeButton: ".modal_close" });
+        $(".habits_display").leanModal({ top : 50, overlay : 0.8, closeButton: ".modal_close" });
+      },
       //this callback is to tell parent (NavHabit) which habit is clicked, so CurrentHabit component will render the selected habit info
       handleCurrentHabit: function(data){
         this.props.onHabitClick(data);
@@ -109,7 +112,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
         }
 
         return (
-            <div id="habit-section"> <p>Browse your habits below:</p>
+            <div id="habit-section">
               <div id = "habit_wrapper">
                 <ul id = "habit_list">
                 {   newList.map(function(dataRow, i) { //mapping each habit that need to display to a li element, and whenever each item is clicked it will trigger a modal
@@ -297,7 +300,7 @@ import '../../plugins/calendar/jquery.pickmeup.min.js';
                 <li>Frequency <div>{this.convertNumToFreq(this.props.habit.frequency)}</div>
                 </li>
                 <li>Planned days <div>{
-                                        this.props.habit.day.split("").sort().map(function(item){
+                                        this.props.habit.day.split("").map(function(item){
                                             return this.convertNumToDay(item) + " ";
                                         }, this)
 

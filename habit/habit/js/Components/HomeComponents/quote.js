@@ -1,5 +1,5 @@
 import React from 'react';
-import store from '../store/store';
+import store from '../../store/store';
 import {connect} from 'react-redux';
 
 class Quote extends React.Component{

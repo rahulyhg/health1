@@ -1,5 +1,5 @@
 import React from 'react';
-import store from '../store/store';
+import store from '../../store/store';
 import {connect} from 'react-redux';
 
 
@@ -171,7 +171,7 @@ var Awards = React.createClass({
     var count = 1;
     (this.props.days.constructor === Array) ? count = this.props.days.length: "";
     return(
-      <div>Completed Counts: {count}
+      <div>Completed Counts: <span>{count}</span>
       </div>
     )
   }

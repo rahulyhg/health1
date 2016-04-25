@@ -81,7 +81,7 @@ var formModel = {
         description: this.newHabitInfo.description,
         frequency: this.newHabitInfo.frequency,
         startDay: this.newHabitInfo.startDay,
-        days: this.newHabitInfo.days.join("")
+        days: this.newHabitInfo.days.sort().join("")
       }
       $.ajax({
           url: "/health1/server/habit/user",
