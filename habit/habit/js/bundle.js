@@ -31793,6 +31793,7 @@
 	constant.DAILY = 1;
 	constant.WEEKLY = 2;
 	constant.BIWEEKLY = 3;
+	constant.monthtext = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
 	exports.default = constant;
 
@@ -33870,6 +33871,10 @@
 
 	var _reactRedux = __webpack_require__(165);
 
+	var _config = __webpack_require__(188);
+
+	var _config2 = _interopRequireDefault(_config);
+
 	var _dayPicker = __webpack_require__(204);
 
 	var _dayPicker2 = _interopRequireDefault(_dayPicker);
@@ -33884,7 +33889,8 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //contants all constants
+
 
 	var GraphRoot = function (_React$Component) {
 	  _inherits(GraphRoot, _React$Component);
@@ -33895,20 +33901,24 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GraphRoot).call(this, props));
 
 	    _this.state = {
-	      year: 2016, //default year and month for dislaying the graph, april 2016
+	      year: 2016, //default year and month for displaying the graph, april 2016
 	      month: 3,
-	      currentHabitIndex: 0 //the default viewing habitIndex
+	      currentHabitIndex: 0, //index for which habit to display on graph
+	      all: false //false: show all habits on graph, true: show only currentHabitIndex habit
 	    };
 	    return _this;
 	  }
 
 	  _createClass(GraphRoot, [{
+	    key: 'handleAllorOneSwitch',
+	    value: function handleAllorOneSwitch() {
+	      this.setState({ all: !this.state.all });
+	    }
+	  }, {
 	    key: 'handleDateChange',
 	    value: function handleDateChange(target, value) {
-	      var monthtext = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-
 	      if (target === "month") {
-	        this.setState({ month: monthtext.indexOf(value) });
+	        this.setState({ month: _config2.default.monthtext.indexOf(value) });
 	      } else {
 	        //year
 	        this.setState({ year: value });
@@ -33980,7 +33990,6 @@
 	        }
 	        d.setDate(d.getDate() + 1);
 	      }
-
 	      return arr;
 	    }
 
@@ -33997,7 +34006,6 @@
 	  }, {
 	    key: 'generateGraphArray',
 	    value: function generateGraphArray(month, year, description, plannedDays, completedDays) {
-
 	      var graphArray = [];
 	      var endDay = 30;
 	      //rmb javascript month is 0-11
@@ -34042,41 +34050,66 @@
 	    }
 	    /**
 	    * merge two chart arr together, first chart arr get modified, assume same month and year for both chart
-	    * @param {array} chartData1
+	    * @param {array} chartData
 	    * @param {array} chartData2
 	    */
 
 	  }, {
 	    key: 'mergeTwoChartData',
-	    value: function mergeTwoChartData(chartData1, chartData2) {
+	    value: function mergeTwoChartData(chartData, chartData2) {
 	      var i = 0,
 	          j = 0;
-	      while (i < chartData1.length) {
-	        Object.assign(chartData1[i], chartData2[j]);
+	      while (i < chartData.length && chartData2.length > 0) {
+	        Object.assign(chartData[i], chartData2[j]);
 	        i++;j++;
 	      }
+	      return chartData;
+	    }
+	  }, {
+	    key: 'recursion',
+	    value: function recursion(habitList) {
+	      if (habitList.length === 0) {
+	        return [];
+	      }
+	      var habit = habitList.pop();
+	      var chartData = this.generateGraphArray(this.state.month, this.state.year, habit.description, this.getAllPlannedDay(this.state.month, this.state.year, habit.day), this.getAllCompletedDay(this.state.month, this.state.year, habit.completed_Days));
+	      return this.mergeTwoChartData(chartData, this.recursion(habitList));
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var self = this;
-	      var arr = this.getAllCompletedDay(this.state.month, this.state.year, this.props.modelForGraphing[this.state.currentHabitIndex].completed_Days);
-	      var arr2 = this.getAllPlannedDay(this.state.month, this.state.year, this.props.modelForGraphing[this.state.currentHabitIndex].day);
-	      var chartData = this.generateGraphArray(this.state.month, this.state.year, this.props.modelForGraphing[this.state.currentHabitIndex].description, arr2, arr);
+	      //both variable for graphingData, which is passed to LineGraph component for graphing
+	      var chartSeries = [];
+	      var chartData = [];
+	      //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
+	      if (this.state.all) {
+	        chartData = this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
+	        for (var i = 0; i < this.props.modelForGraphing.length; i++) {
+	          var obj = {
+	            field: this.props.modelForGraphing[i].description,
+	            name: this.props.modelForGraphing[i].description
+	          };
+	          chartSeries.push(obj);
+	        }
+	      } else {
+	        var index = this.state.currentHabitIndex;
+	        var habit = this.props.modelForGraphing;
+	        chartData = this.generateGraphArray(this.state.month, this.state.year, habit[index].description, this.getAllPlannedDay(this.state.month, this.state.year, habit[index].day), this.getAllCompletedDay(this.state.month, this.state.year, habit[index].completed_Days));
+	        chartSeries = [{
+	          field: habit[index].description,
+	          name: habit[index].description,
+	          color: '#ff7f0e'
+	        }];
+	      }
 
-	      // var arr = this.getAllCompletedDay(3, 2016, this.props.modelForGraphing[3].completed_Days);
-	      // var arr2 = this.getAllPlannedDay(3, 2016, this.props.modelForGraphing[3].day);
-	      // var chartData2 = this.generateGraphArray(3, 2016, this.props.modelForGraphing[3].description, arr2, arr);
-
+	      //graphingData: pass it to LineGraph component for graphing
 	      var graphingData = {
 	        width: 1150,
 	        height: 300,
 	        margins: { left: 100, right: 100, top: 50, bottom: 50 },
-	        chartSeries: [{
-	          field: this.props.modelForGraphing[this.state.currentHabitIndex].description,
-	          name: this.props.modelForGraphing[this.state.currentHabitIndex].description,
-	          color: '#ff7f0e'
-	        }],
+	        chartSeries: chartSeries,
+
 	        // your x accessor
 	        x: function x(d) {
 	          return new Date(self.state.year, self.state.month, d.date);
@@ -34092,10 +34125,15 @@
 	        null,
 	        _react2.default.createElement(_dayPicker2.default, { handleDateChange: this.handleDateChange.bind(this),
 	          handleHabitChange: this.handleHabitChange.bind(this),
-	          habitList: this.props.modelForGraphing
+	          habitList: this.props.modelForGraphing,
+	          handleAllOrOne: this.handleAllorOneSwitch.bind(this)
 
 	        }),
-	        _react2.default.createElement(_lineGraph2.default, { chartData: graphingData })
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'habit-Line-graph' },
+	          _react2.default.createElement(_lineGraph2.default, { chartData: graphingData })
+	        )
 	      );
 	    }
 	  }]);
@@ -34119,7 +34157,7 @@
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -34131,6 +34169,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _config = __webpack_require__(188);
+
+	var _config2 = _interopRequireDefault(_config);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34138,6 +34180,9 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	//contants all constants
+	"use strict";
 
 	var DayPicker = function (_React$Component) {
 	  _inherits(DayPicker, _React$Component);
@@ -34149,19 +34194,18 @@
 	  }
 
 	  _createClass(DayPicker, [{
-	    key: 'componentDidMount',
+	    key: "componentDidMount",
 	    value: function componentDidMount() {
 	      //putting the option for the selector drop down. i.e. months, years, habits
-	      var monthtext = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 	      var month = document.getElementById('monthDropDown');
 	      var year = document.getElementById('yearDropDown');
 	      var habitList = document.getElementById('habitDropDown');
 
 	      var today = new Date();
 	      for (var m = 0; m < 12; m++) {
-	        month.options[m] = new Option(monthtext[m], monthtext[m]);
+	        month.options[m] = new Option(_config2.default.monthtext[m], _config2.default.monthtext[m]);
 	      }
-	      month.options[today.getMonth()] = new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true);
+	      month.options[today.getMonth()] = new Option(_config2.default.monthtext[today.getMonth()], _config2.default.monthtext[today.getMonth()], true, true);
 	      var thisyear = today.getFullYear();thisyear = thisyear - 10;
 	      for (var y = 0; y < 20; y++) {
 	        year.options[y] = new Option(thisyear, thisyear);
@@ -34177,7 +34221,7 @@
 	      }
 	    }
 	  }, {
-	    key: 'handleChange',
+	    key: "handleChange",
 	    value: function handleChange(e) {
 	      console.log("entered handle");
 	      if (e.target.id === 'monthDropDown') {
@@ -34187,19 +34231,26 @@
 	      }
 	    }
 	  }, {
-	    key: 'handleHabitChange',
+	    key: "handleHabitChange",
 	    value: function handleHabitChange(e) {
 	      this.props.handleHabitChange(e.target.value);
 	    }
 	  }, {
-	    key: 'render',
+	    key: "handleAllOrOne",
+	    value: function handleAllOrOne() {
+	      this.props.handleAllOrOne();
+	    }
+	  }, {
+	    key: "render",
 	    value: function render() {
 	      return _react2.default.createElement(
-	        'div',
-	        { id: 'graph-dropDown' },
-	        _react2.default.createElement('select', { id: 'habitDropDown', onChange: this.handleHabitChange.bind(this) }),
-	        _react2.default.createElement('select', { id: 'monthDropDown', onChange: this.handleChange.bind(this) }),
-	        _react2.default.createElement('select', { id: 'yearDropDown', onChange: this.handleChange.bind(this) })
+	        "div",
+	        { id: "graph-dropDown" },
+	        _react2.default.createElement("select", { id: "habitDropDown", onChange: this.handleHabitChange.bind(this) }),
+	        _react2.default.createElement("select", { id: "monthDropDown", onChange: this.handleChange.bind(this) }),
+	        _react2.default.createElement("select", { id: "yearDropDown", onChange: this.handleChange.bind(this) }),
+	        _react2.default.createElement("input", { type: "checkbox", name: "allOrOne", onChange: this.handleAllOrOne.bind(this) }),
+	        "show all"
 	      );
 	    }
 	  }]);

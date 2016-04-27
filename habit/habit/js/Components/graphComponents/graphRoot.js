@@ -2,6 +2,7 @@ import React from 'react';
 import store from '../../store/store'
 import { connect } from 'react-redux';
 
+import constant from "../../../config/config.js"; //contants all constants
 import DayPicker from './dayPicker';
 import LineGraph from './lineGraph';
 
@@ -10,21 +11,25 @@ class GraphRoot extends React.Component{
   constructor(props){
     super(props);
     this.state={
-      year: 2016, //default year and month for dislaying the graph, april 2016
+      year: 2016, //default year and month for displaying the graph, april 2016
       month: 3,
-      currentHabitIndex: 0 //the default viewing habitIndex
+      currentHabitIndex: 0, //index for which habit to display on graph
+      all: false //false: show all habits on graph, true: show only currentHabitIndex habit
     }
   }
 
-  handleDateChange(target, value){
-    var monthtext=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+  handleAllorOneSwitch(){
+    this.setState({all: !this.state.all});
+  }
 
+  handleDateChange(target, value){
       if (target === "month"){
-          this.setState({month: monthtext.indexOf(value)});
+          this.setState({month: constant.monthtext.indexOf(value)});
       }else{ //year
           this.setState({year: value});
       }
   }
+
   handleHabitChange(index){
     this.setState({currentHabitIndex: index});
   }
@@ -78,7 +83,6 @@ class GraphRoot extends React.Component{
       }
       d.setDate(d.getDate()+1);
     }
-
     return arr;
   }
 
@@ -92,7 +96,6 @@ class GraphRoot extends React.Component{
    * @return {array} graphArray
   */
   generateGraphArray(month, year, description, plannedDays, completedDays){
-
     var graphArray = [];
     var endDay = 30;
     //rmb javascript month is 0-11
@@ -134,42 +137,70 @@ class GraphRoot extends React.Component{
   }
   /**
   * merge two chart arr together, first chart arr get modified, assume same month and year for both chart
-  * @param {array} chartData1
+  * @param {array} chartData
   * @param {array} chartData2
   */
-  mergeTwoChartData(chartData1, chartData2){
+  mergeTwoChartData(chartData, chartData2){
     var i = 0,
         j = 0;
-    while(i < chartData1.length){
-      Object.assign(chartData1[i], chartData2[j]);
-      i++;j++;
+    while(i < chartData.length && chartData2.length>0){
+      Object.assign(chartData[i], chartData2[j]);
+      i++; j++;
     }
+    return chartData;
   }
+
+  recursion(habitList){
+    if(habitList.length === 0 ){
+      return [];
+    }
+    var habit = habitList.pop();
+    var chartData = this.generateGraphArray(this.state.month, this.state.year, habit.description,
+                                              this.getAllPlannedDay(this.state.month, this.state.year, habit.day),
+                                                this.getAllCompletedDay(this.state.month, this.state.year, habit.completed_Days));
+    return this.mergeTwoChartData(chartData, this.recursion(habitList));
+  }
+
+
   render(){
     var self = this;
-    var arr = this.getAllCompletedDay(this.state.month, this.state.year, this.props.modelForGraphing[this.state.currentHabitIndex].completed_Days);
-    var arr2 = this.getAllPlannedDay(this.state.month, this.state.year, this.props.modelForGraphing[this.state.currentHabitIndex].day);
-    var chartData = this.generateGraphArray(this.state.month, this.state.year, this.props.modelForGraphing[this.state.currentHabitIndex].description, arr2, arr);
+    //both variable for graphingData, which is passed to LineGraph component for graphing
+    var chartSeries = [];
+    var chartData = [];
+    //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
+    if (this.state.all){
+      chartData=this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
+      for (let i = 0; i < this.props.modelForGraphing.length; i++){
+        var obj = {
+            field : this.props.modelForGraphing[i].description,
+            name : this.props.modelForGraphing[i].description
+        }
+        chartSeries.push(obj);
+      }
+    }else{
+      var index = this.state.currentHabitIndex;
+      var habit = this.props.modelForGraphing;
+      chartData = this.generateGraphArray(this.state.month, this.state.year, habit[index].description,
+                                            this.getAllPlannedDay(this.state.month, this.state.year, habit[index].day),
+                                            this.getAllCompletedDay(this.state.month, this.state.year, habit[index].completed_Days) );
+      chartSeries = [{
+                      field:habit[index].description,
+                      name: habit[index].description,
+                      color: '#ff7f0e'
+                  }];
+    }
 
-    // var arr = this.getAllCompletedDay(3, 2016, this.props.modelForGraphing[3].completed_Days);
-    // var arr2 = this.getAllPlannedDay(3, 2016, this.props.modelForGraphing[3].day);
-    // var chartData2 = this.generateGraphArray(3, 2016, this.props.modelForGraphing[3].description, arr2, arr);
 
+    //graphingData: pass it to LineGraph component for graphing
     var graphingData = {
         width: 1150,
         height: 300,
         margins: {left: 100, right: 100, top: 50, bottom: 50},
-        chartSeries: [
-          {
-            field: this.props.modelForGraphing[this.state.currentHabitIndex].description,
-            name: this.props.modelForGraphing[this.state.currentHabitIndex].description,
-            color: '#ff7f0e'
-          }
-        ],
+        chartSeries: chartSeries,
+
         // your x accessor
         x: function(d) {
           return new Date(self.state.year, self.state.month, d.date);
-
         },
         xScale: 'time',
         xLabel: 'day of the month',
@@ -182,9 +213,10 @@ class GraphRoot extends React.Component{
         <DayPicker handleDateChange={this.handleDateChange.bind(this)}
                    handleHabitChange={this.handleHabitChange.bind(this)}
                    habitList = {this.props.modelForGraphing}
+                   handleAllOrOne = {this.handleAllorOneSwitch.bind(this)}
 
         />
-        <LineGraph chartData={graphingData}/>
+        <div id = "habit-Line-graph"><LineGraph chartData={graphingData}/></div>
       </div>
     )
   }
