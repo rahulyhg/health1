@@ -155,7 +155,7 @@ import '../../../plugins/calendar/jquery.pickmeup.min.js';
               nextClassName = "pagination-next";
         }
         return(
-          <div id = "habit_listing_nav">
+          <div id = "habit_listing_nav" className='noselect'>
             <ul className="pagination text-center" role="navigation" aria-label="Pagination">
               <li className={prevClassName} onClick={this.handleClicks.bind(this, -1)}>
               {(this.props.currentPageNum == 1

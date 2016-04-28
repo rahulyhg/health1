@@ -50,11 +50,11 @@ class DayPicker extends React.Component{
   }
   render(){
     return(
-      <div id="graph-dropDown">
+      <div id="graph-dropDown" className='noselect'>
         <select id="habitDropDown" onChange={this.handleHabitChange.bind(this)}></select>
         <select id="monthDropDown" onChange={this.handleChange.bind(this)}></select>
         <select id="yearDropDown" onChange={this.handleChange.bind(this)}></select>
-        <input type="checkbox" name="allOrOne" onChange={this.handleAllOrOne.bind(this)}/>show all
+        <input type="checkbox" id="allOrOne" name="allOrOne" onChange={this.handleAllOrOne.bind(this)}/><label className='noselect' htmlFor="allOrOne">show all</label>
       </div>
     )
   }

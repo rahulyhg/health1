@@ -173,7 +173,7 @@ import constant from "../../../config/config.js"; //contants all constants
         return(
           <fieldset className="fieldset">
           <legend>How Often?</legend>
-          <div id="frequency-wrapper">
+          <div id="frequency-wrapper" className="noselect">
             <input type="radio" name="HowOften" id="Daily" onChange={this.userInput.bind(this, constant.DAILY)} defaultChecked = {formModel.getFrequency() == constant.DAILY}/><label htmlFor="Daily">Daily</label>
             <input type="radio" name="HowOften" id="Weekly" onChange={this.userInput.bind(this, constant.WEEKLY)} defaultChecked = {formModel.getFrequency() == constant.WEEKLY}/><label htmlFor="Weekly">Weekly</label>
             <input type="radio" name="HowOften" id="BiWeekly" onChange={this.userInput.bind(this, constant.BIWEEKLY)} defaultChecked = {formModel.getFrequency() == constant.BIWEEKLY}/><label htmlFor="BiWeekly">Bi-Weekly</label>

@@ -9,6 +9,15 @@ $flat-silver: #34B798;
   font: normal normal normal $size+px/1.2em 'Noticia Text',serif;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
 
 body{
   background:#ecf0f1;
@@ -255,7 +264,7 @@ body{
 
 
 #calendar_button{
-  background: #CDCDCB;
+  background: #E4E4E2;
   padding-top: 3%;
   padding-bottom:3%;
   margin-left:25%;
@@ -263,7 +272,7 @@ body{
   border:dotted 3px #ecf0f1;
   @include wall-font(17);
   &:hover{
-    background: #E4E4E2;
+    background: #F4F4F2;
   }
 }
 
@@ -660,3 +669,7 @@ color: 	#D5D5D5;
 }
 
 /*end of quote.js*/
+
+
+
+/******** graph component css */

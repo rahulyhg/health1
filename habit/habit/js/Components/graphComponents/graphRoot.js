@@ -210,13 +210,14 @@ class GraphRoot extends React.Component{
       console.log(JSON.stringify(graphingData));
     return(
       <div>
+
+        <div id = "habit-Line-graph"><LineGraph chartData={graphingData}/></div>
         <DayPicker handleDateChange={this.handleDateChange.bind(this)}
                    handleHabitChange={this.handleHabitChange.bind(this)}
                    habitList = {this.props.modelForGraphing}
                    handleAllOrOne = {this.handleAllorOneSwitch.bind(this)}
 
         />
-        <div id = "habit-Line-graph"><LineGraph chartData={graphingData}/></div>
       </div>
     )
   }
