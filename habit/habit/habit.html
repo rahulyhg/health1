@@ -106,6 +106,38 @@
   color:white;
 
 }
+
+#contact-us-wall{
+width:100%;
+text-align: center;
+top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin:auto;
+  position:absolute;
+  height:100px;
+
+}
+#contact-us-wall > h6{
+  font-weight: 700;
+  text-align: center;
+}
+#contact-us-wall > p{
+  color: #8b8b8b;
+
+  animation: moveUp 0.6s ease-in-out 0.2s backwards;
+}
+@keyframes moveUp{
+	0% {
+		transform: translateY(40px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0px);
+		opacity: 1;
+	}
+}
 </style>
 </head>
 

@@ -10,23 +10,7 @@ import '../../../plugins/calendar/jquery.pickmeup.min.js';
   //this Component is only for storing the habits data from server
   //the root component for the habit listing section
   var HabitModel = React.createClass({
-    componentDidMount: function(){
 
-      var userId = 123; //for testing purposes
-      if (sessionStorage.userid){
-        userId = sessionStorage.userid;
-      }
-
-      var serverRequest = $.get("/health1/server/habit/user", {userid: userId}, function(result){
-        result = JSON.parse(result);
-        //have to parse completed_Days into an Array
-        result.forEach(function(item){
-            item.completed_Days = (item.completed_Days == null) ? [] : item.completed_Days.split(",");
-        });
-
-        store.dispatch({type:'UPDATE', data: result});
-      });
-    },
     render: function(){
       return(
         <div>
@@ -40,7 +24,10 @@ import '../../../plugins/calendar/jquery.pickmeup.min.js';
     return {data: state.filteredModel}
   }
 
+  //new component created with react-redux, this component is connected with redux main storage
+  //whenever a change in storage, redux will pass the new state through props
   var NewHabitModelCreatedByRedux = connect(mapStateToProps)(HabitModel)
+
 
   //This is the immediate child of root
   var NavHabit = React.createClass(

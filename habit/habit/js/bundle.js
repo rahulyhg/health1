@@ -29883,23 +29883,7 @@
 	var HabitModel = _react2.default.createClass({
 	  displayName: "HabitModel",
 
-	  componentDidMount: function componentDidMount() {
 
-	    var userId = 123; //for testing purposes
-	    if (sessionStorage.userid) {
-	      userId = sessionStorage.userid;
-	    }
-
-	    var serverRequest = $.get("/health1/server/habit/user", { userid: userId }, function (result) {
-	      result = JSON.parse(result);
-	      //have to parse completed_Days into an Array
-	      result.forEach(function (item) {
-	        item.completed_Days = item.completed_Days == null ? [] : item.completed_Days.split(",");
-	      });
-
-	      _store2.default.dispatch({ type: 'UPDATE', data: result });
-	    });
-	  },
 	  render: function render() {
 	    return _react2.default.createElement(
 	      "div",
@@ -29913,6 +29897,8 @@
 	  return { data: state.filteredModel };
 	};
 
+	//new component created with react-redux, this component is connected with redux main storage
+	//whenever a change in storage, redux will pass the new state through props
 	var NewHabitModelCreatedByRedux = (0, _reactRedux.connect)(mapStateToProps)(HabitModel);
 
 	//This is the immediate child of root
@@ -34280,30 +34266,33 @@
 	    key: 'render',
 	    value: function render() {
 	      var self = this;
+
 	      //both variable for graphingData, which is passed to LineGraph component for graphing
 	      var chartSeries = [];
 	      var chartData = [];
-	      //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
-	      if (this.state.all) {
-	        chartData = this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
-	        for (var i = 0; i < this.props.modelForGraphing.length; i++) {
-	          var obj = {
-	            field: this.props.modelForGraphing[i].description,
-	            name: this.props.modelForGraphing[i].description
-	          };
-	          chartSeries.push(obj);
+	      console.log(this.props.modelForGraphing);
+	      if (this.props.modelForGraphing.length !== 0) {
+	        //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
+	        if (this.state.all) {
+	          chartData = this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
+	          for (var i = 0; i < this.props.modelForGraphing.length; i++) {
+	            var obj = {
+	              field: this.props.modelForGraphing[i].description,
+	              name: this.props.modelForGraphing[i].description
+	            };
+	            chartSeries.push(obj);
+	          }
+	        } else {
+	          var index = this.state.currentHabitIndex;
+	          var habit = this.props.modelForGraphing;
+	          chartData = this.generateGraphArray(this.state.month, this.state.year, habit[index].description, this.getAllPlannedDay(this.state.month, this.state.year, habit[index].day), this.getAllCompletedDay(this.state.month, this.state.year, habit[index].completed_Days));
+	          chartSeries = [{
+	            field: habit[index].description,
+	            name: habit[index].description,
+	            color: '#ff7f0e'
+	          }];
 	        }
-	      } else {
-	        var index = this.state.currentHabitIndex;
-	        var habit = this.props.modelForGraphing;
-	        chartData = this.generateGraphArray(this.state.month, this.state.year, habit[index].description, this.getAllPlannedDay(this.state.month, this.state.year, habit[index].day), this.getAllCompletedDay(this.state.month, this.state.year, habit[index].completed_Days));
-	        chartSeries = [{
-	          field: habit[index].description,
-	          name: habit[index].description,
-	          color: '#ff7f0e'
-	        }];
 	      }
-
 	      //graphingData: pass it to LineGraph component for graphing
 	      var graphingData = {
 	        width: 1150,
@@ -34329,12 +34318,11 @@
 	          { id: 'habit-Line-graph' },
 	          _react2.default.createElement(_lineGraph2.default, { chartData: graphingData })
 	        ),
-	        _react2.default.createElement(_dayPicker2.default, { handleDateChange: this.handleDateChange.bind(this),
+	        this.props.modelForGraphing.length !== 0 ? _react2.default.createElement(_dayPicker2.default, { handleDateChange: this.handleDateChange.bind(this),
 	          handleHabitChange: this.handleHabitChange.bind(this),
 	          habitList: this.props.modelForGraphing,
 	          handleAllOrOne: this.handleAllorOneSwitch.bind(this)
-
-	        })
+	        }) : console.log("didnt recieve model yet")
 	      );
 	    }
 	  }]);
@@ -59404,8 +59392,17 @@
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
-	      null,
-	      'Contact us'
+	      { id: 'contact-us-wall' },
+	      _react2.default.createElement(
+	        'h6',
+	        null,
+	        'Contact us'
+	      ),
+	      _react2.default.createElement(
+	        'p',
+	        null,
+	        'Please free feel to contact us with the following contact information'
+	      )
 	    );
 	  }
 
@@ -59416,7 +59413,7 @@
 /* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -59430,12 +59427,44 @@
 
 	var _ReactCSSTransitionGroup2 = _interopRequireDefault(_ReactCSSTransitionGroup);
 
+	var _store = __webpack_require__(192);
+
+	var _store2 = _interopRequireDefault(_store);
+
 	var _reactRouter = __webpack_require__(283);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Wrapper = _react2.default.createClass({
 	  displayName: 'Wrapper',
+
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      loggedIn: 0 //default is 0
+	    };
+	  },
+	  //since wrapper is the component that will get rendered first, getting the model from RestAPI here vs getting it
+	  //in graph or home component will enable user to go into graph or home route directly without worrying that the model
+	  //hasnt been GET yet
+	  //once RestApi response back, this will send a dispatch to redux store. There it will update the store and pass
+	  //the nesscary data to graph or home component, forcing them to re-render with the updated data
+	  componentDidMount: function componentDidMount() {
+	    var userId = 123; //for testing purposes
+	    if (sessionStorage.userid) {
+	      userId = sessionStorage.userid;
+	    }
+
+	    var serverRequest = $.get("/health1/server/habit/user", { userid: userId }, function (result) {
+	      result = JSON.parse(result);
+	      //have to parse completed_Days into an Array
+	      result.forEach(function (item) {
+	        item.completed_Days = item.completed_Days == null ? [] : item.completed_Days.split(",");
+	      });
+
+	      _store2.default.dispatch({ type: 'UPDATE', data: result });
+	    });
+	  },
 
 	  render: function render() {
 	    return _react2.default.createElement(
@@ -59492,6 +59521,7 @@
 	});
 
 	exports.default = Wrapper;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
 /* 283 */

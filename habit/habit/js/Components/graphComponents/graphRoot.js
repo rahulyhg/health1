@@ -164,33 +164,37 @@ class GraphRoot extends React.Component{
 
   render(){
     var self = this;
+
+
     //both variable for graphingData, which is passed to LineGraph component for graphing
     var chartSeries = [];
     var chartData = [];
-    //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
-    if (this.state.all){
-      chartData=this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
-      for (let i = 0; i < this.props.modelForGraphing.length; i++){
-        var obj = {
-            field : this.props.modelForGraphing[i].description,
-            name : this.props.modelForGraphing[i].description
+    console.log(this.props.modelForGraphing);
+    if (this.props.modelForGraphing.length!==0){
+      //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
+      if (this.state.all){
+        chartData=this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
+        for (let i = 0; i < this.props.modelForGraphing.length; i++){
+          var obj = {
+              field : this.props.modelForGraphing[i].description,
+              name : this.props.modelForGraphing[i].description
+          }
+          chartSeries.push(obj);
         }
-        chartSeries.push(obj);
+      }else{
+        var index = this.state.currentHabitIndex;
+        var habit = this.props.modelForGraphing;
+        chartData = this.generateGraphArray(this.state.month, this.state.year, habit[index].description,
+                                              this.getAllPlannedDay(this.state.month, this.state.year, habit[index].day),
+                                              this.getAllCompletedDay(this.state.month, this.state.year, habit[index].completed_Days) );
+        chartSeries = [{
+                        field:habit[index].description,
+                        name: habit[index].description,
+                        color: '#ff7f0e'
+                    }];
       }
-    }else{
-      var index = this.state.currentHabitIndex;
-      var habit = this.props.modelForGraphing;
-      chartData = this.generateGraphArray(this.state.month, this.state.year, habit[index].description,
-                                            this.getAllPlannedDay(this.state.month, this.state.year, habit[index].day),
-                                            this.getAllCompletedDay(this.state.month, this.state.year, habit[index].completed_Days) );
-      chartSeries = [{
-                      field:habit[index].description,
-                      name: habit[index].description,
-                      color: '#ff7f0e'
-                  }];
+
     }
-
-
     //graphingData: pass it to LineGraph component for graphing
     var graphingData = {
         width: 1150,
@@ -212,12 +216,14 @@ class GraphRoot extends React.Component{
       <div>
 
         <div id = "habit-Line-graph"><LineGraph chartData={graphingData}/></div>
-        <DayPicker handleDateChange={this.handleDateChange.bind(this)}
-                   handleHabitChange={this.handleHabitChange.bind(this)}
-                   habitList = {this.props.modelForGraphing}
-                   handleAllOrOne = {this.handleAllorOneSwitch.bind(this)}
+        {this.props.modelForGraphing.length!==0
+          ? <DayPicker  handleDateChange={this.handleDateChange.bind(this)}
+                        handleHabitChange={this.handleHabitChange.bind(this)}
+                        habitList = {this.props.modelForGraphing}
+                        handleAllOrOne = {this.handleAllorOneSwitch.bind(this)}
+            />
+          : console.log("didnt recieve model yet")}
 
-        />
       </div>
     )
   }
