@@ -32178,8 +32178,11 @@
 	    };
 	  },
 
+	  /**
+	  * When user click, it will invoke this function to change the progress state
+	  * @param {Number} direction - it is either -1:left or 1:right
+	  **/
 	  handleUserClick: function handleUserClick(direction) {
-	    //direction is either -1:left or 1:right
 	    var progressIncrement = 0;
 	    if (direction == -1 && this.state.progress != 0) {
 	      progressIncrement = -25;
@@ -32189,9 +32192,11 @@
 	    this.setState({ progress: this.state.progress + progressIncrement });
 	  },
 
+	  //reset the state progress to 0
 	  resetProgress: function resetProgress() {
 	    this.setState({ progress: 0 });
 	  },
+
 	  render: function render() {
 	    return _react2.default.createElement(
 	      "div",
@@ -32284,19 +32289,21 @@
 
 	  render: function render() {
 	    var questionNum = this.props.progress / 25;
+	    var formToRender = this.props.progress == 0 ? _react2.default.createElement(NewHabitInputBox, { type: "description",
+	      getValue: _HabitCreationModel2.default.getDescription //callback f
+	      , setValue: _HabitCreationModel2.default.addDescription //callback f
+	    }) : this.props.progress == 25 ? _react2.default.createElement(FrequencyForm, null) : this.props.progress == 50 ? _react2.default.createElement(DaysForm, null) : this.props.progress == 75 ? _react2.default.createElement(NewHabitInputBox, { type: "startDay YY-MM-DD",
+	      getValue: _HabitCreationModel2.default.getStartDay //callback f
+	      , setValue: _HabitCreationModel2.default.addStartDay //callback f
+	    }) : this.props.progress == 100 ? _react2.default.createElement(SubmitNewHabit, { resetProgress: this.props.resetProgress }) : console.log("error");
+
 	    return _react2.default.createElement(
 	      "div",
 	      { id: "habit_input_body" },
 	      _react2.default.createElement(QuestionDisplay, { question: this.state.questions[questionNum],
 	        questionNum: questionNum
 	      }),
-	      this.props.progress == 0 ? _react2.default.createElement(NewHabitInputBox, { type: "description",
-	        getValue: _HabitCreationModel2.default.getDescription //callback f
-	        , setValue: _HabitCreationModel2.default.addDescription //callback f
-	      }) : this.props.progress == 25 ? _react2.default.createElement(FrequencyForm, null) : this.props.progress == 50 ? _react2.default.createElement(DaysForm, null) : this.props.progress == 75 ? _react2.default.createElement(NewHabitInputBox, { type: "startDay YY-MM-DD",
-	        getValue: _HabitCreationModel2.default.getStartDay //callback f
-	        , setValue: _HabitCreationModel2.default.addStartDay //callback f
-	      }) : this.props.progress == 100 ? _react2.default.createElement(SubmitNewHabit, { resetProgress: this.props.resetProgress }) : console.log("error")
+	      formToRender
 	    );
 	  }
 	});
@@ -32917,7 +32924,6 @@
 	  handleChange: function handleChange(event) {
 	    _store2.default.dispatch({ type: 'FILTER', text: event.target.value });
 	  },
-
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
@@ -32925,7 +32931,6 @@
 	      _react2.default.createElement('input', { type: 'text', placeholder: 'input your filter', onChange: this.handleChange })
 	    );
 	  }
-
 	});
 
 	exports.default = Filter;
@@ -34087,9 +34092,12 @@
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GraphRoot).call(this, props));
 
+	    var today = new Date(),
+	        month = today.getMonth(),
+	        year = today.getFullYear();
 	    _this.state = {
-	      year: 2016, //default year and month for displaying the graph, april 2016
-	      month: 3,
+	      year: year, //default year and month for displaying the graph, current date
+	      month: month,
 	      currentHabitIndex: 0, //index for which habit to display on graph
 	      all: false //false: show all habits on graph, true: show only currentHabitIndex habit
 	    };
@@ -34239,6 +34247,7 @@
 	    * merge two chart arr together, first chart arr get modified, assume same month and year for both chart
 	    * @param {array} chartData
 	    * @param {array} chartData2
+	    * @return {array} chartData
 	    */
 
 	  }, {
@@ -34252,15 +34261,23 @@
 	      }
 	      return chartData;
 	    }
+
+	    /**
+	    * a recursion that generate all the nesscary data for each item in habitList, then merge them all
+	    * recusively using mergeTwoChartData
+	    * @param {array} habitList
+	    * @return {function}
+	    */
+
 	  }, {
-	    key: 'recursion',
-	    value: function recursion(habitList) {
+	    key: 'recursiveMerge',
+	    value: function recursiveMerge(habitList) {
 	      if (habitList.length === 0) {
 	        return [];
 	      }
 	      var habit = habitList.pop();
 	      var chartData = this.generateGraphArray(this.state.month, this.state.year, habit.description, this.getAllPlannedDay(this.state.month, this.state.year, habit.day), this.getAllCompletedDay(this.state.month, this.state.year, habit.completed_Days));
-	      return this.mergeTwoChartData(chartData, this.recursion(habitList));
+	      return this.mergeTwoChartData(chartData, this.recursiveMerge(habitList));
 	    }
 	  }, {
 	    key: 'render',
@@ -34274,7 +34291,7 @@
 	      if (this.props.modelForGraphing.length !== 0) {
 	        //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
 	        if (this.state.all) {
-	          chartData = this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
+	          chartData = this.recursiveMerge(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
 	          for (var i = 0; i < this.props.modelForGraphing.length; i++) {
 	            var obj = {
 	              field: this.props.modelForGraphing[i].description,
@@ -34382,19 +34399,27 @@
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(DayPicker).call(this, props));
 	  }
 
+	  /**
+	   * putting the options for the selector drop downs. i.e. months, years, habits
+	   * @param {string} monthElementId
+	   * @param {string} yearElementId
+	   * @param {string} habitElementId
+	   */
+
+
 	  _createClass(DayPicker, [{
-	    key: "componentDidMount",
-	    value: function componentDidMount() {
-	      //putting the option for the selector drop down. i.e. months, years, habits
-	      var month = document.getElementById('monthDropDown');
-	      var year = document.getElementById('yearDropDown');
-	      var habitList = document.getElementById('habitDropDown');
+	    key: "addOptionsToSelectors",
+	    value: function addOptionsToSelectors(monthElementId, yearElementId, habitElementId) {
+	      var month = document.getElementById(monthElementId),
+	          year = document.getElementById(yearElementId),
+	          habitList = document.getElementById(habitElementId);
 
 	      var today = new Date();
 	      for (var m = 0; m < 12; m++) {
 	        month.options[m] = new Option(_config2.default.monthtext[m], _config2.default.monthtext[m]);
 	      }
 	      month.options[today.getMonth()] = new Option(_config2.default.monthtext[today.getMonth()], _config2.default.monthtext[today.getMonth()], true, true);
+
 	      var thisyear = today.getFullYear();thisyear = thisyear - 10;
 	      for (var y = 0; y < 20; y++) {
 	        year.options[y] = new Option(thisyear, thisyear);
@@ -34408,6 +34433,12 @@
 	      for (var h = 1; h < propsHabitList.length; h++) {
 	        habitList.options[h] = new Option(propsHabitList[h].description, h);
 	      }
+	    }
+	  }, {
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      //Once component is mount put the option for the selector drop down. i.e. months, years, habits
+	      this.addOptionsToSelectors('monthDropDown', 'yearDropDown', 'habitDropDown');
 	    }
 	  }, {
 	    key: "handleChange",
@@ -64984,7 +65015,7 @@
 
 
 	// module
-	exports.push([module.id, ".noselect {\n  -webkit-touch-callout: none;\n  /* iOS Safari */\n  -webkit-user-select: none;\n  /* Chrome/Safari/Opera */\n  -khtml-user-select: none;\n  /* Konqueror */\n  -moz-user-select: none;\n  /* Firefox */\n  -ms-user-select: none;\n  /* Internet Explorer/Edge */\n  user-select: none;\n  /* Non-prefixed version, currently\r\n                                  not supported by any browser */ }\n\nbody {\n  background: #ecf0f1;\n  font-family: 'Source Sans Pro', sans-serif;\n  overflow: hidden;\n  height: 100%; }\n\n/*****route navigation**/\n#route-navi-bar {\n  position: fixed;\n  list-style: none;\n  font-family: 'Josefin Slab', 'Myriad Pro', Arial, sans-serif;\n  z-index: 100000000; }\n\n#route-navi-bar a {\n  color: white;\n  display: inline-block;\n  width: 100%;\n  height: 100%; }\n\n#route-navi-bar li {\n  width: 25%;\n  position: inherit;\n  bottom: 0px;\n  background-color: #EB6E6B;\n  text-align: center;\n  color: white;\n  font-weight: 700;\n  padding: 2px; }\n\n#route-navi-bar li:hover {\n  background-color: #F4A4A4; }\n\n#route-navi-bar li:nth-of-type(1) {\n  left: 0%; }\n\n#route-navi-bar li:nth-of-type(2) {\n  left: 25%; }\n\n#route-navi-bar li:nth-of-type(3) {\n  left: 50%; }\n\n#route-navi-bar li:nth-of-type(4) {\n  left: 75%; }\n\n.listing-boxes > li > div > span:nth-of-type(2) {\n  font-weight: 600; }\n\n.listing-boxes > li > span {\n  font-weight: 600; }\n\n/***************/\n/*******route animation for react****/\n.introFirst-appear {\n  opacity: 0.05;\n  transform: translateX(-50%);\n  display: inline-block;\n  transition: all 1000ms linear; }\n\n.introFirst-appear.introFirst-appear-active {\n  opacity: 1;\n  transform: translateX(-5%); }\n\n.introSecond-appear {\n  opacity: 0.05;\n  transform: translateX(80%);\n  display: inline-block;\n  transition: all 600ms linear; }\n\n.introSecond-appear.introSecond-appear-active {\n  opacity: 1;\n  transform: translateX(49%); }\n\n.route-enter {\n  opacity: 0.01;\n  transform: translateY(100%);\n  transition: all 900ms ease-in-out; }\n\n.route-enter.route-enter-active {\n  opacity: 1;\n  transform: translateY(0%); }\n\n.route-leave {\n  opacity: 1;\n  transform: translateY(0%);\n  transition: all 600ms ease-in-out; }\n\n.route-leave.route-leave-active {\n  opacity: 0.01;\n  transform: translateY(100%); }\n\n/*****/\n/*******route wrapper****/\n.footer {\n  background-color: #F47C7C;\n  height: 170px; }\n\n.header {\n  background-color: white;\n  width: 100%;\n  height: 65px;\n  margin-bottom: 35px;\n  box-shadow: 0px 0px 3px #888888; }\n\n/****/\n#wall-text {\n  float: left;\n  width: 5%; }\n  #wall-text p:nth-of-type(1) {\n    position: relative;\n    left: 230%;\n    top: 0px;\n    color: #DADADA;\n    font: normal normal normal 30px/1.2em \"Noticia Text\", serif; }\n\n#upper-left {\n  float: left;\n  width: 45%; }\n\n#upper-right {\n  float: right;\n  width: 20%; }\n\n#arrows {\n  float: left;\n  width: 10%; }\n  #arrows li {\n    list-style: none;\n    margin-top: 50px; }\n  #arrows li:nth-of-type(4) > p {\n    position: relative;\n    font: normal normal normal 15px/1.2em \"Noticia Text\", serif;\n    left: -330%; }\n  #arrows li:nth-of-type(4) > p:before {\n    content: \"\\F100\";\n    font-family: FontAwesome;\n    font-style: normal;\n    font-weight: normal;\n    text-decoration: inherit;\n    /*--adjust as necessary--*/\n    position: relative;\n    color: #4d4d4d;\n    font-size: 18px;\n    left: -5%; }\n\n.arrow {\n  position: relative; }\n\n.arrow:after {\n  content: \"\\F0D9\";\n  font-family: FontAwesome;\n  font-style: normal;\n  font-weight: normal;\n  text-decoration: inherit;\n  /*--adjust as necessary--*/\n  position: relative;\n  color: #4d4d4d;\n  font-size: 18px;\n  left: -330%; }\n\n/*********************************The text on the website wall****/\n#intro-text {\n  font: normal normal normal 80px/1.2em \"Noticia Text\", serif;\n  text-align: center;\n  color: #4d4d4d;\n  float: right;\n  width: 90%; }\n\n#intro-text p {\n  font: normal normal normal 25px/1.2em \"Noticia Text\", serif;\n  position: relative;\n  left: -10%; }\n  #intro-text p:nth-of-type(1) {\n    text-align: right; }\n\n#intro-text > div {\n  position: relative;\n  top: -20px;\n  left: -50px;\n  color: #CBCBCB; }\n  #intro-text > div > i {\n    position: relative;\n    top: -5px;\n    /*left:-10%;*/\n    font-size: 20px; }\n  #intro-text > div > span {\n    font-size: 30px;\n    line-height: 1.2em; }\n\n#introduction-section {\n  float: left;\n  width: 30%; }\n\n#quote-text {\n  /***check quote.js section at the bottom*/ }\n\n/**********END of website wall****/\n#calendar_button {\n  background: #E4E4E2;\n  padding-top: 3%;\n  padding-bottom: 3%;\n  margin-left: 25%;\n  margin-right: 25%;\n  border: dotted 3px #ecf0f1;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n  #calendar_button:hover {\n    background: #F4F4F2; }\n\n#lean_overlay {\n  position: fixed;\n  z-index: 102;\n  top: 0px;\n  left: 0px;\n  height: 100%;\n  width: 100%;\n  background: #000;\n  display: none; }\n\n#habit_input_modal, #current_habit_modal {\n  border-radius: 2px;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  width: 30%;\n  background: white;\n  display: none;\n  padding: 20px; }\n\n#habit_input_modal {\n  width: 40%; }\n\n#current_habit_modal {\n  padding: 10px;\n  border-radius: 5px;\n  -moz-border-radius: 5px;\n  -webkit-border-radius: 5px; }\n\n#habit_list {\n  list-style: none; }\n\n#habit-section p {\n  margin: auto;\n  width: 50%;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n\n#habit_wrapper {\n  /*border:dotted 5px #ecf0f1;*/\n  /*border-left:dotted 4px #ecf0f1;*/\n  /*padding-right:2%;*/\n  /*background:#282C34;*/\n  padding-top: 10px;\n  padding-bottom: 10px;\n  /*margin-right:40%;\r\n  margin-left:20%;*/\n  margin: auto;\n  width: 50%;\n  border-radius: 6px 16px 16px 100px;\n  -moz-border-radius: 6px 16px 16px 116px;\n  -webkit-border-radius: 6px 16px 16px 100px; }\n\n#habit_list {\n  position: relative;\n  z-index: 100; }\n\n#habit_list > li {\n  border-radius: 2px;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  padding: 20px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n  background: #E74C3C;\n  box-shadow: 0px 0px 10px #888888;\n  transition: background-color color 0.2s linear;\n  color: #4d4d4d;\n  font-weight: bold; }\n  #habit_list > li:hover {\n    background-color: #F25C5C;\n    color: white;\n    /*box-shadow: 0px 0px 5px #ecf0f1;*/ }\n\n#add_more {\n  border-radius: 16px 16px 116px 116px !important;\n  -moz-border-radius: 16px 16px 116px 116px !important;\n  -webkit-border-radius: 16px 16px 116px 116px !important;\n  margin-left: 0% !important;\n  width: 100% !important;\n  padding: 17px !important;\n  color: white !important;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n\n#section-title {\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif;\n  color: #4d4d4d;\n  position: relative;\n  display: none; }\n\n.modal_title {\n  font: normal normal normal 20px/1.2em \"Noticia Text\", serif;\n  text-align: center;\n  color: #4d4d4d; }\n\n.habit_detail_list {\n  color: white;\n  /*font: normal normal normal 20px 'Source Sans Pro',serif;*/ }\n\n.habit_detail_list > li {\n  text-align: left;\n  list-style: none;\n  margin-bottom: 5px;\n  border-radius: 5px 5px 5px 5px;\n  padding: 1px;\n  padding-top: 5px;\n  transition: background-color 5ms linear; }\n  .habit_detail_list > li > span {\n    margin-left: 3%; }\n\n.habit_detail_list > li > div {\n  text-align: center;\n  background-color: white;\n  margin: auto;\n  width: 100%;\n  border-radius: 0px 0px 5px 5px;\n  color: #4d4d4d;\n  margin-top: 0px;\n  padding-top: 6px;\n  padding-bottom: 6px;\n  font: normal normal normal 15px 'SOFIA PRO',serif; }\n\n.habit_detail_list > li:nth-child(1) {\n  background-color: #EB6E6B; }\n  .habit_detail_list > li:nth-child(1):hover {\n    background-color: #E54A45; }\n\n.habit_detail_list > li:nth-child(2) {\n  background-color: #5B9FC4; }\n  .habit_detail_list > li:nth-child(2):hover {\n    background-color: #3387B6; }\n\n.habit_detail_list > li:nth-child(3) {\n  background-color: #A36EB2;\n  clear: both; }\n  .habit_detail_list > li:nth-child(3):hover {\n    background-color: #8B4A9E; }\n\n.habit_detail_list > li:nth-child(4) {\n  background-color: #68B87D;\n  width: 49%;\n  float: left; }\n  .habit_detail_list > li:nth-child(4):hover {\n    background-color: #42A65D; }\n\n.habit_detail_list > li:nth-child(5) {\n  background-color: #5CC5AC;\n  width: 49%;\n  float: right; }\n  .habit_detail_list > li:nth-child(5):hover {\n    background-color: #34B798; }\n\n.habit_detail_list ul {\n  width: 100%;\n  margin: auto; }\n\n/*filter.js css*/\n#filterDiv {\n  position: absolute;\n  width: 9%;\n  left: 2%;\n  top: 300px;\n  z-index: 0;\n  display: none; }\n\n/*filter*/\n/*******************************rankingHabit.js css*/\n.listing-boxes {\n  position: relative;\n  padding-top: 5px;\n  padding-bottom: 5px;\n  border-left: thin dotted white;\n  z-index: 100;\n  overflow: hidden;\n  overflow-y: scroll;\n  max-height: 500px; }\n  .listing-boxes li {\n    background-color: white;\n    /*border-radius: 3px;\r\n    -moz-border-radius: 3px;\r\n    -webkit-border-radius: 3px;*/\n    box-shadow: 0px 0px 5px #888888;\n    list-style: none;\n    padding-top: 5px;\n    padding-bottom: 5px;\n    margin-bottom: 5px;\n    margin-right: 5%;\n    margin-left: 5%;\n    padding-left: 15%;\n    padding-right: 15%;\n    transition: background-color 0.2s linear; }\n    .listing-boxes li:hover {\n      background-color: #E74C3C !important;\n      color: white; }\n\n#delete-icon {\n  color: #f5f5f5; }\n\n/***end of rankingHabit.js css****/\n@media (max-width: 50em) {\n  #wall-text {\n    display: none; }\n  #upper-right {\n    display: none; }\n  #upper-left {\n    width: 100%; }\n  #habit_input_modal, #current_habit_modal {\n    width: 60%; }\n  #introduction-section {\n    display: none; }\n  .checkbox-grid-frequency > li {\n    display: block;\n    float: left;\n    width: 50%; } }\n\n@media (max-width: 30em) {\n  #upper-left {\n    width: 100%;\n    padding: 0px; }\n  #habit_list > li {\n    padding: 10%; }\n  #habit_wrapper {\n    margin: 0%;\n    width: 100%; }\n  #add_more {\n    border-radius: 16px 16px 116px 116px !important;\n    -moz-border-radius: 16px 16px 116px 116px !important;\n    -webkit-border-radius: 16px 16px 116px 116px !important;\n    margin-left: 0% !important; }\n  #habit_input_modal, #current_habit_modal {\n    width: 100%; } }\n\n.checkbox-grid li {\n  display: block;\n  float: left;\n  width: 50%; }\n\n.wrapper-Clear-Flow {\n  clear: right;\n  clear: left; }\n\n.wrapper-Clear {\n  overflow: hidden; }\n\n#notification-bubble {\n  position: absolute;\n  left: 80%;\n  top: 90px;\n  z-index: 101;\n  background-color: #E74C3C;\n  padding: 2px;\n  padding-left: 10px;\n  padding-right: 10px; }\n\n#notification-bubble {\n  /*for the text inside*/\n  color: white;\n  font-size: 13px; }\n\n#habit_listing_nav {\n  width: 100%;\n  margin: auto; }\n\n/**************************quote.js*/\n#left-quote {\n  cursor: pointer;\n  font-size: 15px;\n  position: relative;\n  top: -10px;\n  left: -5px;\n  color: #D5D5D5; }\n\n#quote-menu {\n  list-style: none;\n  position: relative;\n  font-size: 15px;\n  top: 0px;\n  cursor: pointer;\n  height: 50px; }\n  #quote-menu li {\n    float: left;\n    width: 22%;\n    padding: 1px;\n    padding-top: 15px;\n    margin: 1%;\n    border-radius: 2px 2px 2px 2px;\n    box-shadow: 0px 0px 5px #888888; }\n    #quote-menu li div {\n      background-color: white;\n      border-radius: 2px 2px 2px 2px;\n      transition: background-color 2ms linear;\n      color: #CBCBCB; }\n      #quote-menu li div:hover {\n        border-radius: 2px 2px 2px 2px;\n        color: white; }\n\n#quote-text {\n  outline: 0px solid transparent;\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  position: relative;\n  font-size: 30px;\n  line-height: 1.2em; }\n\n/*end of quote.js*/\n/******** graph component css */\n", ""]);
+	exports.push([module.id, ".noselect {\n  -webkit-touch-callout: none;\n  /* iOS Safari */\n  -webkit-user-select: none;\n  /* Chrome/Safari/Opera */\n  -khtml-user-select: none;\n  /* Konqueror */\n  -moz-user-select: none;\n  /* Firefox */\n  -ms-user-select: none;\n  /* Internet Explorer/Edge */\n  user-select: none;\n  /* Non-prefixed version, currently\r\n                                  not supported by any browser */ }\n\nbody {\n  background: #ecf0f1;\n  font-family: 'Source Sans Pro', sans-serif;\n  overflow: hidden;\n  height: 100%; }\n\n/*****route navigation**/\n#route-navi-bar {\n  position: fixed;\n  list-style: none;\n  font-family: 'Josefin Slab', 'Myriad Pro', Arial, sans-serif;\n  z-index: 100000000; }\n\n#route-navi-bar a {\n  color: white;\n  display: inline-block;\n  width: 100%;\n  height: 100%; }\n\n#route-navi-bar li {\n  width: 25%;\n  position: inherit;\n  bottom: 0px;\n  background-color: #EB6E6B;\n  text-align: center;\n  color: white;\n  font-weight: 700;\n  padding: 2px; }\n\n#route-navi-bar li:hover {\n  background-color: #F4A4A4; }\n\n#route-navi-bar li:nth-of-type(1) {\n  left: 0%; }\n\n#route-navi-bar li:nth-of-type(2) {\n  left: 25%; }\n\n#route-navi-bar li:nth-of-type(3) {\n  left: 50%; }\n\n#route-navi-bar li:nth-of-type(4) {\n  left: 75%; }\n\n.listing-boxes > li > div > span:nth-of-type(2) {\n  font-weight: 600; }\n\n.listing-boxes > li > span {\n  font-weight: 600; }\n\n/***************/\n/*******route animation for react****/\n.introFirst-appear {\n  opacity: 0.05;\n  transform: translateX(-50%);\n  display: inline-block;\n  transition: all 1000ms linear; }\n\n.introFirst-appear.introFirst-appear-active {\n  opacity: 1;\n  transform: translateX(-5%); }\n\n.introSecond-appear {\n  opacity: 0.05;\n  transform: translateX(80%);\n  display: inline-block;\n  transition: all 600ms linear; }\n\n.introSecond-appear.introSecond-appear-active {\n  opacity: 1;\n  transform: translateX(49%); }\n\n.route-enter {\n  opacity: 0.01;\n  transform: translateY(100%);\n  transition: all 900ms ease-in-out; }\n\n.route-enter.route-enter-active {\n  opacity: 1;\n  transform: translateY(0%); }\n\n.route-leave {\n  opacity: 1;\n  transform: translateY(0%);\n  transition: all 600ms ease-in-out; }\n\n.route-leave.route-leave-active {\n  opacity: 0.01;\n  transform: translateY(100%); }\n\n/*****/\n/*******route wrapper****/\n.footer {\n  background-color: #F47C7C;\n  height: 170px; }\n\n.header {\n  background-color: white;\n  width: 100%;\n  height: 65px;\n  margin-bottom: 35px;\n  box-shadow: 0px 0px 3px #888888; }\n\n/****/\n#wall-text {\n  float: left;\n  width: 5%; }\n  #wall-text p:nth-of-type(1) {\n    position: relative;\n    left: 230%;\n    top: 0px;\n    color: #DADADA;\n    font: normal normal normal 30px/1.2em \"Noticia Text\", serif; }\n\n#upper-left {\n  float: left;\n  width: 45%; }\n\n#upper-right {\n  float: right;\n  width: 20%; }\n\n#arrows {\n  float: left;\n  width: 10%; }\n  #arrows li {\n    list-style: none;\n    margin-top: 50px; }\n  #arrows li:nth-of-type(4) > p {\n    position: relative;\n    font: normal normal normal 15px/1.2em \"Noticia Text\", serif;\n    left: -330%; }\n  #arrows li:nth-of-type(4) > p:before {\n    content: \"\\F100\";\n    font-family: FontAwesome;\n    font-style: normal;\n    font-weight: normal;\n    text-decoration: inherit;\n    /*--adjust as necessary--*/\n    position: relative;\n    color: #4d4d4d;\n    font-size: 18px;\n    left: -5%; }\n\n.arrow {\n  position: relative; }\n\n.arrow:after {\n  content: \"\\F0D9\";\n  font-family: FontAwesome;\n  font-style: normal;\n  font-weight: normal;\n  text-decoration: inherit;\n  /*--adjust as necessary--*/\n  position: relative;\n  color: #4d4d4d;\n  font-size: 18px;\n  left: -330%; }\n\n/*********************************The text on the website wall****/\n#intro-text {\n  font: normal normal normal 80px/1.2em \"Noticia Text\", serif;\n  text-align: center;\n  color: #4d4d4d;\n  float: right;\n  width: 90%; }\n\n#intro-text p {\n  font: normal normal normal 25px/1.2em \"Noticia Text\", serif;\n  position: relative;\n  left: -10%; }\n  #intro-text p:nth-of-type(1) {\n    text-align: right; }\n\n#intro-text > div {\n  position: relative;\n  top: -20px;\n  left: -50px;\n  color: #CBCBCB; }\n  #intro-text > div > i {\n    position: relative;\n    top: -5px;\n    /*left:-10%;*/\n    font-size: 20px; }\n  #intro-text > div > span {\n    font-size: 30px;\n    line-height: 1.2em; }\n\n#introduction-section {\n  float: left;\n  width: 30%; }\n\n#quote-text {\n  /***check quote.js section at the bottom*/ }\n\n/**********END of website wall****/\n#calendar_button {\n  background: #E4E4E2;\n  padding-top: 3%;\n  padding-bottom: 3%;\n  margin-left: 25%;\n  margin-right: 25%;\n  border: dotted 3px #ecf0f1;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n  #calendar_button:hover {\n    background: #F4F4F2; }\n\n#lean_overlay {\n  position: fixed;\n  z-index: 102;\n  top: 0px;\n  left: 0px;\n  height: 100%;\n  width: 100%;\n  background: #000;\n  display: none; }\n\n#habit_input_modal, #current_habit_modal {\n  border-radius: 2px;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  width: 30%;\n  background: white;\n  display: none;\n  padding: 20px; }\n\n#habit_input_modal {\n  width: 40%; }\n\n#current_habit_modal {\n  padding: 10px;\n  border-radius: 5px;\n  -moz-border-radius: 5px;\n  -webkit-border-radius: 5px; }\n\n#habit_list {\n  list-style: none; }\n\n#habit-section p {\n  margin: auto;\n  width: 50%;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n\n#habit_wrapper {\n  /*border:dotted 5px #ecf0f1;*/\n  /*border-left:dotted 4px #ecf0f1;*/\n  /*padding-right:2%;*/\n  /*background:#282C34;*/\n  padding-top: 10px;\n  padding-bottom: 10px;\n  /*margin-right:40%;\r\n  margin-left:20%;*/\n  margin: auto;\n  width: 50%;\n  border-radius: 6px 16px 16px 100px;\n  -moz-border-radius: 6px 16px 16px 116px;\n  -webkit-border-radius: 6px 16px 16px 100px; }\n\n#habit_list {\n  position: relative;\n  z-index: 100; }\n\n#habit_list > li {\n  border-radius: 2px;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  padding: 20px;\n  margin-top: 10px;\n  margin-bottom: 10px;\n  background: #E74C3C;\n  box-shadow: 0px 0px 10px #888888;\n  transition: background-color color 0.2s linear;\n  color: #4d4d4d;\n  font-weight: bold; }\n  #habit_list > li:hover {\n    background-color: #F25C5C;\n    color: white;\n    /*box-shadow: 0px 0px 5px #ecf0f1;*/ }\n\n#add_more {\n  border-radius: 16px 16px 116px 116px !important;\n  -moz-border-radius: 16px 16px 116px 116px !important;\n  -webkit-border-radius: 16px 16px 116px 116px !important;\n  margin-left: 0% !important;\n  width: 100% !important;\n  padding: 17px !important;\n  color: white !important;\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif; }\n\n#section-title {\n  font: normal normal normal 17px/1.2em \"Noticia Text\", serif;\n  color: #4d4d4d;\n  position: relative;\n  display: none; }\n\n.modal_title {\n  font: normal normal normal 20px/1.2em \"Noticia Text\", serif;\n  text-align: center;\n  color: #4d4d4d; }\n\n.habit_detail_list {\n  color: white;\n  /*font: normal normal normal 20px 'Source Sans Pro',serif;*/ }\n\n.habit_detail_list > li {\n  text-align: left;\n  list-style: none;\n  margin-bottom: 5px;\n  border-radius: 5px 5px 5px 5px;\n  padding: 1px;\n  padding-top: 5px;\n  transition: background-color 5ms linear; }\n  .habit_detail_list > li > span {\n    margin-left: 3%; }\n\n.habit_detail_list > li > div {\n  text-align: center;\n  background-color: white;\n  margin: auto;\n  width: 100%;\n  border-radius: 0px 0px 5px 5px;\n  color: #4d4d4d;\n  margin-top: 0px;\n  padding-top: 6px;\n  padding-bottom: 6px;\n  font: normal normal normal 15px 'SOFIA PRO',serif; }\n\n.habit_detail_list > li:nth-child(1) {\n  background-color: #EB6E6B; }\n  .habit_detail_list > li:nth-child(1):hover {\n    background-color: #E54A45; }\n\n.habit_detail_list > li:nth-child(2) {\n  background-color: #5B9FC4; }\n  .habit_detail_list > li:nth-child(2):hover {\n    background-color: #3387B6; }\n\n.habit_detail_list > li:nth-child(3) {\n  background-color: #A36EB2;\n  clear: both; }\n  .habit_detail_list > li:nth-child(3):hover {\n    background-color: #8B4A9E; }\n\n.habit_detail_list > li:nth-child(4) {\n  background-color: #68B87D;\n  width: 49%;\n  float: left; }\n  .habit_detail_list > li:nth-child(4):hover {\n    background-color: #42A65D; }\n\n.habit_detail_list > li:nth-child(5) {\n  background-color: #5CC5AC;\n  width: 49%;\n  float: right; }\n  .habit_detail_list > li:nth-child(5):hover {\n    background-color: #34B798; }\n\n.habit_detail_list ul {\n  width: 100%;\n  margin: auto; }\n\n/*filter.js css*/\n#filterDiv {\n  position: absolute;\n  width: 9%;\n  left: 2%;\n  top: 300px;\n  z-index: 0;\n  display: none; }\n\n/*filter*/\n/*******************************rankingHabit.js css*/\n.listing-boxes {\n  position: relative;\n  padding-top: 5px;\n  padding-bottom: 5px;\n  border-left: thin dotted white;\n  z-index: 100;\n  overflow: hidden;\n  overflow-y: scroll;\n  max-height: 500px; }\n  .listing-boxes li {\n    background-color: white;\n    /*border-radius: 3px;\r\n    -moz-border-radius: 3px;\r\n    -webkit-border-radius: 3px;*/\n    box-shadow: 0px 0px 5px #888888;\n    list-style: none;\n    padding-top: 5px;\n    padding-bottom: 5px;\n    margin-bottom: 5px;\n    margin-right: 5%;\n    margin-left: 5%;\n    padding-left: 15%;\n    padding-right: 15%;\n    transition: background-color 0.2s linear; }\n    .listing-boxes li:hover {\n      background-color: #E74C3C !important;\n      color: white; }\n\n#delete-icon {\n  color: #f5f5f5; }\n\n/***end of rankingHabit.js css****/\n@media (max-width: 50em) {\n  #wall-text {\n    display: none; }\n  #upper-right {\n    display: none; }\n  #upper-left {\n    width: 100%; }\n  #habit_input_modal, #current_habit_modal {\n    width: 60%; }\n  #introduction-section {\n    display: none; }\n  .checkbox-grid-frequency > li {\n    display: block;\n    float: left;\n    width: 50%; } }\n\n@media (max-width: 30em) {\n  #upper-left {\n    width: 100%;\n    padding: 0px; }\n  #habit_list > li {\n    padding: 10%; }\n  #habit_wrapper {\n    margin: 0%;\n    width: 100%; }\n  #add_more {\n    border-radius: 16px 16px 116px 116px !important;\n    -moz-border-radius: 16px 16px 116px 116px !important;\n    -webkit-border-radius: 16px 16px 116px 116px !important;\n    margin-left: 0% !important; }\n  #habit_input_modal, #current_habit_modal {\n    width: 100%; } }\n\n.checkbox-grid li {\n  display: block;\n  float: left;\n  width: 50%; }\n\n.wrapper-Clear-Flow {\n  clear: right;\n  clear: left; }\n\n.wrapper-Clear {\n  overflow: hidden; }\n\n#notification-bubble {\n  position: absolute;\n  left: 80%;\n  top: 90px;\n  z-index: 101;\n  background-color: #E74C3C;\n  padding: 2px;\n  padding-left: 10px;\n  padding-right: 10px; }\n\n#notification-bubble {\n  /*for the text inside*/\n  color: white;\n  font-size: 13px; }\n\n#habit_listing_nav {\n  width: 100%;\n  margin: auto; }\n\n/**************************quote.js*/\n#left-quote {\n  cursor: pointer;\n  font-size: 15px;\n  position: relative;\n  top: -10px;\n  left: -5px;\n  color: #D5D5D5; }\n\n#quote-menu {\n  list-style: none;\n  position: relative;\n  font-size: 15px;\n  top: 0px;\n  cursor: pointer;\n  height: 50px; }\n  #quote-menu li {\n    float: left;\n    width: 22%;\n    padding: 1px;\n    padding-top: 15px;\n    margin: 1%;\n    border-radius: 2px 2px 2px 2px;\n    box-shadow: 0px 0px 5px #888888; }\n    #quote-menu li div {\n      background-color: white;\n      border-radius: 2px 2px 2px 2px;\n      transition: background-color 2ms linear;\n      color: #CBCBCB; }\n      #quote-menu li div:hover {\n        border-radius: 2px 2px 2px 2px;\n        color: white; }\n\n#quote-text {\n  outline: 0px solid transparent;\n  -moz-user-select: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n  position: relative;\n  font-size: 30px;\n  line-height: 1.2em; }\n\n/*end of quote.js*/\n/******** graph and contactUS component css */\n@media (max-width: 70em) {\n  #graph-dropDown {\n    width: 100%; } }\n\n#graph-dropDown {\n  width: 15%;\n  /*background-color:white;\r\n  box-shadow: 0px 0px 3px #888888;*/\n  padding: 10px;\n  opacity: 0.5;\n  transition: opacity 300ms linear;\n  margin: auto; }\n\n#graph-dropDown:hover {\n  opacity: 1; }\n\n#habitDropDown {\n  display: block;\n  height: 35px !important;\n  background-color: #FAFAFA;\n  font-family: 'Lato', Calibri, Arial, sans-serif;\n  font-weight: 700;\n  font-size: 15px;\n  margin: auto;\n  margin-bottom: 5px;\n  color: #4E4E4E;\n  width: 100%; }\n\n#monthDropDown {\n  display: inline-block;\n  background-color: #FAFAFA;\n  color: #4E4E4E;\n  height: 35px !important;\n  font-family: 'Lato', Calibri, Arial, sans-serif;\n  font-weight: 700;\n  font-size: 15px;\n  width: 50%; }\n\n#yearDropDown {\n  color: #4E4E4E;\n  display: inline-block;\n  background-color: #FAFAFA;\n  height: 35px !important;\n  font-family: 'Lato', Calibri, Arial, sans-serif;\n  font-weight: 700;\n  font-size: 15px;\n  width: 50%; }\n\n#habit-Line-graph {\n  width: 90%;\n  padding-left: 4%;\n  margin: auto;\n  overflow-x: scroll;\n  box-shadow: 0px 0px 3px #888888;\n  background-color: white; }\n\n#allOrOne {\n  display: none; }\n\n#allOrOne + label {\n  display: block;\n  margin: auto;\n  width: 60%;\n  background-color: white;\n  color: #cbcbcb;\n  border-radius: 5px 5px 5px 5px;\n  font: normal normal normal 17px/1.2em 'Noticia Text',serif;\n  box-shadow: 0px 0px 3px #888888;\n  cursor: pointer;\n  text-align: center;\n  padding: 5px; }\n\n#allOrOne:checked + label {\n  background-color: #E54A45;\n  color: white; }\n\n#contact-us-wall {\n  width: 100%;\n  text-align: center;\n  top: 0;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  margin: auto;\n  position: absolute;\n  height: 100px; }\n\n#contact-us-wall > h6 {\n  font-weight: 700;\n  text-align: center; }\n\n#contact-us-wall > p {\n  color: #8b8b8b;\n  animation: moveUp 0.6s ease-in-out 0.2s backwards; }\n\n@keyframes moveUp {\n  0% {\n    transform: translateY(40px);\n    opacity: 0; }\n  100% {\n    transform: translateY(0px);\n    opacity: 1; } }\n", ""]);
 
 	// exports
 

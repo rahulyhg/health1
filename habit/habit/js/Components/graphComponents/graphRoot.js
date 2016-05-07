@@ -10,9 +10,12 @@ class GraphRoot extends React.Component{
 
   constructor(props){
     super(props);
+    var today = new Date(),
+        month = today.getMonth(),
+        year = today.getFullYear();
     this.state={
-      year: 2016, //default year and month for displaying the graph, april 2016
-      month: 3,
+      year: year, //default year and month for displaying the graph, current date
+      month: month,
       currentHabitIndex: 0, //index for which habit to display on graph
       all: false //false: show all habits on graph, true: show only currentHabitIndex habit
     }
@@ -139,6 +142,7 @@ class GraphRoot extends React.Component{
   * merge two chart arr together, first chart arr get modified, assume same month and year for both chart
   * @param {array} chartData
   * @param {array} chartData2
+  * @return {array} chartData
   */
   mergeTwoChartData(chartData, chartData2){
     var i = 0,
@@ -150,7 +154,13 @@ class GraphRoot extends React.Component{
     return chartData;
   }
 
-  recursion(habitList){
+  /**
+  * a recursion that generate all the nesscary data for each item in habitList, then merge them all
+  * recusively using mergeTwoChartData
+  * @param {array} habitList
+  * @return {function}
+  */
+  recursiveMerge(habitList){
     if(habitList.length === 0 ){
       return [];
     }
@@ -158,7 +168,7 @@ class GraphRoot extends React.Component{
     var chartData = this.generateGraphArray(this.state.month, this.state.year, habit.description,
                                               this.getAllPlannedDay(this.state.month, this.state.year, habit.day),
                                                 this.getAllCompletedDay(this.state.month, this.state.year, habit.completed_Days));
-    return this.mergeTwoChartData(chartData, this.recursion(habitList));
+    return this.mergeTwoChartData(chartData, this.recursiveMerge(habitList));
   }
 
 
@@ -173,7 +183,7 @@ class GraphRoot extends React.Component{
     if (this.props.modelForGraphing.length!==0){
       //true: show all, false: show only the specific one, base on this.state.currentHabitIndex
       if (this.state.all){
-        chartData=this.recursion(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
+        chartData=this.recursiveMerge(this.props.modelForGraphing.slice()); //need opt, expensive call when there are a lot of habit
         for (let i = 0; i < this.props.modelForGraphing.length; i++){
           var obj = {
               field : this.props.modelForGraphing[i].description,

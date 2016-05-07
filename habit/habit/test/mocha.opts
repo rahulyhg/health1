@@ -1,0 +1,5 @@
+--compilers js:babel-register
+--recursive
+--reporter progress
+--ui bdd
+--require ./test/util/jsdom.js

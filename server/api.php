@@ -95,9 +95,18 @@ function delHabit($habitid){
 					WHERE habitid = '$habitid'";
 
 		$result = $db->query($query);
+
+		$query = "Delete FROM habit_dates
+					WHERE habitid = '$habitid'";
+
+		$result = $db->query($query);
+
 		}catch(PDOException $e){
 			echo '{"error":{"text":'. $e->getMessage() .'}}';
 		}
+
+
+
 		echo "it is done";
 }
 

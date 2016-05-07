@@ -1,12 +1,10 @@
 import React from 'react';
 import store from '../../store/store';
 
-
 var Filter = React.createClass({
   handleChange: function(event){
     store.dispatch({type:'FILTER', text: event.target.value});
   },
-
   render: function(){
     return(
     <div id ="filterDiv">
@@ -14,9 +12,6 @@ var Filter = React.createClass({
     </div>
     )
   }
-
-
 })
-
 
 export default Filter;

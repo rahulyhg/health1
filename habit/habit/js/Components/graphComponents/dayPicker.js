@@ -8,17 +8,24 @@ class DayPicker extends React.Component{
   constructor(props){
     super(props);
   }
-  componentDidMount(){
-    //putting the option for the selector drop down. i.e. months, years, habits
-    var month = document.getElementById('monthDropDown');
-    var year = document.getElementById('yearDropDown');
-    var habitList = document.getElementById('habitDropDown');
+
+  /**
+   * putting the options for the selector drop downs. i.e. months, years, habits
+   * @param {string} monthElementId
+   * @param {string} yearElementId
+   * @param {string} habitElementId
+   */
+  addOptionsToSelectors(monthElementId, yearElementId, habitElementId){
+    var month = document.getElementById(monthElementId),
+        year = document.getElementById(yearElementId),
+        habitList = document.getElementById(habitElementId);
 
     var today=new Date();
     for (var m=0; m<12; m++){
         month.options[m]=new Option(constant.monthtext[m], constant.monthtext[m]);
     }
     month.options[today.getMonth()]=new Option(constant.monthtext[today.getMonth()], constant.monthtext[today.getMonth()], true, true);
+
     var thisyear=today.getFullYear(); thisyear= thisyear - 10;
     for (var y=0; y<20; y++){
       year.options[y]=new Option(thisyear, thisyear);
@@ -34,6 +41,12 @@ class DayPicker extends React.Component{
     }
 
   }
+
+  componentDidMount(){
+    //Once component is mount put the option for the selector drop down. i.e. months, years, habits
+    this.addOptionsToSelectors('monthDropDown', 'yearDropDown', 'habitDropDown');
+  }
+
   handleChange(e){
     console.log("entered handle");
     if(e.target.id==='monthDropDown'){
@@ -42,12 +55,15 @@ class DayPicker extends React.Component{
       this.props.handleDateChange("year", e.target.value);
     }
   }
+
   handleHabitChange(e){
     this.props.handleHabitChange(e.target.value);
   }
+
   handleAllOrOne(){
     this.props.handleAllOrOne();
   }
+
   render(){
     return(
       <div id="graph-dropDown" className='noselect'>

@@ -17,7 +17,11 @@ import constant from "../../../config/config.js"; //contants all constants
         }
       },
 
-      handleUserClick: function(direction){ //direction is either -1:left or 1:right
+      /**
+      * When user click, it will invoke this function to change the progress state
+      * @param {Number} direction - it is either -1:left or 1:right
+      **/
+      handleUserClick: function(direction){
         var progressIncrement = 0;
         if(direction==-1 && this.state.progress!=0){
           progressIncrement = -25;
@@ -27,9 +31,11 @@ import constant from "../../../config/config.js"; //contants all constants
         this.setState({progress: this.state.progress + progressIncrement});
       },
 
+      //reset the state progress to 0
       resetProgress: function(){
         this.setState({progress: 0});
       },
+
       render: function(){
         return(
 
@@ -102,31 +108,32 @@ import constant from "../../../config/config.js"; //contants all constants
 
         render: function(){
           var questionNum= this.props.progress / 25;
+          var formToRender=  this.props.progress==0 ?
+                                <NewHabitInputBox type = {"description"}
+                                                  getValue = {formModel.getDescription} //callback f
+                                                  setValue = {formModel.addDescription} //callback f
+                                />
+                                : this.props.progress==25 ?
+                                    <FrequencyForm />
+                                  : this.props.progress==50 ?
+                                      <DaysForm />
+                                      : this.props.progress==75 ?
+                                          <NewHabitInputBox type = {"startDay YY-MM-DD"}
+                                                        getValue = {formModel.getStartDay} //callback f
+                                                        setValue = {formModel.addStartDay} //callback f
+                                          />
+                                          : this.props.progress==100 ?
+                                            <SubmitNewHabit resetProgress={this.props.resetProgress} />
+                                            : console.log("error")
+
           return(
             <div id="habit_input_body">
               <QuestionDisplay question={this.state.questions[questionNum]}
                                questionNum={questionNum}
-              />
-
-              {/*decide which form to show client to fill in*/}
-              {this.props.progress==0 ?
-                <NewHabitInputBox type = {"description"}
-                                  getValue = {formModel.getDescription} //callback f
-                                  setValue = {formModel.addDescription} //callback f
                 />
-                : this.props.progress==25 ?
-                    <FrequencyForm />
-                  : this.props.progress==50 ?
-                      <DaysForm />
-                      : this.props.progress==75 ?
-                          <NewHabitInputBox type = {"startDay YY-MM-DD"}
-                                        getValue = {formModel.getStartDay} //callback f
-                                        setValue = {formModel.addStartDay} //callback f
-                          />
-                          : this.props.progress==100 ?
-                            <SubmitNewHabit resetProgress={this.props.resetProgress} />
-                            : console.log("error")
-                            }
+
+              {/*decide which form to render, base on parent's state*/}
+              {formToRender}
             </div>
           )}
     });
