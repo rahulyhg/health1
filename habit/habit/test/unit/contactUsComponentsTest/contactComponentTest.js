@@ -9,14 +9,8 @@ describe('contactUsComponent', function(){
   var renderedNode;
 
   beforeEach(function(){
-
-
-        var renderedElement = ReactTestUtils.renderIntoDocument(<ContactUsRoot/>);
-          renderedNode = ReactDom.findDOMNode(renderedElement);
-
-                // assert.equal(ContactUsRoot.prototype.test(), 'yes');
-
-
+    var renderedElement = ReactTestUtils.renderIntoDocument(<ContactUsRoot/>);
+    renderedNode = ReactDom.findDOMNode(renderedElement);
   });
 
   it('should render with correct markup', function(){

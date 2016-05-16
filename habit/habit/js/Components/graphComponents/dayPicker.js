@@ -42,10 +42,10 @@ class DayPicker extends React.Component{
 
   }
 
-  componentDidMount(){
-    //Once component is mount put the option for the selector drop down. i.e. months, years, habits
-    this.addOptionsToSelectors('monthDropDown', 'yearDropDown', 'habitDropDown');
-  }
+  // componentDidMount(){
+  //   //Once component is mount put the option for the selector drop down. i.e. months, years, habits
+  //   this.addOptionsToSelectors('monthDropDown', 'yearDropDown', 'habitDropDown');
+  // }
 
   handleChange(e){
     console.log("entered handle");

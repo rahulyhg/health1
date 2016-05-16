@@ -6,7 +6,9 @@ import constant from "../../../config/config.js"; //contants all constants
 import DayPicker from './dayPicker';
 import LineGraph from './lineGraph';
 
-class GraphRoot extends React.Component{
+//this is exported solely for testing, the actual component is wrapped with
+//redux as a new component that get default exported at the bottom
+export class GraphRoot extends React.Component{
 
   constructor(props){
     super(props);
@@ -249,8 +251,5 @@ var newReduxGraphComp = connect(mapStateToProps)(GraphRoot);
 newReduxGraphComp.propTypes={
     modelForGraphing: React.PropTypes.array
 }
-
-
-
 
 export default newReduxGraphComp;

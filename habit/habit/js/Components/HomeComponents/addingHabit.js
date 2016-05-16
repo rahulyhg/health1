@@ -239,4 +239,8 @@ import constant from "../../../config/config.js"; //contants all constants
         }
     });
 
+//these are for testing
+export {NewHabitForm, DaysForm, QuestionDisplay, FrequencyForm,NewHabitInputBox, SubmitNewHabit, ProgressBar, NaviForm};
+
+//default export is always for running the actual app
 export default AddingNewHabit;

@@ -19,7 +19,6 @@ class LineGraph extends React.Component{
           xScale={xScale}
           xLabel= {xLabel}
           yLabel = {yLabel}
-
         />
     );
   }
