@@ -22,7 +22,6 @@ There are two main part to this project (can be viewed as independent of each ot
    - environment: xampp
    - framework: Slim
    - RestFul Api
-   - 
 
 4. Database (mysql)
    - the database schema: http://imgur.com/mDDEqJA
